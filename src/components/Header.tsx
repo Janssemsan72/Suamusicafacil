@@ -106,7 +106,7 @@ const Header = React.memo(function Header({ onOpenQuiz }: HeaderProps) {
       </div>
 
       {/* Main Header */}
-      <header className={`sticky top-0 left-0 right-0 z-50 bg-cream-100 transition-shadow duration-300 ${scrolled ? 'shadow-md' : 'shadow-sm'}`}>
+      <header className={`sticky top-0 left-0 right-0 z-50 bg-white transition-shadow duration-300 ${scrolled ? 'shadow-md' : 'shadow-sm'}`}>
         <div className="max-w-7xl mx-auto px-0">
           <div className="flex items-center justify-between min-h-14 sm:min-h-16 py-0">
             {/* Logo: menor que o footer (~1/3 do tamanho) */}
@@ -152,7 +152,7 @@ const Header = React.memo(function Header({ onOpenQuiz }: HeaderProps) {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-brown-dark-400 hover:bg-cream-200 rounded-lg transition-colors"
+              className="md:hidden p-2 text-brown-dark-400 hover:bg-gray-100 rounded-lg transition-colors"
               aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
               aria-expanded={mobileMenuOpen}
             >
@@ -163,13 +163,13 @@ const Header = React.memo(function Header({ onOpenQuiz }: HeaderProps) {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-cream-100 border-t border-cream-300 animate-in slide-in-from-top-2 duration-200" role="dialog" aria-modal="true" aria-label="Menu móvel">
+          <div className="md:hidden bg-white border-t border-cream-300 animate-in slide-in-from-top-2 duration-200" role="dialog" aria-modal="true" aria-label="Menu móvel">
             <nav className="px-4 py-4 flex flex-col gap-2" aria-label="Navegação móvel">
               {NAV_ITEMS.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item)}
-                  className="text-brown-dark-50 hover:text-brown-dark-400 hover:bg-cream-200 transition-colors font-medium py-3 px-4 rounded-lg text-left"
+                  className="text-brown-dark-50 hover:text-brown-dark-400 hover:bg-gray-100 transition-colors font-medium py-3 px-4 rounded-lg text-left"
                 >
                   {item.label}
                 </button>
