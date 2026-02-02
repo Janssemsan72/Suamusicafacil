@@ -78,11 +78,10 @@ const HeroSection = React.memo(function HeroSection({ onOpenQuiz }: HeroSectionP
                   loop
                   muted
                   autoPlay
-                  preload="metadata"
+                  preload="auto"
                   poster="/images/videoframe_636.webp"
+                  src="/video/video-frente-hero.mp4"
                 >
-                  <source src="/video/video-frente-hero.mp4" type="video/mp4" />
-                  <source src="/video/video-frente.webm" type="video/webm" />
                   Seu navegador não suporta o elemento de vídeo.
                 </video>
                 
