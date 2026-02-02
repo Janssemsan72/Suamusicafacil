@@ -1,0 +1,7 @@
+# Supabase Edge Function config
+# Torna a função pública (não requer Authorization header)
+verify_jwt = false
+
+# CORS é controlado no código - não usar allow_origins = ["*"]
+[cors]
+allow_headers = ["authorization", "x-client-info", "apikey", "content-type"]

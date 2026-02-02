@@ -1,0 +1,292 @@
+-- ==========================================
+-- CONFIGURAR TIMEZONE PARA BRASÍLIA E REMOVER VENDAS DOS ÚLTIMOS 30 DIAS
+-- ==========================================
+-- 1. Configura o timezone do banco de dados para America/Sao_Paulo (Brasília)
+-- 2. Remove pedidos/vendas criados nos últimos 30 dias (considerando horário de Brasília)
+-- ==========================================
+
+-- ==========================================
+-- PARTE 1: CONFIGURAR TIMEZONE DO BANCO
+-- ==========================================
+
+-- Configurar timezone da sessão atual para Brasília
+-- Nota: No Supabase, configurações globais do banco devem ser feitas via dashboard
+-- Esta configuração afeta apenas a sessão atual da migração
+SET timezone = 'America/Sao_Paulo';
+
+-- Criar função auxiliar para obter data atual em Brasília
+CREATE OR REPLACE FUNCTION now_brasilia()
+RETURNS TIMESTAMPTZ
+LANGUAGE plpgsql
+STABLE
+AS $$
+BEGIN
+  -- Retornar horário atual convertido para Brasília
+  RETURN (NOW() AT TIME ZONE 'UTC') AT TIME ZONE 'America/Sao_Paulo';
+END;
+$$;
+
+-- Criar função para formatar datas no horário de Brasília
+CREATE OR REPLACE FUNCTION formatar_data_brasilia(timestamp_with_timezone TIMESTAMPTZ)
+RETURNS TEXT
+LANGUAGE plpgsql
+IMMUTABLE
+AS $$
+BEGIN
+  -- Converter para horário de Brasília (America/Sao_Paulo = UTC-3)
+  RETURN to_char(timestamp_with_timezone AT TIME ZONE 'America/Sao_Paulo', 'DD/MM/YYYY HH24:MI:SS');
+END;
+$$;
+
+COMMENT ON FUNCTION now_brasilia() IS 'Retorna o horário atual no fuso de Brasília';
+COMMENT ON FUNCTION formatar_data_brasilia(TIMESTAMPTZ) IS 'Formata timestamp para horário de Brasília (DD/MM/YYYY HH24:MI:SS)';
+
+-- ==========================================
+-- PARTE 2: REMOVER VENDAS DOS ÚLTIMOS 30 DIAS
+-- ==========================================
+
+BEGIN;
+
+DO $$
+DECLARE
+  v_orders_to_delete UUID[];
+  v_orders_count INTEGER;
+  v_jobs_count INTEGER;
+  v_songs_count INTEGER;
+  v_approvals_count INTEGER;
+  v_download_logs_count INTEGER;
+  v_email_logs_count INTEGER;
+  v_admin_logs_count INTEGER;
+  v_whatsapp_funnel_count INTEGER;
+  v_whatsapp_messages_count INTEGER;
+  v_checkout_links_count INTEGER;
+  v_checkout_events_count INTEGER;
+  v_webhook_queue_count INTEGER;
+  v_whatsapp_interactions_count INTEGER;
+  v_cakto_webhook_logs_count INTEGER;
+  v_date_30_days_ago TIMESTAMPTZ;
+BEGIN
+  RAISE NOTICE '🔍 Iniciando remoção de vendas dos últimos 30 dias...';
+  
+  -- Calcular data de 30 dias atrás no horário de Brasília
+  -- 1. Pegar hora atual em Brasília (converte UTC para Brasília)
+  -- 2. Subtrair 30 dias
+  -- 3. Converter de volta para UTC para comparar com created_at (que é TIMESTAMPTZ em UTC)
+  -- Exemplo: Se são 10h em Brasília (13h UTC), queremos pedidos desde 10h de 30 dias atrás em Brasília
+  -- Isso significa: (10h Brasília - 30 dias) = (13h UTC - 30 dias)
+  v_date_30_days_ago := ((NOW() AT TIME ZONE 'America/Sao_Paulo') - INTERVAL '30 days')::TIMESTAMP AT TIME ZONE 'America/Sao_Paulo';
+  
+  RAISE NOTICE '📅 Hora atual em Brasília: %', (NOW() AT TIME ZONE 'America/Sao_Paulo');
+  RAISE NOTICE '📅 Data de corte (30 dias atrás em Brasília): %', (NOW() AT TIME ZONE 'America/Sao_Paulo') - INTERVAL '30 days';
+  RAISE NOTICE '📅 Data de corte (UTC para comparação): %', v_date_30_days_ago;
+  
+  -- 1. Identificar pedidos criados nos últimos 30 dias
+  -- created_at é TIMESTAMPTZ (armazenado em UTC), comparamos com a data convertida para UTC
+  SELECT array_agg(DISTINCT o.id) INTO v_orders_to_delete
+  FROM orders o
+  WHERE o.created_at >= v_date_30_days_ago;
+
+  -- Verificar se há pedidos para deletar
+  IF v_orders_to_delete IS NULL OR array_length(v_orders_to_delete, 1) = 0 THEN
+    RAISE NOTICE 'ℹ️  Nenhum pedido encontrado nos últimos 30 dias para remover.';
+    RETURN;
+  END IF;
+
+  v_orders_count := array_length(v_orders_to_delete, 1);
+  RAISE NOTICE '📊 Encontrados % pedidos para remover', v_orders_count;
+
+  -- 2. Contar dependências antes de deletar (verificando existência das tabelas)
+  
+  -- Tabelas principais (sempre devem existir)
+  SELECT COUNT(*) INTO v_jobs_count 
+  FROM jobs 
+  WHERE order_id = ANY(v_orders_to_delete);
+
+  SELECT COUNT(*) INTO v_songs_count 
+  FROM songs 
+  WHERE order_id = ANY(v_orders_to_delete);
+
+  -- Tabelas opcionais (verificar existência)
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'lyrics_approvals') THEN
+    SELECT COUNT(*) INTO v_approvals_count 
+    FROM lyrics_approvals 
+    WHERE order_id = ANY(v_orders_to_delete);
+  ELSE
+    v_approvals_count := 0;
+  END IF;
+
+  -- download_logs não tem order_id, apenas song_id
+  -- Será deletado automaticamente via CASCADE quando songs for deletado
+  v_download_logs_count := 0;
+
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'email_logs') THEN
+    SELECT COUNT(*) INTO v_email_logs_count 
+    FROM email_logs 
+    WHERE order_id = ANY(v_orders_to_delete);
+  ELSE
+    v_email_logs_count := 0;
+  END IF;
+
+  -- admin_logs não tem order_id, usa target_table e target_id
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'admin_logs') THEN
+    SELECT COUNT(*) INTO v_admin_logs_count 
+    FROM admin_logs 
+    WHERE target_table = 'orders' 
+      AND target_id = ANY(v_orders_to_delete);
+  ELSE
+    v_admin_logs_count := 0;
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'whatsapp_funnel') THEN
+    SELECT COUNT(*) INTO v_whatsapp_funnel_count 
+    FROM whatsapp_funnel 
+    WHERE order_id = ANY(v_orders_to_delete);
+  ELSE
+    v_whatsapp_funnel_count := 0;
+  END IF;
+
+  -- whatsapp_messages não tem order_id, usa funnel_id que referencia whatsapp_funnel
+  -- Será deletado automaticamente via CASCADE quando whatsapp_funnel for deletado
+  v_whatsapp_messages_count := 0;
+
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'checkout_links') THEN
+    SELECT COUNT(*) INTO v_checkout_links_count 
+    FROM checkout_links 
+    WHERE order_id = ANY(v_orders_to_delete);
+  ELSE
+    v_checkout_links_count := 0;
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'checkout_events') THEN
+    SELECT COUNT(*) INTO v_checkout_events_count 
+    FROM checkout_events 
+    WHERE order_id = ANY(v_orders_to_delete);
+  ELSE
+    v_checkout_events_count := 0;
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'webhook_queue') THEN
+    SELECT COUNT(*) INTO v_webhook_queue_count 
+    FROM webhook_queue 
+    WHERE order_id = ANY(v_orders_to_delete);
+  ELSE
+    v_webhook_queue_count := 0;
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'whatsapp_interactions') THEN
+    SELECT COUNT(*) INTO v_whatsapp_interactions_count 
+    FROM whatsapp_interactions 
+    WHERE order_id = ANY(v_orders_to_delete);
+  ELSE
+    v_whatsapp_interactions_count := 0;
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'cakto_webhook_logs') THEN
+    SELECT COUNT(*) INTO v_cakto_webhook_logs_count 
+    FROM cakto_webhook_logs 
+    WHERE order_id = ANY(v_orders_to_delete);
+  ELSE
+    v_cakto_webhook_logs_count := 0;
+  END IF;
+
+  RAISE NOTICE '';
+  RAISE NOTICE '📋 RESUMO DE REGISTROS A SEREM REMOVIDOS:';
+  RAISE NOTICE '   - Orders: %', v_orders_count;
+  RAISE NOTICE '   - Jobs: %', v_jobs_count;
+  RAISE NOTICE '   - Songs: %', v_songs_count;
+  RAISE NOTICE '   - Lyrics Approvals: %', v_approvals_count;
+  RAISE NOTICE '   - Download Logs: serão deletados automaticamente via CASCADE (via songs)';
+  RAISE NOTICE '   - Email Logs: %', v_email_logs_count;
+  RAISE NOTICE '   - Admin Logs: %', v_admin_logs_count;
+  RAISE NOTICE '   - WhatsApp Funnel: %', v_whatsapp_funnel_count;
+  RAISE NOTICE '   - WhatsApp Messages: serão deletados automaticamente via CASCADE (via funnel)';
+  RAISE NOTICE '   - Checkout Links: %', v_checkout_links_count;
+  RAISE NOTICE '   - Checkout Events: %', v_checkout_events_count;
+  RAISE NOTICE '   - Webhook Queue: %', v_webhook_queue_count;
+  RAISE NOTICE '   - WhatsApp Interactions: %', v_whatsapp_interactions_count;
+  RAISE NOTICE '   - Cakto Webhook Logs: %', v_cakto_webhook_logs_count;
+  RAISE NOTICE '';
+
+  -- 3. Deletar registros relacionados manualmente (antes de deletar orders)
+  -- Isso garante que não haja problemas com foreign keys
+
+  IF v_approvals_count > 0 THEN
+    DELETE FROM lyrics_approvals WHERE order_id = ANY(v_orders_to_delete);
+    RAISE NOTICE '✅ Lyrics Approvals deletados: %', v_approvals_count;
+  END IF;
+
+  -- download_logs será deletado automaticamente via CASCADE quando songs for deletado
+  -- (download_logs tem song_id, não order_id)
+
+  IF v_email_logs_count > 0 THEN
+    DELETE FROM email_logs WHERE order_id = ANY(v_orders_to_delete);
+    RAISE NOTICE '✅ Email Logs deletados: %', v_email_logs_count;
+  END IF;
+
+  IF v_admin_logs_count > 0 THEN
+    -- admin_logs usa target_table e target_id, não order_id
+    DELETE FROM admin_logs 
+    WHERE target_table = 'orders' 
+      AND target_id = ANY(v_orders_to_delete);
+    RAISE NOTICE '✅ Admin Logs deletados: %', v_admin_logs_count;
+  END IF;
+
+  IF v_checkout_events_count > 0 THEN
+    DELETE FROM checkout_events WHERE order_id = ANY(v_orders_to_delete);
+    RAISE NOTICE '✅ Checkout Events deletados: %', v_checkout_events_count;
+  END IF;
+
+  IF v_webhook_queue_count > 0 THEN
+    DELETE FROM webhook_queue WHERE order_id = ANY(v_orders_to_delete);
+    RAISE NOTICE '✅ Webhook Queue deletados: %', v_webhook_queue_count;
+  END IF;
+
+  IF v_cakto_webhook_logs_count > 0 THEN
+    DELETE FROM cakto_webhook_logs WHERE order_id = ANY(v_orders_to_delete);
+    RAISE NOTICE '✅ Cakto Webhook Logs deletados: %', v_cakto_webhook_logs_count;
+  END IF;
+
+  -- 4. Deletar orders (CASCADE deletará jobs, songs, whatsapp_funnel, checkout_links e whatsapp_interactions automaticamente)
+  DELETE FROM orders 
+  WHERE id = ANY(v_orders_to_delete);
+  RAISE NOTICE '✅ Orders deletados: %', v_orders_count;
+  RAISE NOTICE '✅ Jobs deletados automaticamente (CASCADE): %', v_jobs_count;
+  RAISE NOTICE '✅ Songs deletados automaticamente (CASCADE): %', v_songs_count;
+  RAISE NOTICE '✅ Download Logs deletados automaticamente (CASCADE via songs)';
+  RAISE NOTICE '✅ WhatsApp Funnel deletados automaticamente (CASCADE): %', v_whatsapp_funnel_count;
+  RAISE NOTICE '✅ WhatsApp Messages deletados automaticamente (CASCADE via funnel)';
+  RAISE NOTICE '✅ Checkout Links deletados automaticamente (CASCADE): %', v_checkout_links_count;
+  RAISE NOTICE '✅ WhatsApp Interactions deletados automaticamente (CASCADE): %', v_whatsapp_interactions_count;
+
+  RAISE NOTICE '';
+  RAISE NOTICE '✅ ✅ ✅ REMOÇÃO CONCLUÍDA COM SUCESSO ✅ ✅ ✅';
+  RAISE NOTICE '';
+  RAISE NOTICE '📝 TOTAL DE REGISTROS REMOVIDOS:';
+  RAISE NOTICE '   - Orders: %', v_orders_count;
+  RAISE NOTICE '   - Jobs: %', v_jobs_count;
+  RAISE NOTICE '   - Songs: %', v_songs_count;
+  RAISE NOTICE '   - Lyrics Approvals: %', v_approvals_count;
+  RAISE NOTICE '   - Download Logs: deletados automaticamente via CASCADE (via songs)';
+  RAISE NOTICE '   - Email Logs: %', v_email_logs_count;
+  RAISE NOTICE '   - Admin Logs: %', v_admin_logs_count;
+  RAISE NOTICE '   - WhatsApp Funnel: %', v_whatsapp_funnel_count;
+  RAISE NOTICE '   - WhatsApp Messages: serão deletados automaticamente via CASCADE (via funnel)';
+  RAISE NOTICE '   - Checkout Links: %', v_checkout_links_count;
+  RAISE NOTICE '   - Checkout Events: %', v_checkout_events_count;
+  RAISE NOTICE '   - Webhook Queue: %', v_webhook_queue_count;
+  RAISE NOTICE '   - WhatsApp Interactions: %', v_whatsapp_interactions_count;
+  RAISE NOTICE '   - Cakto Webhook Logs: %', v_cakto_webhook_logs_count;
+  RAISE NOTICE '';
+
+END $$;
+
+COMMIT;
+
+-- Verificação final - mostrar pedidos restantes
+SELECT 
+  'VERIFICAÇÃO FINAL' as status,
+  COUNT(*) as total_pedidos_restantes,
+  COUNT(*) FILTER (WHERE status = 'paid') as pedidos_pagos,
+  COUNT(*) FILTER (WHERE status = 'pending') as pedidos_pendentes
+FROM orders;
+

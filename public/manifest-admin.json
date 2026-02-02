@@ -1,0 +1,48 @@
+{
+  "name": "MusicLovely Admin",
+  "short_name": "ML Admin",
+  "description": "Painel administrativo do MusicLovely: rápido, instalável e offline.",
+  "start_url": "/admin/",
+  "scope": "/admin",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#C7855E",
+  "orientation": "any",
+  "dir": "ltr",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [],
+  "categories": ["business", "productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Painel principal",
+      "url": "/admin?source=pwa&shortcut=dashboard",
+      "icons": [{ "src": "/favicon.ico", "sizes": "48x48" }]
+    },
+    {
+      "name": "Pedidos",
+      "short_name": "Pedidos",
+      "description": "Ver todos os pedidos",
+      "url": "/admin/orders?source=pwa&shortcut=orders",
+      "icons": [{ "src": "/favicon.ico", "sizes": "48x48" }]
+    },
+    {
+      "name": "Letras",
+      "short_name": "Letras",
+      "description": "Gerenciar letras",
+      "url": "/admin/lyrics?source=pwa&shortcut=lyrics",
+      "icons": [{ "src": "/favicon.ico", "sizes": "48x48" }]
+    }
+  ],
+  "prefer_related_applications": false
+}
+

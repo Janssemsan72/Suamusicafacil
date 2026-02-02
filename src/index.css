@@ -1,0 +1,2359 @@
+/* Fontes locais - carregadas antes do Tailwind */
+@import './styles/fonts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Modern Scrollbar Styles */
+/* Para navegadores Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a78bfa;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8b5cf6;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Para Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #a78bfa transparent;
+}
+
+/* Scrollbar mais fina e moderna para cards */
+.card-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.card-scrollbar::-webkit-scrollbar-thumb {
+  background: #a78bfa;
+  border-radius: 10px;
+}
+
+.card-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #8b5cf6;
+}
+
+/* Esconde barra de rolagem mantendo scroll funcional */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ✅ OTIMIZAÇÃO: content-visibility para seções abaixo do fold - reduz trabalho de layout/paint */
+.below-fold-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
+/* Dynamic Viewport Height support */
+@supports (height: 100dvh) {
+  :root {
+    --dvh: 100dvh;
+  }
+}
+
+@supports not (height: 100dvh) {
+  :root {
+    --dvh: 100vh;
+  }
+}
+
+/* ✅ Desabilitar zoom no admin */
+body[data-admin="true"] {
+  touch-action: pan-x pan-y;
+  -ms-touch-action: pan-x pan-y;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* Prevenir zoom por qualquer método */
+  zoom: 1;
+  -ms-zoom: 1;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body[data-admin="true"] * {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
+body[data-admin="true"] input,
+body[data-admin="true"] textarea,
+body[data-admin="true"] [contenteditable="true"],
+body[data-admin="true"] .select-text {
+  touch-action: auto;
+  -ms-touch-action: auto;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
+:root {
+  --header-height: 88px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --header-height: 80px;
+  }
+}
+
+/* Vinyl Player Animations */
+@keyframes vinyl-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes vinyl-spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes vinyl-spin-realistic {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Realistic vinyl rotation classes */
+.vinyl-spin {
+  animation: vinyl-spin 1.2s linear infinite;
+}
+
+.vinyl-spin-slow {
+  animation: vinyl-spin-slow 1.5s linear infinite;
+}
+
+.vinyl-spin-realistic {
+  animation: vinyl-spin-realistic 1.3s linear infinite;
+}
+
+/* Play/Pause control classes */
+.vinyl-playing {
+  animation-play-state: running;
+}
+
+.vinyl-paused {
+  animation-play-state: paused;
+}
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* CrieSuaMusica - Purple/Pink Theme */
+    --background: 0 0% 100%;  /* #FFFFFF branco */
+    --foreground: 270 30% 15%;  /* Texto escuro com tom roxo */
+
+    --card: 0 0% 100%;  /* #FFFFFF branco puro */
+    --card-foreground: 270 30% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 270 30% 15%;
+
+    --primary: 270 70% 60%;  /* Roxo principal */
+    --primary-foreground: 0 0% 100%;
+
+    --primary-600: 270 65% 50%;  /* Roxo mais escuro */
+
+    --secondary: 270 20% 96%;  /* Roxo muito claro */
+    --secondary-foreground: 270 30% 15%;
+
+    --muted: 270 15% 94%;
+    --muted-foreground: 270 20% 45%;
+
+    --accent: 330 70% 65%;  /* Rosa para acentos */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 270 20% 88%;  /* Borda roxa clara */
+    --input: 270 20% 88%;
+    --ring: 270 70% 60%;
+
+    --radius: 0.75rem;
+
+    /* Glass effect variables */
+    --glass-bg: 255 255 255 / 0.7;
+    --glass-border: 255 255 255 / 0.3;
+    --glass-shadow: 0 8px 32px rgba(139, 92, 246, 0.1);
+
+    /* Gradiente hero - roxo/rosa */
+    --gradient-hero: linear-gradient(135deg, #ffffff 0%, #a78bfa 50%, #ec4899 100%);
+
+    /* Quiz specific colors - purple/pink theme */
+    --quiz-primary: 270 70% 60%;  /* Roxo */
+    --quiz-primary-hover: 270 65% 50%;  /* Roxo escuro */
+    --quiz-background: 270 20% 98%;  /* Roxo muito claro */
+    --quiz-card-bg: 0 0% 100%;  /* #FFFFFF branco puro */
+    --quiz-border: 270 20% 88%;  /* Borda roxa clara */
+    --quiz-text-muted: 270 20% 45%;
+
+    /* Sombras suaves com tom roxo */
+    --shadow-soft: 0 4px 16px rgba(139, 92, 246, 0.08);
+    --shadow-medium: 0 8px 24px rgba(139, 92, 246, 0.12);
+    --shadow-glass: 0 8px 32px rgba(139, 92, 246, 0.1);
+
+    --sidebar-background: 270 70% 60%;  /* Roxo */
+    --sidebar-foreground: 0 0% 100%;  /* Branco para contraste */
+    --sidebar-primary: 0 0% 100%;  /* Branco */
+    --sidebar-primary-foreground: 270 70% 60%;  /* Roxo */
+    --sidebar-accent: 270 65% 50%;  /* Roxo escuro para hover */
+    --sidebar-accent-foreground: 0 0% 100%;  /* Branco */
+    --sidebar-border: 270 65% 50%;  /* Roxo escuro para borda */
+    --sidebar-ring: 270 70% 60%;  /* Roxo */
+  }
+
+  .dark {
+    --background: 270 25% 15%;
+    --foreground: 270 20% 94%;
+
+    --card: 270 20% 20%;
+    --card-foreground: 270 20% 94%;
+
+    --popover: 270 20% 20%;
+    --popover-foreground: 270 20% 94%;
+
+    --primary: 270 65% 65%;
+    --primary-foreground: 0 0% 100%;
+
+    --primary-600: 270 60% 55%;
+
+    --secondary: 270 20% 25%;
+    --secondary-foreground: 270 20% 94%;
+
+    --muted: 270 20% 25%;
+    --muted-foreground: 270 15% 60%;
+
+    --accent: 330 65% 70%;
+    --accent-foreground: 270 25% 15%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 270 20% 30%;
+    --input: 270 20% 30%;
+    --ring: 270 65% 65%;
+
+    /* Glass effect variables - dark mode */
+    --glass-bg: 270 20% 20% / 0.7;
+    --glass-border: 255 255 255 / 0.1;
+    --glass-shadow: 0 8px 32px rgba(139, 92, 246, 0.3);
+
+    --sidebar-background: 270 65% 65%;  /* Roxo para dark mode */
+    --sidebar-foreground: 0 0% 100%;  /* Branco */
+    --sidebar-primary: 0 0% 100%;  /* Branco */
+    --sidebar-primary-foreground: 270 65% 65%;  /* Roxo */
+    --sidebar-accent: 270 60% 55%;  /* Roxo escuro para hover */
+    --sidebar-accent-foreground: 0 0% 100%;  /* Branco */
+    --sidebar-border: 270 60% 55%;  /* Roxo escuro */
+    --sidebar-ring: 270 65% 65%;  /* Roxo */
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    /* Dynamic viewport height para mobile - resolve problemas com barras de navegação */
+    height: 100%;
+    /* ✅ CORREÇÃO: Permitir scroll normalmente */
+    overflow-x: hidden; /* Apenas prevenir scroll horizontal */
+    overflow-y: auto; /* Permitir scroll vertical */
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    /* Dynamic viewport height */
+    min-height: 100vh;
+    min-height: 100dvh;
+    /* ✅ CORREÇÃO: Permitir scroll normalmente para todas as páginas */
+    overflow-x: hidden; /* Apenas prevenir scroll horizontal */
+    overflow-y: auto; /* Permitir scroll vertical */
+    background-color: #ffffff;
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+
+  /* Fix para mobile - prevent text size adjustment */
+  @media screen and (max-width: 768px) {
+    body {
+      -webkit-text-size-adjust: 100%;
+      -moz-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+  }
+}
+
+@layer utilities {
+  /* Fallback para navegadores sem suporte a backdrop-filter */
+  @supports not (backdrop-filter: blur(12px)) {
+    header {
+      background-color: hsl(var(--background) / 0.95) !important;
+    }
+  }
+  
+  /* Desabilitar blur em modo de economia de energia */
+  @media (prefers-reduced-motion: reduce) {
+    header {
+      backdrop-filter: none !important;
+      background-color: hsl(var(--background) / 0.95) !important;
+    }
+  }
+  
+  /* Safe area para iPhone com notch */
+  header {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  /* Remover padding-top do safe-area no admin para evitar espaço superior */
+  body[data-admin="true"] header {
+    padding-top: 0 !important;
+  }
+
+  /* Compact card styles */
+  .compact-card .space-y-6 {
+    @apply space-y-3;
+  }
+  
+  .compact-card .space-y-4 {
+    @apply space-y-2;
+  }
+  
+  .compact-card .p-6 {
+    @apply p-4;
+  }
+  
+  .compact-card .py-8 {
+    @apply py-4;
+  }
+
+  .glass {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(255, 255, 255, 0.5) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .glass-strong {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0.7) 100%
+    );
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  .dark .glass {
+    background: linear-gradient(
+      135deg,
+      rgba(48, 43, 38, 0.7) 0%,
+      rgba(48, 43, 38, 0.5) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .dark .glass-strong {
+    background: linear-gradient(
+      135deg,
+      rgba(48, 43, 38, 0.85) 0%,
+      rgba(48, 43, 38, 0.7) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  /* Music Player Progress Bar */
+  .music-progress-bar::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: hsl(var(--primary-foreground));
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: 2px solid hsl(var(--primary));
+  }
+
+  .music-progress-bar::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .music-progress-bar::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: hsl(var(--primary-foreground));
+    cursor: pointer;
+    border: 2px solid hsl(var(--primary));
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .music-progress-bar::-moz-range-track {
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* ✅ Scrollbar moderna e customizada - aplicada apenas no container de conteúdo */
+  .main-scroll-container::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .main-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  .main-scroll-container::-webkit-scrollbar-thumb {
+    background: hsl(270 70% 60% / 0.3);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    transition: background 0.2s ease;
+  }
+
+  .main-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: hsl(270 70% 60% / 0.5);
+    background-clip: padding-box;
+  }
+
+  .main-scroll-container::-webkit-scrollbar-thumb:active {
+    background: hsl(270 70% 60% / 0.7);
+    background-clip: padding-box;
+  }
+
+  /* Firefox */
+  .main-scroll-container {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(270 70% 60% / 0.3) transparent;
+  }
+
+  /* Compact mobile cards */
+  @media (max-width: 768px) {
+    .mobile-compact-card .space-y-6 {
+      @apply space-y-3;
+    }
+    
+    .mobile-compact-card .space-y-4 {
+      @apply space-y-2;
+    }
+    
+    .mobile-compact-card .p-6 {
+      @apply p-4;
+    }
+    
+    .mobile-compact-card .p-8 {
+      @apply p-4;
+    }
+    
+    .mobile-compact-card .py-8 {
+      @apply py-4;
+    }
+    
+    .mobile-compact-card .gap-6 {
+      @apply gap-3;
+    }
+    
+    .mobile-compact-card .gap-4 {
+      @apply gap-2;
+    }
+
+    .mobile-compact-header {
+      @apply text-2xl;
+    }
+  }
+
+  /* Enhanced Tabs - Modern UI/UX */
+  .enhanced-tabs {
+    @apply w-full;
+  }
+
+  .enhanced-tabs-list {
+    @apply inline-flex items-center justify-center;
+  }
+
+  /* Modern Variant - Gradient with smooth animations */
+  .enhanced-tabs-modern {
+    @apply h-14 rounded-lg bg-gradient-to-r from-amber-50 to-orange-50 p-1.5 text-amber-800 border border-amber-200 shadow-sm;
+    background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fde68a 100%);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+  }
+
+  .enhanced-tabs-modern .enhanced-tabs-trigger {
+    @apply px-8 py-3 rounded-md transition-all duration-300 flex items-center gap-2 font-semibold text-base;
+    transform: translateY(0);
+  }
+
+  .enhanced-tabs-modern .enhanced-tabs-trigger:hover {
+    @apply bg-amber-100 text-amber-900 shadow-md;
+    transform: translateY(-1px);
+  }
+
+  .enhanced-tabs-modern .enhanced-tabs-trigger[data-active="true"] {
+    @apply bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-lg;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  }
+
+  /* Pills Variant - Rounded modern look */
+  .enhanced-tabs-pills {
+    @apply h-10 rounded-full bg-muted p-1 text-muted-foreground;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  }
+
+  .enhanced-tabs-pills .enhanced-tabs-trigger {
+    @apply px-4 py-2 rounded-full transition-all duration-200;
+  }
+
+  .enhanced-tabs-pills .enhanced-tabs-trigger:hover {
+    @apply bg-background text-foreground shadow-sm;
+    transform: translateY(-1px);
+  }
+
+  .enhanced-tabs-pills .enhanced-tabs-trigger[data-active="true"] {
+    @apply bg-background text-foreground shadow-md;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Underline Variant - Clean minimal */
+  .enhanced-tabs-underline {
+    @apply h-10 border-b border-border bg-transparent p-0 text-muted-foreground;
+  }
+
+  .enhanced-tabs-underline .enhanced-tabs-trigger {
+    @apply px-4 py-2 border-b-2 border-transparent transition-all duration-200;
+  }
+
+  .enhanced-tabs-underline .enhanced-tabs-trigger:hover {
+    @apply text-foreground;
+  }
+
+  .enhanced-tabs-underline .enhanced-tabs-trigger[data-active="true"] {
+    @apply border-primary text-primary;
+  }
+
+  /* Enhanced animations and micro-interactions */
+  .enhanced-tabs-trigger {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .enhanced-tabs-trigger::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .enhanced-tabs-trigger:hover::before {
+    left: 100%;
+  }
+
+  /* Badge styling for tabs */
+  .enhanced-tabs-badge {
+    @apply ml-1 px-1.5 py-0.5 text-xs font-medium rounded-full;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    box-shadow: 0 1px 3px rgba(239, 68, 68, 0.3);
+  }
+
+  .enhanced-tabs-badge[data-active="true"] {
+    @apply bg-white text-amber-600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .enhanced-tabs-modern {
+      @apply h-10 p-0.5;
+    }
+    
+    .enhanced-tabs-modern .enhanced-tabs-trigger {
+      @apply px-2 py-1.5 text-sm;
+    }
+    
+    .enhanced-tabs-pills {
+      @apply h-8;
+    }
+    
+    .enhanced-tabs-pills .enhanced-tabs-trigger {
+      @apply px-2 py-1 text-sm;
+    }
+  }
+
+  /* Focus states for accessibility */
+  .enhanced-tabs-trigger:focus-visible {
+    @apply outline-none ring-2 ring-amber-500 ring-offset-2;
+  }
+
+  /* Loading state */
+  .enhanced-tabs-loading {
+    @apply opacity-50 pointer-events-none;
+  }
+
+  .enhanced-tabs-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+/* Scroll Animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-in-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation classes */
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-fade-in-left {
+  animation: fade-in-left 0.6s ease-out forwards;
+}
+
+.animate-fade-in-right {
+  animation: fade-in-right 0.6s ease-out forwards;
+}
+
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.6s ease-out forwards;
+}
+
+.animate-slide-in-bottom {
+  animation: slide-in-bottom 0.6s ease-out forwards;
+}
+
+/* Scroll animation base classes */
+.scroll-animate {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease-out;
+}
+
+.scroll-animate-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: all 0.6s ease-out;
+}
+
+.scroll-animate-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: all 0.6s ease-out;
+}
+
+.scroll-animate-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.6s ease-out;
+}
+
+/* Staggered animations */
+.scroll-animate-delay-1 {
+  transition-delay: 0.1s;
+}
+
+.scroll-animate-delay-2 {
+  transition-delay: 0.2s;
+}
+
+.scroll-animate-delay-3 {
+  transition-delay: 0.3s;
+}
+
+.scroll-animate-delay-4 {
+  transition-delay: 0.4s;
+}
+
+.scroll-animate-delay-5 {
+  transition-delay: 0.5s;
+}
+
+.scroll-animate-delay-6 {
+  transition-delay: 0.6s;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-animate,
+  .scroll-animate-left,
+  .scroll-animate-right,
+  .scroll-animate-scale {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  
+  .animate-fade-in-up,
+  .animate-fade-in-left,
+  .animate-fade-in-right,
+  .animate-fade-in-scale,
+  .animate-slide-in-bottom {
+    animation: none;
+  }
+}
+
+/* ============================================
+   ADMIN THEME - Modern Blue/Gray Theme
+   ============================================ */
+
+/* Admin Theme Variables */
+body[data-admin="true"] {
+  --admin-primary: 270 70% 60%; /* Roxo principal */
+  --admin-primary-dark: 270 65% 50%; /* Roxo escuro */
+  --admin-primary-light: 270 75% 70%; /* Roxo claro */
+  --admin-secondary: 270 20% 45%; /* Roxo médio */
+  --admin-secondary-dark: 270 25% 30%; /* Roxo escuro */
+  --admin-success: 142 76% 36%; /* #10B981 - Green */
+  --admin-warning: 38 92% 50%; /* #F59E0B - Orange */
+  --admin-error: 0 84% 60%; /* #EF4444 - Red */
+  --admin-bg: 0 0% 100%; /* #FFFFFF - Branco */
+  --admin-card-bg: 0 0% 100%; /* #FFFFFF - Pure white */
+  --admin-border: 270 20% 88%; /* Borda roxa clara */
+  --admin-text: 270 30% 15%; /* Texto escuro com tom roxo */
+  --admin-text-muted: 270 20% 45%; /* Texto muted roxo */
+  --admin-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --admin-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --admin-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --admin-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Animation durations */
+  --admin-duration-fast: 150ms;
+  --admin-duration-normal: 300ms;
+  --admin-duration-slow: 500ms;
+  
+  /* Easing functions */
+  --admin-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --admin-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --admin-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --admin-ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Admin Background Gradient */
+body[data-admin="true"] {
+  background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+  min-height: 100vh;
+}
+
+/* Admin Animations - Keyframes */
+@keyframes admin-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes admin-slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes admin-slide-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes admin-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes admin-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes admin-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes admin-scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes admin-ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.2;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes pulse-scale {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
+.animate-pulse-scale {
+  animation: pulse-scale 3s ease-in-out infinite;
+}
+
+@keyframes admin-shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes admin-pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(167, 139, 250, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(167, 139, 250, 0);
+  }
+}
+
+@keyframes admin-count-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes admin-stagger {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Admin Animation Classes */
+body[data-admin="true"] .admin-fade-in {
+  animation: admin-fade-in var(--admin-duration-normal) var(--admin-ease-out);
+}
+
+body[data-admin="true"] .admin-slide-in-up {
+  animation: admin-slide-in-up var(--admin-duration-normal) var(--admin-ease-out);
+}
+
+body[data-admin="true"] .admin-slide-in-down {
+  animation: admin-slide-in-down var(--admin-duration-normal) var(--admin-ease-out);
+}
+
+body[data-admin="true"] .admin-slide-in-left {
+  animation: admin-slide-in-left var(--admin-duration-normal) var(--admin-ease-out);
+}
+
+body[data-admin="true"] .admin-slide-in-right {
+  animation: admin-slide-in-right var(--admin-duration-normal) var(--admin-ease-out);
+}
+
+body[data-admin="true"] .admin-scale-in {
+  animation: admin-scale-in var(--admin-duration-normal) var(--admin-ease-spring);
+}
+
+body[data-admin="true"] .admin-ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+body[data-admin="true"] .admin-ripple-effect::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+body[data-admin="true"] .admin-ripple-effect:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+body[data-admin="true"] .admin-shimmer {
+  background: linear-gradient(
+    90deg,
+    #f3f4f6 0%,
+    #e9d5ff 50%,
+    #f3f4f6 100%
+  );
+  background-size: 1000px 100%;
+  animation: admin-shimmer 2s infinite;
+}
+
+body[data-admin="true"] .admin-pulse-glow {
+  animation: admin-pulse-glow 2s ease-in-out infinite;
+}
+
+/* Staggered animations */
+body[data-admin="true"] .admin-stagger-1 {
+  animation: admin-stagger var(--admin-duration-normal) var(--admin-ease-out) 0.1s both;
+}
+
+body[data-admin="true"] .admin-stagger-2 {
+  animation: admin-stagger var(--admin-duration-normal) var(--admin-ease-out) 0.2s both;
+}
+
+body[data-admin="true"] .admin-stagger-3 {
+  animation: admin-stagger var(--admin-duration-normal) var(--admin-ease-out) 0.3s both;
+}
+
+body[data-admin="true"] .admin-stagger-4 {
+  animation: admin-stagger var(--admin-duration-normal) var(--admin-ease-out) 0.4s both;
+}
+
+body[data-admin="true"] .admin-stagger-5 {
+  animation: admin-stagger var(--admin-duration-normal) var(--admin-ease-out) 0.5s both;
+}
+
+body[data-admin="true"] .admin-stagger-6 {
+  animation: admin-stagger var(--admin-duration-normal) var(--admin-ease-out) 0.6s both;
+}
+
+/* Hover effects */
+body[data-admin="true"] .admin-hover-lift {
+  transition: transform var(--admin-duration-fast) var(--admin-ease-out),
+              box-shadow var(--admin-duration-fast) var(--admin-ease-out);
+}
+
+body[data-admin="true"] .admin-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--admin-shadow-lg);
+}
+
+body[data-admin="true"] .admin-hover-scale {
+  transition: transform var(--admin-duration-fast) var(--admin-ease-out);
+}
+
+body[data-admin="true"] .admin-hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Glassmorphism for admin */
+body[data-admin="true"] .admin-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: var(--admin-shadow-md);
+}
+
+/* Reduced motion support for admin */
+@media (prefers-reduced-motion: reduce) {
+  body[data-admin="true"] *,
+  body[data-admin="true"] *::before,
+  body[data-admin="true"] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Apple Design System - Admin Styles */
+/* Font-family override removed to restore original font */
+body[data-admin="true"] {
+  /* font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ✅ Garantir que font-serif seja aplicada corretamente no AccordionTrigger */
+[data-radix-accordion-trigger].font-serif,
+button.font-serif {
+  font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif !important;
+  font-weight: 900 !important;
+}
+
+/* Modern Apple-Style Card Base */
+.apple-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.apple-card:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 8px 16px rgba(0, 0, 0, 0.12),
+    0 16px 32px rgba(0, 0, 0, 0.06);
+}
+
+.apple-card-glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(30px) saturate(200%);
+  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Modern Color Palette - Purple/Pink Based */
+.apple-card-terracotta {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 
+    0 4px 12px rgba(139, 92, 246, 0.25),
+    0 8px 24px rgba(139, 92, 246, 0.15);
+}
+
+.apple-card-terracotta:hover {
+  background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%);
+  box-shadow: 
+    0 8px 16px rgba(139, 92, 246, 0.35),
+    0 16px 32px rgba(139, 92, 246, 0.2);
+}
+
+/* Apple Form Animations */
+body[data-admin="true"] input:focus,
+body[data-admin="true"] textarea:focus,
+body[data-admin="true"] select:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: hsl(270 70% 60%);
+  ring-offset: 2px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body[data-admin="true"] button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+}
+
+body[data-admin="true"] button:active {
+  transform: scale(0.96);
+}
+
+/* 🎨 REVOLUTIONARY MODERN CARDS - Ultra Modern Design */
+.modern-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  border: none;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border-radius: 32px;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+.modern-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+
+.modern-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.modern-card:hover {
+  transform: translateY(-12px) scale(1.02) rotateX(2deg);
+  box-shadow: 
+    0 32px 80px rgba(0, 0, 0, 0.15),
+    0 16px 40px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.modern-card:hover::before {
+  opacity: 1;
+}
+
+.modern-card:hover::after {
+  opacity: 1;
+}
+
+/* Card Color Variants - Vibrant Gradients */
+.modern-card-terracotta {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 25%, #c4b5fd 50%, #e9d5ff 75%, #ffffff 100%);
+  box-shadow: 
+    0 20px 60px rgba(139, 92, 246, 0.25),
+    0 8px 24px rgba(139, 92, 246, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.modern-card-terracotta:hover {
+  box-shadow: 
+    0 32px 80px rgba(139, 92, 246, 0.35),
+    0 16px 40px rgba(139, 92, 246, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.modern-card-cream {
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 30%, #e9d5ff 60%, #ffffff 100%);
+  box-shadow: 
+    0 20px 60px rgba(167, 139, 250, 0.2),
+    0 8px 24px rgba(167, 139, 250, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.modern-card-cream:hover {
+  box-shadow: 
+    0 32px 80px rgba(167, 139, 250, 0.3),
+    0 16px 40px rgba(167, 139, 250, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.modern-card-success {
+  background: linear-gradient(135deg, #10B981 0%, #34D399 30%, #6EE7B7 60%, #D1FAE5 90%, #ffffff 100%);
+  box-shadow: 
+    0 20px 60px rgba(16, 185, 129, 0.25),
+    0 8px 24px rgba(16, 185, 129, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.modern-card-success:hover {
+  box-shadow: 
+    0 32px 80px rgba(16, 185, 129, 0.35),
+    0 16px 40px rgba(16, 185, 129, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.modern-card-warning {
+  background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 30%, #FCD34D 60%, #FEF3C7 90%, #ffffff 100%);
+  box-shadow: 
+    0 20px 60px rgba(245, 158, 11, 0.25),
+    0 8px 24px rgba(245, 158, 11, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.modern-card-warning:hover {
+  box-shadow: 
+    0 32px 80px rgba(245, 158, 11, 0.35),
+    0 16px 40px rgba(245, 158, 11, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.modern-card-purple {
+  background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 30%, #C4B5FD 60%, #E9D5FF 90%, #ffffff 100%);
+  box-shadow: 
+    0 20px 60px rgba(139, 92, 246, 0.25),
+    0 8px 24px rgba(139, 92, 246, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.modern-card-purple:hover {
+  box-shadow: 
+    0 32px 80px rgba(139, 92, 246, 0.35),
+    0 16px 40px rgba(139, 92, 246, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Decorative Elements */
+.modern-card-decoration {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0.6;
+  filter: blur(40px);
+  transition: all 0.6s ease;
+}
+
+.modern-card:hover .modern-card-decoration {
+  transform: scale(1.5) translate(20px, 20px);
+  opacity: 0.8;
+}
+
+/* Animated Background Pattern */
+@keyframes card-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.modern-card-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: card-shimmer 3s infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.modern-card:hover .modern-card-pattern {
+  opacity: 1;
+}
+
+/* Apple Icon Styles */
+.apple-icon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.apple-icon-large {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2;
+}
+
+/* Admin Modal Animations */
+@keyframes admin-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes admin-modal-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+}
+
+@keyframes admin-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes admin-backdrop-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+body[data-admin="true"] [data-radix-dialog-overlay] {
+  animation: admin-backdrop-in var(--admin-duration-normal) var(--admin-ease-out);
+}
+
+body[data-admin="true"] [data-radix-dialog-overlay][data-state="closed"] {
+  animation: admin-backdrop-out var(--admin-duration-normal) var(--admin-ease-out);
+}
+
+body[data-admin="true"] [data-radix-dialog-content] {
+  animation: admin-modal-in var(--admin-duration-normal) var(--admin-ease-spring);
+}
+
+body[data-admin="true"] [data-radix-dialog-content][data-state="closed"] {
+  animation: admin-modal-out var(--admin-duration-normal) var(--admin-ease-out);
+}
+
+/* Responsividade de Tabelas */
+.table-responsive {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive table {
+  min-width: 100%;
+  table-layout: fixed;
+}
+
+.table-responsive td {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Mobile Table Optimization */
+@media (max-width: 768px) {
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .table-responsive th,
+  .table-responsive td {
+    padding: 0.125rem 0.25rem;
+  }
+}
+
+/* Pulse scale animation - aumenta e reduz tamanho sem transparência */
+@keyframes pulse-scale {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-scale {
+  animation: pulse-scale 2s ease-in-out infinite;
+}
+
+/* Pulse animations - usando cores do tema (roxo/rosa) */
+@keyframes pulse-glow-mobile {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(167, 139, 250, 0.3); /* primary roxo */
+  }
+  50% {
+    transform: scale(1.01);
+    box-shadow: 0 0 8px 2px rgba(167, 139, 250, 0.5); /* primary roxo mais intenso */
+  }
+}
+
+@keyframes pulse-glow-desktop {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.3); /* accent rosa */
+  }
+  50% {
+    transform: scale(1.01);
+    box-shadow: 0 0 8px 2px rgba(236, 72, 153, 0.5); /* accent rosa mais intenso */
+  }
+}
+
+@keyframes pulse-badge {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(167, 139, 250, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 2px 0.5px rgba(167, 139, 250, 0.7);
+  }
+}
+
+/* Botão pulsar - Fallback padrão (mobile) */
+.btn-pulse {
+  animation: pulse-glow-mobile 2s ease-in-out infinite;
+}
+
+/* Desktop: Cores mais claras para botões desktop */
+@media screen and (min-width: 769px) {
+  .btn-pulse {
+    animation: pulse-glow-desktop 2s ease-in-out infinite;
+  }
+}
+
+.badge-pulse {
+  animation: pulse-badge 1.5s ease-in-out infinite;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+/* Reduced motion: desabilitar animação pulsar se usuário preferir */
+@media (prefers-reduced-motion: reduce) {
+  .btn-pulse {
+    animation: none;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .badge-pulse {
+    animation: none;
+  }
+}
+
+/* Admin Mobile Compact System */
+:root {
+  --admin-header-height: 48px;
+  --admin-header-height-mobile: 36px;
+  --admin-spacing-sm: 0.25rem;
+  --admin-spacing-md: 0.375rem;
+  --admin-spacing-lg: 0.5rem;
+  --admin-card-padding-mobile: 0.5rem;
+  --admin-card-gap-mobile: 0.375rem;
+  --admin-card-padding-desktop: 0.75rem;
+  --admin-card-gap-desktop: 0.5rem;
+}
+
+/* ✅ TAMANHO DE FONTE ORIGINAL RESTAURADO (REMOVIDO BLOCO DE REDUÇÃO) */
+/* 
+body[data-admin="true"] main,
+body[data-admin="true"] main * {
+  font-size: 0.875rem; 
+}
+*/
+
+/* Textos reduzidos - EXCETO SIDEBAR */
+body[data-admin="true"] main .text-xs,
+body[data-admin="true"] main .text-sm,
+body[data-admin="true"] main .text-base,
+body[data-admin="true"] main .text-lg,
+body[data-admin="true"] main .text-xl,
+body[data-admin="true"] main .text-2xl,
+body[data-admin="true"] main .text-3xl {
+  font-size: inherit;
+}
+
+body[data-admin="true"] main .text-xs {
+  font-size: 0.75rem !important; /* 12px - reduzido de 15px */
+}
+
+body[data-admin="true"] main .text-sm {
+  font-size: 0.8125rem !important; /* 13px - reduzido de 16px */
+}
+
+body[data-admin="true"] main .text-base {
+  font-size: 0.875rem !important; /* 14px - reduzido de 18px */
+}
+
+body[data-admin="true"] main .text-lg {
+  font-size: 1rem !important; /* 16px - reduzido de 20px */
+}
+
+body[data-admin="true"] main .text-xl {
+  font-size: 1.125rem !important; /* 18px - reduzido de 24px */
+}
+
+body[data-admin="true"] main .text-2xl {
+  font-size: 1.5rem !important; /* 24px - reduzido de 30px */
+}
+
+body[data-admin="true"] main .text-3xl {
+  font-size: 1.875rem !important; /* 30px - reduzido de 36px */
+}
+
+/* Botões originais */
+/*
+body[data-admin="true"] main button {
+  font-size: 0.8125rem !important;
+  min-height: 32px;
+  padding: 0.5rem 0.75rem;
+}
+*/
+
+/* Inputs e labels originais */
+/*
+body[data-admin="true"] main input,
+body[data-admin="true"] main select,
+body[data-admin="true"] main textarea {
+  font-size: 0.8125rem !important;
+  min-height: 32px;
+}
+
+body[data-admin="true"] main label {
+  font-size: 0.8125rem !important;
+}
+
+body[data-admin="true"] main .badge {
+  font-size: 0.75rem !important;
+  padding: 0.25rem 0.5rem;
+}
+*/
+
+/* Ícones reduzidos - EXCETO gráficos Recharts e SIDEBAR */
+body[data-admin="true"] main svg:not(.recharts-surface) {
+  width: 1rem !important; /* 16px - reduzido de 22px */
+  height: 1rem !important;
+}
+
+/* Garantir que gráficos Recharts não sejam afetados */
+body[data-admin="true"] .recharts-wrapper svg,
+[data-path^="/admin"] .recharts-wrapper svg {
+  width: auto !important;
+  height: auto !important;
+}
+
+/* Sidebar mantém tamanho original - não reduzir */
+body[data-admin="true"] [data-sidebar],
+body[data-admin="true"] [data-sidebar] *,
+body[data-admin="true"] nav[data-sidebar],
+body[data-admin="true"] nav[data-sidebar] * {
+  font-size: inherit !important;
+}
+
+body[data-admin="true"] [data-sidebar] a,
+body[data-admin="true"] [data-sidebar] button,
+body[data-admin="true"] nav[data-sidebar] a,
+body[data-admin="true"] nav[data-sidebar] button {
+  font-size: 1.0625rem !important; /* 17px - mantém original */
+}
+
+/* Header reduzido */
+body[data-admin="true"] header {
+  font-size: 0.875rem;
+}
+
+body[data-admin="true"] header * {
+  font-size: inherit;
+}
+
+/* Títulos de cards reduzidos - EXCETO SIDEBAR */
+body[data-admin="true"] main .card-title {
+  font-size: 0.9375rem !important; /* 15px - reduzido de 20px */
+}
+
+/* Conteúdo de cards reduzido - EXCETO SIDEBAR */
+body[data-admin="true"] main .card-content {
+  font-size: 0.8125rem !important; /* 13px - reduzido de 16px */
+}
+
+/* ✅ Reduzir inputs, selects e textareas - EXCETO SIDEBAR */
+body[data-admin="true"] main input,
+body[data-admin="true"] main select,
+body[data-admin="true"] main textarea {
+  @apply text-sm;
+  min-height: 32px;
+  padding: 0.5rem 0.625rem;
+}
+
+/* ✅ Reduzir labels - EXCETO SIDEBAR */
+body[data-admin="true"] main label {
+  @apply text-sm font-medium;
+}
+
+/* ✅ Reduzir badges - EXCETO SIDEBAR */
+body[data-admin="true"] main .badge {
+  @apply text-xs;
+  padding: 0.25rem 0.5rem;
+}
+
+@media (max-width: 768px) {
+    :root {
+      --admin-header-height: 56px;
+    }
+    
+    /* Header mobile maior */
+    body[data-admin="true"] header {
+      height: var(--admin-header-height) !important;
+      min-height: var(--admin-header-height) !important;
+    }
+    
+    /* Aplicar apenas em rotas admin */
+    body[data-admin="true"] .admin-mobile-compact,
+    [data-path^="/admin"] .admin-mobile-compact {
+      --space-y-6: 0.5rem;
+      --space-y-4: 0.375rem;
+      --space-y-3: 0.25rem;
+      --space-y-2: 0.125rem;
+    }
+    
+    /* Reduzir padding do main no mobile */
+    body[data-admin="true"] main > div {
+      padding: 0.375rem !important;
+    }
+    
+    /* Garantir que sidebar não ocupe muito espaço no mobile e fique à esquerda */
+    body[data-admin="true"] [data-sidebar] {
+      width: 100% !important;
+      max-width: 280px !important;
+      left: 0 !important;
+      right: auto !important;
+    }
+    
+    /* Garantir que sidebar fique à esquerda no desktop também */
+    body[data-admin="true"] [data-side="left"] {
+      left: 0 !important;
+      right: auto !important;
+    }
+    
+    /* Ajustar botões do header no mobile */
+    body[data-admin="true"] header button {
+      min-height: 36px !important;
+      height: 36px !important;
+      padding: 0.375rem 0.625rem !important;
+    }
+    
+    /* Ajustar texto do header no mobile */
+    body[data-admin="true"] header h2 {
+      font-size: 0.875rem !important;
+      line-height: 1.4 !important;
+      white-space: nowrap !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+    }
+    
+    /* Garantir que o container principal não tenha overflow horizontal */
+    body[data-admin="true"] .flex.w-full {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+    
+    /* Ajustar sidebar trigger no mobile */
+    body[data-admin="true"] [data-sidebar-trigger] {
+      min-width: 32px !important;
+      width: 32px !important;
+      height: 32px !important;
+      padding: 0.25rem !important;
+    }
+    
+    /* Garantir que o conteúdo do main não ultrapasse a largura */
+    body[data-admin="true"] main {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+    
+    /* AUDITORIA: Garantir que o botão do menu fique à esquerda - SEM MUDAR NADA DO HEADER */
+    body[data-admin="true"] header > div:first-child {
+      position: relative !important;
+      left: 0 !important;
+      right: auto !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      order: 1 !important;
+      flex: 0 0 auto !important;
+      flex-shrink: 0 !important;
+      flex-grow: 0 !important;
+      width: auto !important;
+      min-width: auto !important;
+      max-width: none !important;
+      z-index: 10 !important;
+    }
+    
+    /* Garantir que o SidebarTrigger dentro do primeiro div também fique à esquerda */
+    body[data-admin="true"] header > div:first-child [data-sidebar="trigger"],
+    body[data-admin="true"] header > div:first-child button {
+      margin-left: 0 !important;
+      margin-right: auto !important;
+      position: relative !important;
+      left: 0 !important;
+      right: auto !important;
+      float: left !important;
+    }
+    
+    /* Garantir que o header mantenha o layout flex sem interferir */
+    body[data-admin="true"] header {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+    }
+    
+    /* Forçar o primeiro elemento do header a ficar à esquerda */
+    body[data-admin="true"] header > div:first-child {
+      align-self: flex-start !important;
+      order: 1 !important;
+      flex: 0 0 auto !important;
+      margin-right: auto !important;
+    }
+    
+    /* Garantir que o SidebarTrigger dentro do primeiro div fique à esquerda */
+    body[data-admin="true"] header > div:first-child [data-sidebar="trigger"],
+    body[data-admin="true"] header > div:first-child button {
+      margin-left: 0 !important;
+      margin-right: auto !important;
+      position: relative !important;
+      left: 0 !important;
+      right: auto !important;
+    }
+    
+    /* Título no centro - sem sobrepor o menu */
+    body[data-admin="true"] header > div:nth-child(2) {
+      position: absolute !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: auto !important;
+      max-width: calc(100% - 120px) !important;
+      z-index: 1 !important;
+    }
+    
+    /* Botões à direita */
+    body[data-admin="true"] header > div:last-child {
+      position: relative !important;
+      right: 0 !important;
+      left: auto !important;
+      margin-left: auto !important;
+      margin-right: 0 !important;
+      order: 3 !important;
+      flex-shrink: 0 !important;
+      z-index: 10 !important;
+    }
+    
+    /* Garantir que cards e containers não ultrapassem a largura */
+    body[data-admin="true"] main .container,
+    body[data-admin="true"] main [class*="container"],
+    body[data-admin="true"] main [class*="max-w"] {
+      max-width: 100% !important;
+      padding-left: 0.5rem !important;
+      padding-right: 0.5rem !important;
+    }
+    
+    /* Ajustar grid para mobile - uma coluna quando necessário */
+    body[data-admin="true"] main [class*="grid"] {
+      grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    }
+    
+    /* Exceção: grids com 2 colunas explícitas podem manter 2 colunas */
+    body[data-admin="true"] main .admin-grid-2,
+    body[data-admin="true"] main [class*="grid-cols-2"] {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    
+    /* Garantir que tabelas sejam scrolláveis horizontalmente */
+    body[data-admin="true"] main table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Ajustar tamanho de fonte em tabelas mobile */
+    body[data-admin="true"] main table th,
+    body[data-admin="true"] main table td {
+      font-size: 0.75rem !important;
+      padding: 0.5rem 0.75rem !important;
+    }
+
+    /* Cards compactos em duas colunas */
+    body[data-admin="true"] .admin-grid-2,
+    [data-path^="/admin"] .admin-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--admin-card-gap-mobile);
+    }
+
+    /* Cards compactos - reduzir padding */
+    body[data-admin="true"] main .admin-card-compact {
+      padding: var(--admin-card-padding-mobile);
+    }
+    
+    /* Cards compactos desktop - reduzir padding */
+    @media (min-width: 769px) {
+      body[data-admin="true"] main .admin-card-compact {
+        padding: var(--admin-card-padding-desktop);
+      }
+    }
+
+    body[data-admin="true"] .admin-card-compact .space-y-6,
+    [data-path^="/admin"] .admin-card-compact .space-y-6 {
+      @apply space-y-1;
+    }
+
+    body[data-admin="true"] .admin-card-compact .space-y-4,
+    [data-path^="/admin"] .admin-card-compact .space-y-4 {
+      @apply space-y-1;
+    }
+
+    body[data-admin="true"] .admin-card-compact .p-6,
+    [data-path^="/admin"] .admin-card-compact .p-6 {
+      @apply p-3;
+    }
+
+    body[data-admin="true"] .admin-card-compact .p-4,
+    [data-path^="/admin"] .admin-card-compact .p-4 {
+      @apply p-2;
+    }
+
+    body[data-admin="true"] .admin-card-compact .py-8,
+    [data-path^="/admin"] .admin-card-compact .py-8 {
+      @apply py-2;
+    }
+
+    body[data-admin="true"] .admin-card-compact .py-6,
+    [data-path^="/admin"] .admin-card-compact .py-6 {
+      @apply py-2;
+    }
+
+    body[data-admin="true"] .admin-card-compact .gap-6,
+    [data-path^="/admin"] .admin-card-compact .gap-6 {
+      @apply gap-2;
+    }
+
+    body[data-admin="true"] .admin-card-compact .gap-4,
+    [data-path^="/admin"] .admin-card-compact .gap-4 {
+      @apply gap-2;
+    }
+
+    /* Gráficos em coluna no mobile - um embaixo do outro */
+    body[data-admin="true"] .grid.grid-cols-1 {
+      grid-template-columns: 1fr !important;
+      display: grid !important;
+    }
+    
+    /* Garantir que cards de gráficos não tenham largura mínima no mobile */
+    body[data-admin="true"] .admin-chart-card {
+      min-width: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    
+    /* Gráficos lado a lado em duas colunas apenas no desktop */
+    @media (min-width: 768px) {
+      body[data-admin="true"] .admin-charts-grid,
+      [data-path^="/admin"] .admin-charts-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: var(--admin-card-gap-desktop) !important;
+      }
+    }
+
+    /* Aumentar um pouco os tamanhos de fonte em mobile */
+    body[data-admin="true"] .admin-text-lg,
+    [data-path^="/admin"] .admin-text-lg {
+      @apply text-base;
+    }
+
+    body[data-admin="true"] .admin-text-base,
+    [data-path^="/admin"] .admin-text-base {
+      @apply text-sm;
+    }
+
+    body[data-admin="true"] .admin-text-xl,
+    [data-path^="/admin"] .admin-text-xl {
+      @apply text-lg;
+    }
+
+    /* Reduzir padding em headers de cards - EXCETO SIDEBAR */
+    body[data-admin="true"] main .admin-card-compact .card-header {
+      @apply py-1.5 px-2;
+    }
+
+    body[data-admin="true"] main .admin-card-compact .card-content {
+      @apply py-1.5 px-2;
+    }
+    
+    /* Desktop - padding um pouco maior mas ainda reduzido */
+    @media (min-width: 769px) {
+      body[data-admin="true"] main .admin-card-compact .card-header {
+        @apply py-2 px-3;
+      }
+
+      body[data-admin="true"] main .admin-card-compact .card-content {
+        @apply py-2 px-3;
+      }
+    }
+
+    /* Garantir que estilos inline tenham prioridade - não sobrescrever background */
+    /* Cards com data-card-type devem ter seus estilos inline respeitados */
+    
+    /* Remover qualquer classe bg- que possa estar sendo aplicada e interferindo */
+    body[data-admin="true"] [data-card-type].bg-white,
+    body[data-admin="true"] [data-card-type].bg-card,
+    body[data-admin="true"] [data-card-type][class*="bg-"],
+    [data-path^="/admin"] [data-card-type].bg-white,
+    [data-path^="/admin"] [data-card-type].bg-card,
+    [data-path^="/admin"] [data-card-type][class*="bg-"] {
+      /* Remover apenas classes Tailwind, não estilos inline */
+      background: revert !important;
+      background-color: revert !important;
+    }
+
+    /* FORÇAR cor sólida no card de receita - máxima prioridade */
+    [data-card-type="receita"],
+    [data-force-color="#a78bfa"],
+    div[data-card-type="receita"],
+    div[data-force-color="#a78bfa"] {
+      background-color: #a78bfa !important;
+      background: #a78bfa !important;
+      border: none !important;
+      border-radius: 1rem !important;
+      padding: 1.5rem !important;
+      color: #ffffff !important;
+    }
+    
+    /* Garantir que nenhum CSS global sobrescreva - TODAS as variações possíveis */
+    body [data-card-type="receita"],
+    body [data-force-color="#a78bfa"],
+    html [data-card-type="receita"],
+    html [data-force-color="#a78bfa"],
+    body div[data-card-type="receita"],
+    body div[data-force-color="#a78bfa"],
+    html div[data-card-type="receita"],
+    html div[data-force-color="#a78bfa"],
+    #root [data-card-type="receita"],
+    #root [data-force-color="#a78bfa"],
+    main [data-card-type="receita"],
+    main [data-force-color="#a78bfa"] {
+      background-color: #a78bfa !important;
+      background: #a78bfa !important;
+      border: none !important;
+    }
+    
+    /* Sobrescrever qualquer classe Tailwind que possa estar sendo aplicada */
+    [data-card-type="receita"].bg-white,
+    [data-card-type="receita"].bg-card,
+    [data-card-type="receita"][class*="bg-"],
+    [data-force-color="#a78bfa"].bg-white,
+    [data-force-color="#a78bfa"].bg-card,
+    [data-force-color="#a78bfa"][class*="bg-"] {
+      background-color: #a78bfa !important;
+      background: #a78bfa !important;
+    }
+  }
+
+/* ============================================
+   REGRA ULTRA ESPECÍFICA PARA CARD RECEITA
+   Colocada no final para máxima prioridade
+   ============================================ */
+/* REGRA COM MÁXIMA ESPECIFICIDADE POSSÍVEL */
+html body div[data-card-type="receita"],
+html body div[data-force-color="#a78bfa"],
+html body [data-card-type="receita"],
+html body [data-force-color="#a78bfa"],
+div[data-card-type="receita"],
+div[data-force-color="#a78bfa"],
+[data-card-type="receita"],
+[data-force-color="#a78bfa"],
+div[style*="a78bfa"],
+div[style*="rgb(167, 139, 250)"],
+div[style*="--force-bg-color"] {
+  background-color: #a78bfa !important;
+  background: #a78bfa !important;
+  background-image: none !important;
+  border: none !important;
+  border-radius: 1rem !important;
+  padding: 1.5rem !important;
+  color: #ffffff !important;
+  /* Forçar renderização */
+  will-change: background-color;
+  transform: translateZ(0);
+}
+
+/* Forçar cor usando CSS custom property também */
+div[style*="--force-bg-color"] {
+  background-color: var(--force-bg-color, #a78bfa) !important;
+  background: var(--force-bg-color, #a78bfa) !important;
+}
+
+/* Sobrescrever QUALQUER outra regra CSS */
+* [data-card-type="receita"],
+* [data-force-color="#a78bfa"],
+* * [data-card-type="receita"],
+* * [data-force-color="#a78bfa"] {
+  background-color: #a78bfa !important;
+  background: #a78bfa !important;
+}
+
+    /* Remover padding inferior dos cards de gráficos */
+    body[data-admin="true"] .admin-chart-card .card-content,
+    [data-path^="/admin"] .admin-chart-card .card-content {
+      padding-bottom: 0 !important;
+      margin-bottom: 0 !important;
+    }
+
+    body[data-admin="true"] .admin-chart-card,
+    [data-path^="/admin"] .admin-chart-card {
+      padding-bottom: 0 !important;
+    }
+  }
+
+/* Switch iOS Style - Garantir dimensões fixas */
+[data-radix-switch-root] {
+  overflow: visible !important;
+}
+
+[data-radix-switch-root]:hover {
+  opacity: 0.9;
+}
+
+/* Admin Sidebar - Estilo Original */
+/*
+body[data-admin="true"] [data-sidebar] a,
+body[data-admin="true"] [data-sidebar] button,
+body[data-admin="true"] nav[data-sidebar] a,
+body[data-admin="true"] nav[data-sidebar] button {
+  font-size: 13px !important;
+}
+*/
+
+/* Ajustes de cor para Header e Sidebar em modo Admin */
+body[data-admin="true"] [data-sidebar="sidebar"] {
+  background-color: #a78bfa !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+body[data-admin="true"] header {
+  background-color: #a78bfa !important;
+  color: white !important;
+}
+
+body[data-admin="true"] header * {
+  color: white !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Garantir visibilidade dos ícones quando colapsado */
+body[data-admin="true"] [data-collapsible="icon"] [data-sidebar="menu-button"] {
+  justify-content: center !important;
+  padding: 0 !important;
+  width: 100% !important;
+}
+
+body[data-admin="true"] [data-collapsible="icon"] [data-sidebar="menu-button"] svg {
+  margin: 0 !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Hero Section Styles - CrieSuaMusica */
+.wave-bg {
+  background: linear-gradient(135deg, #faf5ff 0%, #fce7f3 100%);
+  position: relative;
+}
+
+.wave-bg::before {
+  display: none;
+}
+
+.handwritten {
+  font-family: 'Dancing Script', cursive;
+  background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+.gradient-bg {
+  background: linear-gradient(to right, #a78bfa, #ec4899);
+}
+
+.gradient-bg:hover {
+  background: linear-gradient(to right, #8b5cf6, #db2777);
+}
+
+.card-shadow {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.example-slideshow {
+  position: relative;
+}
+
+.example-slide {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.music-note {
+  position: absolute;
+  opacity: 0.3;
+  animation: float 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.music-note:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.music-note:nth-child(2) {
+  animation-delay: 1.5s;
+}
+
+.music-note:nth-child(3) {
+  animation-delay: 3s;
+}
+
+.music-note:nth-child(4) {
+  animation-delay: 4.5s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+.audio-wave {
+  position: relative;
+  background: #f3f4f6;
+  border-radius: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .example-prev,
+  .example-next {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+  }
+  
+  .music-note {
+    display: none; /* Ocultar notas musicais no mobile para melhor performance */
+  }
+}
+
+/* PaymentSuccess - círculo verde animado (evita CSS inline no componente) */
+@keyframes successPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+}
+@keyframes successShine {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+.success-circle {
+  animation: successPulse 2s ease-in-out infinite;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  position: relative;
+  overflow: hidden;
+}
+.success-circle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: successShine 3s ease-in-out infinite;
+}

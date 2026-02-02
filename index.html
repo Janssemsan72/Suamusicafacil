@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta name="theme-color" content="#8b5cf6" />
+    <!-- Favicon: nota musical flat em roxo -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>Sua Música Fácil — Músicas Personalizadas Profissionais</title>
+    <meta name="description" content="Crie minha música personalizada agora. Transforme sentimentos em canções únicas com qualidade de estúdio e entrega rápida." />
+    <meta name="author" content="Sua Música Fácil" />
+    
+    <!-- Facebook Domain Verification -->
+    <meta name="facebook-domain-verification" content="ietm0enn4ii3n3ird379eh0gzlia9x" />
+    
+    <!-- Open Graph (WhatsApp, Facebook, Telegram, iMessage) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sua Música Fácil" />
+    <meta property="og:title" content="Sua Música Fácil — Músicas Personalizadas Profissionais" />
+    <meta property="og:description" content="Crie minha música personalizada agora. Transforme sentimentos em canções únicas com qualidade de estúdio e entrega rápida." />
+    <meta property="og:url" content="https://www.suamusicafacil.com/" />
+    <meta property="og:image" content="https://www.suamusicafacil.com/og/suamusicafacil-og-1200x630.png" />
+    <meta property="og:image:secure_url" content="https://www.suamusicafacil.com/og/suamusicafacil-og-1200x630.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Sua Música Fácil - Logo branca sobre fundo degradê nas cores do site" />
+    <meta property="og:locale" content="pt_BR" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@suamusicafacil" />
+    <meta name="twitter:creator" content="@suamusicafacil" />
+    <meta name="twitter:title" content="Sua Música Fácil — Músicas Personalizadas Profissionais" />
+    <meta name="twitter:description" content="Crie uma música única para presentear. Produção profissional e artística." />
+    <meta name="twitter:image" content="https://www.suamusicafacil.com/og/suamusicafacil-og-1200x630.png" />
+    <meta name="twitter:image:alt" content="Sua Música Fácil - Logo branca sobre fundo degradê nas cores do site" />
+    
+    <!-- ✅ OTIMIZAÇÃO: DNS Prefetch para domínios menos críticos -->
+    <link rel="dns-prefetch" href="https://connect.facebook.net" />
+    
+    <!-- Fontes locais via @fontsource - zero requests externos, melhor LCP -->
+    
+    <!-- ✅ OTIMIZAÇÃO: Preconnect para avatares (pravatar) e thumbnails (picsum) -->
+    <link rel="preconnect" href="https://i.pravatar.cc" crossorigin />
+    <link rel="dns-prefetch" href="https://picsum.photos" />
+    
+    <!-- ✅ OTIMIZAÇÃO: Preload poster do vídeo LCP - exibe frame estático imediatamente -->
+    <link rel="preload" href="/images/videoframe_636.webp" as="image" type="image/webp" fetchpriority="high" />
+    
+    <!-- ✅ OTIMIZAÇÃO: CSS padrão (blocking) para garantir LCP sem layout shift (FOUC) -->
+    <!-- O arquivo main.css é pequeno o suficiente (~27kB gzip) para ser carregado de forma bloqueante, garantindo que o Hero renderize estilizado imediatamente. -->
+    
+    <!-- ✅ FALLBACK: CSS crítico inline já está acima para renderização imediata -->
+    
+    <!-- ✅ OTIMIZAÇÃO: CSS Crítico Inline para renderização imediata -->
+    <style>
+      body {
+        background-color: #faf5ff;
+        margin: 0;
+        padding: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: #3D2E1F;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      #root {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      /* ✅ OTIMIZAÇÃO: Remover transition do vídeo LCP - evita repaint */
+      video[src*="musiclovaly"],
+      video[src*="beijo-de-mar"] {
+        transition: none !important;
+        -webkit-transition: none !important;
+        -moz-transition: none !important;
+        -o-transition: none !important;
+      }
+      /* Skeleton instantâneo - elimina tela branca antes do React carregar */
+      .instant-skeleton { min-height: 100vh; display: flex; flex-direction: column; background: #faf5ff; }
+      .skeleton-banner { height: 40px; background: linear-gradient(90deg, #8b5cf6, #ec4899); }
+      .skeleton-header { height: 56px; background: #f3e8ff; margin: 0 16px; border-radius: 8px; max-width: 1280px; width: 100%; align-self: center; }
+      
+      .skeleton-hero { 
+        flex: 1; 
+        padding: 32px 24px; 
+        max-width: 1280px; 
+        margin: 0 auto; 
+        width: 100%; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .skeleton-left {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 48px;
+      }
+      
+      .skeleton-right {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+      
+      .skeleton-title { height: 48px; width: 90%; max-width: 500px; background: linear-gradient(90deg, rgba(139,92,246,0.15), rgba(236,72,153,0.1)); border-radius: 8px; margin-bottom: 24px; }
+      .skeleton-subtitle { height: 24px; width: 80%; max-width: 400px; background: rgba(139,92,246,0.08); border-radius: 6px; margin-bottom: 32px; }
+      .skeleton-cta { height: 56px; width: 280px; background: linear-gradient(90deg, #8b5cf6, #ec4899); border-radius: 9999px; }
+      
+      .skeleton-video {
+        width: 100%;
+        max-width: 448px;
+        aspect-ratio: 16/9;
+        background: rgba(139,92,246,0.05);
+        border-radius: 12px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      }
+
+      @media (min-width: 768px) {
+        .skeleton-hero { 
+          flex-direction: row; 
+          align-items: flex-start; 
+          padding-top: 48px;
+        }
+        .skeleton-left {
+          width: 50%;
+          padding-left: 48px;
+          margin-bottom: 0;
+        }
+        .skeleton-right {
+          width: 50%;
+          justify-content: flex-end;
+        }
+      }
+    </style>
+    
+    <!-- ✅ OTIMIZAÇÃO: Preload do vídeo removido - vídeo usa preload="metadata" no componente -->
+    <!-- O vídeo não é mais o LCP element e não precisa ser carregado completamente no início -->
+    
+    <!-- ✅ OTIMIZAÇÃO: Preload de collage-memories-new.webp removido - imagem não é mais usada como poster -->
+    <!-- Imagens de testimoniais removidas - carregadas via import no componente -->
+    
+    <!-- ✅ OTIMIZAÇÃO: Prefetch removido - chunks são prefetched via main.tsx (import dinâmico) -->
+    
+    <!-- ⚠️ NOTA SOBRE TACTIQ.IO: -->
+    <!-- O serviço tactiq.io (ffp.tactiq.io) pode aparecer na cadeia crítica do Lighthouse -->
+    <!-- Isso geralmente é causado por extensões do Chrome (ex: Grammarly, LanguageTool, etc.) -->
+    <!-- Para testes precisos, execute o Lighthouse em modo anônimo ou desabilite extensões -->
+    <!-- O tactiq.io não faz parte do código da aplicação e não pode ser otimizado diretamente -->
+  </head>
+
+  <body style="background-color: #faf5ff;">
+    <div id="root">
+      <div class="instant-skeleton" aria-hidden="true">
+        <div class="skeleton-banner"></div>
+        <div class="skeleton-header"></div>
+        <div class="skeleton-hero">
+          <div class="skeleton-left">
+            <div class="skeleton-title"></div>
+            <div class="skeleton-subtitle"></div>
+            <div class="skeleton-cta"></div>
+          </div>
+          <div class="skeleton-right">
+            <div class="skeleton-video"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

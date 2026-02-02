@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Colcheia (Eighth Note ♪) - símbolo musical flat -->
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  <!-- Cabeça oval -->
+  <ellipse cx="14" cy="22" rx="5" ry="4" fill="url(#g)"/>
+  <!-- Haste vertical -->
+  <rect x="18" y="2" width="2" height="20" fill="url(#g)"/>
+  <!-- Bandeira da colcheia (curva para a direita) -->
+  <path fill="url(#g)" d="M20 2 L20 4 C24 5 28 7 27 10 C26 12 22 10 20 8 Z"/>
+</svg>

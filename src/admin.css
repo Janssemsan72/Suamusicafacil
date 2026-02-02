@@ -1,0 +1,192 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a78bfa;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8b5cf6;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #a78bfa transparent;
+}
+
+body[data-admin="true"] {
+  touch-action: pan-x pan-y;
+  -ms-touch-action: pan-x pan-y;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  zoom: 1;
+  -ms-zoom: 1;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: linear-gradient(135deg, #fafbfc 0%, #f1f5f9 100%);
+  min-height: 100vh;
+}
+
+body[data-admin="true"] * {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
+body[data-admin="true"] input,
+body[data-admin="true"] textarea,
+body[data-admin="true"] [contenteditable="true"],
+body[data-admin="true"] .select-text {
+  touch-action: auto;
+  -ms-touch-action: auto;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 270 30% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 270 30% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 270 30% 15%;
+    --primary: 270 70% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 270 20% 96%;
+    --secondary-foreground: 270 30% 15%;
+    --muted: 270 15% 94%;
+    --muted-foreground: 270 20% 45%;
+    --accent: 330 70% 65%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 270 20% 88%;
+    --input: 270 20% 88%;
+    --ring: 270 70% 60%;
+    --radius: 0.75rem;
+    --sidebar-background: 270 70% 60%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 270 70% 60%;
+    --sidebar-accent: 270 65% 50%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 270 65% 50%;
+    --sidebar-ring: 270 70% 60%;
+  }
+}
+
+body[data-admin="true"] {
+  --admin-primary: 270 70% 60%;
+  --admin-primary-dark: 270 65% 50%;
+  --admin-primary-light: 270 75% 70%;
+  --admin-secondary: 270 20% 45%;
+  --admin-secondary-dark: 270 25% 30%;
+  --admin-success: 142 76% 36%;
+  --admin-warning: 38 92% 50%;
+  --admin-error: 0 84% 60%;
+  --admin-bg: 0 0% 100%;
+  --admin-card-bg: 0 0% 100%;
+  --admin-border: 270 20% 88%;
+  --admin-text: 270 30% 15%;
+  --admin-text-muted: 270 20% 45%;
+  --admin-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --admin-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --admin-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --admin-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --admin-duration-fast: 150ms;
+  --admin-duration-normal: 300ms;
+  --admin-duration-slow: 500ms;
+  --admin-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --admin-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --admin-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --admin-ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes admin-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes admin-slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes admin-slide-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes admin-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes admin-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes admin-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download</title>
+  <script>
+    (function() {
+      // Extrair parâmetros do path: /download/:id/:token
+      const pathParts = window.location.pathname.split('/').filter(p => p);
+      const downloadIndex = pathParts.indexOf('download');
+      
+      let songId = null;
+      let token = null;
+      
+      if (downloadIndex !== -1 && pathParts.length > downloadIndex + 2) {
+        songId = pathParts[downloadIndex + 1];
+        token = pathParts[downloadIndex + 2];
+      } else {
+        // Fallback: tentar query params
+        const params = new URLSearchParams(window.location.search);
+        songId = params.get('id') || params.get('songId');
+        token = params.get('token');
+      }
+      
+      if (!songId || !token) {
+        document.write('<body style="margin:0;padding:20px;font-family:Arial;text-align:center;"><p>Link inválido</p></body>');
+        return;
+      }
+      
+      // Construir URL da Edge Function
+      const projectRef = 'zagkvtxarndluusiluhb';
+      const downloadUrl = `https://${projectRef}.functions.supabase.co/download-song?songId=${songId}&token=${token}`;
+      
+      // Redirecionar imediatamente ANTES de renderizar qualquer coisa
+      window.location.replace(downloadUrl);
+    })();
+  </script>
+</head>
+<body></body>
+</html>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <linearGradient id="noteGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <!-- Colcheia (eighth note) - nota musical -->
+  <ellipse cx="16" cy="24" rx="6" ry="4" fill="url(#noteGradient)"/>
+  <rect x="21" y="4" width="2" height="20" fill="url(#noteGradient)"/>
+  <path fill="url(#noteGradient)" d="M23 4 C26 5 28 8 27 11 C26 14 24 12 23 10 Z"/>
+</svg>
