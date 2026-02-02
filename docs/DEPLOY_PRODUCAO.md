@@ -73,3 +73,11 @@ npm run build
 npx vite preview
 ```
 Acesse `http://localhost:4173` – se funcionar localmente, o problema está na Vercel.
+
+### 6. ERR_CONTENT_DECODING_FAILED
+Erro de decodificação (compressão conflitante):
+
+1. **Limpar cache** – Ctrl+Shift+R (hard refresh) ou abrir em aba anônima
+2. **Aguardar deploy** – novo deploy pode levar 1–2 min para propagar
+3. **Ver qual recurso falha** – DevTools → Network → filtrar por falha; ver se é HTML, JS ou script externo
+4. Se for script externo (Facebook, Hotjar etc.), pode ser problema do provedor, não do seu site
