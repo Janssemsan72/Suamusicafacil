@@ -94,6 +94,7 @@ const Index = memo(() => {
       // ✅ PREFETCH MANUAL: Iniciar prefetch de componentes críticos assim que o usuário interage
       QuizCheckoutModal.prefetch();
       HowItWorks.prefetch();
+      WhatYouGet.prefetch?.(); // VinylPlayer (botão "Ouça este Exemplo") fica pronto mais cedo
       
       (async () => {
         try {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const LOGO_URL = "/logo.png";
 
@@ -18,10 +18,23 @@ export default function Logo({
   variant = "default",
   align = "center",
 }: LogoProps) {
-  // Proporção da logo recortada (1067:193 ≈ 5.53:1)
+  const [hasError, setHasError] = useState(false);
   const explicitHeight = height ?? Math.round(width / 5.53);
-
   const isWhite = variant === "white";
+
+  if (hasError) {
+    return (
+      <span
+        className={`inline-flex items-center justify-center w-fit shrink-0 overflow-hidden m-0 p-0 leading-none font-bold text-purple-700 ${className}`}
+        style={{
+          fontSize: "clamp(0.875rem, 2vw, 1.25rem)",
+          ...(isWhite && { color: "white", filter: "none" }),
+        }}
+      >
+        Sua Música Fácil
+      </span>
+    );
+  }
 
   return (
     <span className={`inline-flex items-center justify-center w-fit shrink-0 overflow-hidden m-0 p-0 leading-none ${className}`}>
@@ -31,6 +44,7 @@ export default function Logo({
         role="img"
         width={width}
         height={explicitHeight}
+        onError={() => setHasError(true)}
         className="block max-h-full w-auto object-contain m-0 p-0 border-0 align-top"
         style={{
           display: "block",

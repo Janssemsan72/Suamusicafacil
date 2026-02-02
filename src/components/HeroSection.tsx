@@ -1,7 +1,8 @@
-import React, { useCallback, useRef, useEffect } from "react";
+import React, { useCallback, useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useUtmParams } from "@/hooks/useUtmParams";
 import { HeroVideoControls } from "./HeroVideoControls";
+import { Play } from "@/lib/icons";
 
 type HeroSectionProps = {
   onOpenQuiz?: () => void;
@@ -10,17 +11,18 @@ type HeroSectionProps = {
 const HeroSection = React.memo(function HeroSection({ onOpenQuiz }: HeroSectionProps) {
   const { navigateWithUtms } = useUtmParams();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [showVideoPlayOverlay, setShowVideoPlayOverlay] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Tentar reproduzir automaticamente
     const playVideo = async () => {
       try {
         await video.play();
-      } catch (error) {
-        console.warn("Autoplay bloqueado pelo navegador:", error);
+        setShowVideoPlayOverlay(false);
+      } catch {
+        setShowVideoPlayOverlay(true);
       }
     };
 
@@ -81,10 +83,23 @@ const HeroSection = React.memo(function HeroSection({ onOpenQuiz }: HeroSectionP
                   preload="auto"
                   poster="/images/videoframe_636.webp"
                   src="/video/video-frente-hero.mp4"
+                  onPlaying={() => setShowVideoPlayOverlay(false)}
+                  onClick={() => videoRef.current?.play().then(() => setShowVideoPlayOverlay(false)).catch(() => {})}
                 >
                   Seu navegador não suporta o elemento de vídeo.
                 </video>
-                
+                {showVideoPlayOverlay && (
+                  <button
+                    type="button"
+                    onClick={() => videoRef.current?.play().then(() => setShowVideoPlayOverlay(false)).catch(() => {})}
+                    className="absolute inset-0 flex items-center justify-center bg-black/40 z-[5]"
+                    aria-label="Reproduzir vídeo"
+                  >
+                    <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-colors">
+                      <Play className="w-8 h-8 text-purple-600 fill-current ml-1" />
+                    </div>
+                  </button>
+                )}
                 {/* Botão de play/pause isolado em componente separado */}
                 <HeroVideoControls />
               </div>

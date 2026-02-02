@@ -75,7 +75,22 @@ npx vite preview
 ```
 Acesse `http://localhost:4173` – se funcionar localmente, o problema está na Vercel.
 
-### 6. ERR_CONTENT_DECODING_FAILED
+### 6. 401 em favicon, logo, vídeo ou áudio (Deployment Protection)
+
+Se favicon.svg, logo.png, vídeo ou áudio retornam **401 Unauthorized** na Vercel:
+
+1. **Use a URL de produção** – A URL de preview (`suamusicafacil-xxx.vercel.app`) tem proteção por padrão. Use:
+   - `https://suamusicafacil.vercel.app` (produção)
+   - Ou seu domínio customizado (ex: `https://www.suamusicafacil.com`)
+
+2. **Desative Deployment Protection para produção**:
+   - Vercel → **Settings** → **Deployment Protection**
+   - Em **Vercel Authentication** ou **Password Protection**, desative para **Production**
+   - Mantenha proteção apenas em **Preview** se quiser proteger deploys de PRs
+
+3. **Logo fallback** – O componente Logo exibe o texto "Sua Música Fácil" quando a imagem falha (401/404), garantindo que o nome da marca apareça mesmo com proteção ativa.
+
+### 7. ERR_CONTENT_DECODING_FAILED
 Erro de decodificação (compressão conflitante):
 
 1. **Limpar cache** – Ctrl+Shift+R (hard refresh) ou abrir em aba anônima

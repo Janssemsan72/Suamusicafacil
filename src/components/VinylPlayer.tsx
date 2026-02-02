@@ -198,7 +198,7 @@ export default function VinylPlayer() {
       setIsLoading(false);
     };
 
-    const onError = (e: Event) => {
+    const     onError = (e: Event) => {
       const audio = e.target as HTMLAudioElement;
       const error = audio.error;
       let errorMessage = 'Error al cargar audio';
@@ -368,11 +368,9 @@ export default function VinylPlayer() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-
     const onTogglePlay = () => {
       togglePlay();
     };
-
     window.addEventListener('vinyl-toggle-play', onTogglePlay);
     return () => {
       window.removeEventListener('vinyl-toggle-play', onTogglePlay);
