@@ -28,11 +28,12 @@
 
 ### 2. Vercel
 
-1. **Variáveis de ambiente**: Configure no painel do Vercel:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
+1. **Variáveis de ambiente** (Settings → Environment Variables):
+   - `VITE_SUPABASE_URL` – URL do projeto Supabase
+   - `VITE_SUPABASE_ANON_KEY` – Chave anônima (ou `VITE_SUPABASE_PUBLISHABLE_KEY`)
+   - Marque **Production**, **Preview** e **Development**
 
-2. **Deploy**: Conecte o repositório GitHub e faça deploy. O `vercel.json` já está configurado.
+2. **Deploy**: Conecte o repositório GitHub. O `vercel.json` está configurado (sem headers customizados para evitar ERR_CONTENT_DECODING_FAILED).
 
 ## Verificações pós-deploy
 

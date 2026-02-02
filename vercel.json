@@ -1,55 +1,14 @@
 {
-  "name": "suamusicafacil",
-  "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "redirects": [
-    {
-      "source": "/pt",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/pt/:path*",
-      "destination": "/:path*",
-      "permanent": true
-    }
-  ],
   "rewrites": [
-    { 
-      "source": "/download/:id/:token", 
-      "destination": "/download.html" 
-    },
+    { "source": "/download/:id/:token", "destination": "/download.html" },
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/admin/:path*", "destination": "/admin.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-DNS-Prefetch-Control", "value": "on" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://connect.facebook.net https://*.facebook.net https://static.hotjar.com https://*.similarweb.com https://cdn.similarweb.com https://analytics.tiktok.com; script-src-elem 'self' 'unsafe-inline' 'unsafe-eval' https://connect.facebook.net https://*.facebook.net https://analytics.tiktok.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https: http://localhost:* http://127.0.0.1:* https://*.supabase.co wss://*.supabase.co https://api.openai.com https://connect.facebook.net https://*.facebook.net https://*.hotjar.com https://*.similarweb.com https://cdn.similarweb.com https://analytics.tiktok.com https://business-api.tiktok.com; img-src 'self' data: https: blob:; media-src 'self' https://*.supabase.co blob:; font-src 'self' data: https:; child-src 'self' blob: data: https:; frame-src 'self' blob: data: https://connect.facebook.net https://*.facebook.net https://safeframe.googlesyndication.com https://*.similarweb.com" }
-      ]
-    },
-    {
-      "source": "/assets/:path*",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/:path*.html",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    }
+  "redirects": [
+    { "source": "/pt", "destination": "/", "permanent": true },
+    { "source": "/pt/:path*", "destination": "/:path*", "permanent": true }
   ]
 }
