@@ -135,11 +135,12 @@ const baseDirectives: CSPDirectives = {
     'https:',
   ],
   
-  // Media: self + Supabase storage + blob
+  // Media: self + Supabase storage + blob + data
   'media-src': [
     "'self'",
     'https://*.supabase.co',
     'blob:',
+    'data:',
   ],
   
   // Fonts: self + data URIs + any HTTPS

@@ -14,10 +14,25 @@ const HeroSection = React.memo(function HeroSection({ onOpenQuiz }: HeroSectionP
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    const play = () => video.play().catch(() => {});
-    if (video.readyState >= 2) play();
-    else video.addEventListener("loadeddata", play, { once: true });
-    return () => video.removeEventListener("loadeddata", play);
+
+    // Tentar reproduzir automaticamente
+    const playVideo = async () => {
+      try {
+        await video.play();
+      } catch (error) {
+        console.warn("Autoplay bloqueado pelo navegador:", error);
+      }
+    };
+
+    if (video.readyState >= 2) {
+      playVideo();
+    } else {
+      video.addEventListener("loadeddata", playVideo, { once: true });
+    }
+
+    return () => {
+      video.removeEventListener("loadeddata", playVideo);
+    };
   }, []);
 
   const handleQuizClick = useCallback((e: React.MouseEvent) => {
@@ -63,10 +78,11 @@ const HeroSection = React.memo(function HeroSection({ onOpenQuiz }: HeroSectionP
                   loop
                   muted
                   autoPlay
-                  preload="auto"
+                  preload="metadata"
                   poster="/images/videoframe_636.webp"
-                  src="/video/video-frente-hero.mp4"
                 >
+                  <source src="/video/video-frente-hero.mp4" type="video/mp4" />
+                  <source src="/video/video-frente.webm" type="video/webm" />
                   Seu navegador não suporta o elemento de vídeo.
                 </video>
                 
