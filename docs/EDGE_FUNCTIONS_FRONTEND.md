@@ -295,4 +295,3 @@ Este documento consolida as Edge Functions invocadas pelo frontend, com base no 
 - Autenticacao: token admin (header).
 - Fluxo (inferido): dispara todos os funis pendentes.
 - Saida esperada: `{ success: true }` ou `{ success: false, error }`
-

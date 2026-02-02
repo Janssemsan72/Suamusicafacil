@@ -73,9 +73,9 @@ function isSupabaseTableNotFoundError(url: string, status: number): boolean {
 }
 
 export function setupErrorSuppression() {
-  // ✅ Modo silencioso: evitar qualquer saída no console por padrão
-  // Para habilitar logs, defina VITE_ALLOW_CONSOLE=true
-  if (typeof console !== 'undefined' && !allowConsole) {
+  // ✅ Modo silencioso apenas em DEV (evitar ruído de HMR, tracking, etc.)
+  // Em produção, manter console para debug. Para silenciar em prod, defina VITE_ALLOW_CONSOLE=false
+  if (isDev && typeof console !== 'undefined' && !allowConsole) {
     const original = {
       log: console.log,
       info: console.info,

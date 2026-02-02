@@ -80,8 +80,9 @@ export default function AdminQuizMetrics() {
       });
 
       if (error) {
-        console.error('Erro ao carregar métricas:', error);
-        toast.error('Erro ao carregar métricas');
+        console.warn('get-quiz-metrics falhou, usando fallback vazio:', error);
+        setMetrics([]);
+        setAggregated(null);
         return;
       }
 
@@ -89,11 +90,13 @@ export default function AdminQuizMetrics() {
         setMetrics(data.daily_metrics || []);
         setAggregated(data.aggregated || null);
       } else {
-        toast.error('Erro ao carregar métricas');
+        setMetrics([]);
+        setAggregated(null);
       }
     } catch (error: any) {
-      console.error('Erro ao carregar métricas:', error);
-      toast.error(`Erro ao carregar métricas: ${error.message}`);
+      console.warn('Erro ao carregar métricas, usando fallback:', error);
+      setMetrics([]);
+      setAggregated(null);
     } finally {
       setLoading(false);
     }

@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '..');
 
-const videoPath = join(rootDir, 'public', 'video', 'musiclovaly.webm');
+const videoPath = join(rootDir, 'public', 'video', 'video-frente-hero.mp4');
 const outputDir = join(rootDir, 'public', 'images');
 const hero1xPath = join(outputDir, 'hero.webp');
 const hero2xPath = join(outputDir, 'hero@2x.webp');
@@ -31,7 +31,7 @@ console.log('🎬 Gerando imagens hero...\n');
 if (!existsSync(videoPath)) {
   console.error('❌ Vídeo não encontrado:', videoPath);
   console.log('\n💡 Alternativas:');
-  console.log('   1. Certifique-se de que o vídeo está em public/video/musiclovaly.webm');
+  console.log('   1. Certifique-se de que o vídeo está em public/video/video-frente-hero.mp4');
   console.log('   2. Ou coloque uma imagem manualmente em public/images/hero.webp');
   process.exit(1);
 }

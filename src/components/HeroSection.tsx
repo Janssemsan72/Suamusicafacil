@@ -54,9 +54,8 @@ const HeroSection = React.memo(function HeroSection({ onOpenQuiz }: HeroSectionP
                   autoPlay
                   preload="metadata"
                   poster="/images/videoframe_636.webp"
+                  src="/video/video-frente-hero.mp4"
                 >
-                  <source src="/video/musiclovaly.webm" type="video/webm" />
-                  <source src="/video/beijo-de-mar.mp4?v=2" type="video/mp4" />
                   Seu navegador não suporta o elemento de vídeo.
                 </video>
                 

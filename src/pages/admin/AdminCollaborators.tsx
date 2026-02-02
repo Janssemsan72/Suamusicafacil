@@ -144,7 +144,7 @@ export default function AdminCollaborators() {
         .order("created_at", { ascending: false });
 
       if (rolesError || !rolesData) {
-        console.error("Erro ao carregar colaboradores silenciosamente:", rolesError);
+        setCollaborators([]);
         return;
       }
 
@@ -213,14 +213,15 @@ export default function AdminCollaborators() {
       // Buscar colaboradores
       const { data: rolesData, error: rolesError } = await supabase
         .from("user_roles")
-        .select("*")
+        .select("id, user_id, role, created_at")
         .eq("role", "collaborator")
         .order("created_at", { ascending: false });
 
       if (rolesError) {
-        console.error("❌ Erro ao buscar roles:", rolesError);
-        console.error("❌ Detalhes do erro:", JSON.stringify(rolesError, null, 2));
-        throw rolesError;
+        console.warn("Erro ao buscar user_roles, usando fallback vazio:", rolesError);
+        setCollaborators([]);
+        setLoadingCollaborators(false);
+        return;
       }
 
       if (!rolesData || rolesData.length === 0) {
@@ -288,8 +289,9 @@ export default function AdminCollaborators() {
 
       setCollaborators(mappedCollaborators);
     } catch (error: any) {
-      console.error("❌ Erro ao carregar colaboradores:", error);
-      toast.error("Erro ao carregar colaboradores: " + (error.message || "Erro desconhecido"));
+      console.warn("Erro ao carregar colaboradores:", error);
+      setCollaborators([]);
+      toast.error("Não foi possível carregar colaboradores. Verifique as permissões.");
     } finally {
       setLoadingCollaborators(false);
     }

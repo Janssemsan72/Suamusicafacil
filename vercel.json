@@ -51,7 +51,7 @@
       ]
     },
     {
-      "source": "/(.*\\.(js|css|json|svg|xml|txt))",
+      "source": "/assets/:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -60,7 +60,7 @@
       ]
     },
     {
-      "source": "/(.*\\.html)",
+      "source": "/:path*.html",
       "headers": [
         {
           "key": "Cache-Control",
