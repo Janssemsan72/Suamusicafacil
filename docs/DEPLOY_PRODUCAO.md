@@ -28,12 +28,17 @@
 
 ### 2. Vercel
 
-1. **Variáveis de ambiente** (Settings → Environment Variables):
+1. **Git LFS** (obrigatório para logo, vídeo e áudio):
+   - Vercel → **Settings** → **Git** → **Git Large File Storage (LFS)** → **Enable**
+   - Ou o build usa `git lfs pull` antes do build (já configurado em vercel.json)
+   - Sem LFS, logo.png, video-frente-hero.mp4 e áudios retornam 404 (apenas ponteiros)
+
+2. **Variáveis de ambiente** (Settings → Environment Variables):
    - `VITE_SUPABASE_URL` – URL do projeto Supabase
    - `VITE_SUPABASE_ANON_KEY` – Chave anônima (ou `VITE_SUPABASE_PUBLISHABLE_KEY`)
    - Marque **Production**, **Preview** e **Development**
 
-2. **Deploy**: Conecte o repositório GitHub. O `vercel.json` está configurado (sem headers customizados para evitar ERR_CONTENT_DECODING_FAILED).
+3. **Deploy**: Conecte o repositório GitHub. O `vercel.json` está configurado (sem headers customizados para evitar ERR_CONTENT_DECODING_FAILED).
 
 ## Verificações pós-deploy
 

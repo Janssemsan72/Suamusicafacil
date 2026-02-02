@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "git lfs pull && npm run build",
   "outputDirectory": "dist",
   "rewrites": [
     { "source": "/download/:id/:token", "destination": "/download.html" },
