@@ -41,3 +41,35 @@
 - [ ] Colaboradores (fallback vazio se `user_roles` ou `profiles` falharem)
 - [ ] Fluxo de checkout e pagamento
 - [ ] Emails de confirmação e música pronta
+
+## Troubleshooting: "Não abriu nada" / Página em branco
+
+### 1. Abrir a URL manualmente
+Após o deploy, a Vercel **não abre o site automaticamente**. Acesse:
+- **Dashboard Vercel** → seu projeto → **Deployments** → clique em **Visit** ou na URL
+- Ou use o domínio: `https://suamusicafacil.com` (se configurado)
+
+### 2. Variáveis de ambiente obrigatórias
+No painel Vercel: **Settings** → **Environment Variables**:
+- `VITE_SUPABASE_URL` – URL do projeto Supabase
+- `VITE_SUPABASE_ANON_KEY` – Chave anônima (pública)
+
+Sem essas variáveis, o app pode falhar ao inicializar.
+
+### 3. Console do navegador
+Abra DevTools (F12) → aba **Console**. Erros comuns:
+- **404 em /assets/xxx.js** – problema de build ou cache
+- **CSP blocked** – política de segurança bloqueando scripts
+- **Supabase undefined** – variáveis de ambiente ausentes
+
+### 4. Redeploy
+Se o deploy anterior falhou:
+1. Vercel → **Deployments** → **Redeploy** (último deploy)
+2. Ou faça um novo push no GitHub para disparar novo deploy
+
+### 5. Teste local do build
+```bash
+npm run build
+npx vite preview
+```
+Acesse `http://localhost:4173` – se funcionar localmente, o problema está na Vercel.
