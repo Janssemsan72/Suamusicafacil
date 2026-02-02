@@ -126,6 +126,9 @@ export { default as Monitor } from 'lucide-react/dist/esm/icons/monitor';
 export { default as Rocket } from 'lucide-react/dist/esm/icons/rocket';
 export { default as HardDrive } from 'lucide-react/dist/esm/icons/hard-drive';
 export { default as CalendarIcon } from 'lucide-react/dist/esm/icons/calendar';
+export { default as Truck } from 'lucide-react/dist/esm/icons/truck';
+export { default as Tag } from 'lucide-react/dist/esm/icons/tag';
+export { default as Package } from 'lucide-react/dist/esm/icons/package';
 
 // Type export for LucideIcon
 export type { LucideIcon } from 'lucide-react';

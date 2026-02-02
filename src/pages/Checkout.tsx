@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, Check, Gift, Music, Edit, Play, Pause, CheckCircle2, AlertTriangle, X } from '@/lib/icons';
 import { Badge } from '@/components/ui/badge';
-import { CheckoutForm, CheckoutPlans, CheckoutSummary, CheckoutAudioPreview, CheckoutPaymentSection } from './Checkout/components';
+import { CheckoutForm, CheckoutPlans, CheckoutSummary, CheckoutAudioPreview, CheckoutPaymentSection, CheckoutPaymentSummary } from './Checkout/components';
 import { useCheckoutState, useCheckoutValidation, type QuizData } from './Checkout/hooks';
 import { toast } from 'sonner';
 // ✅ OTIMIZAÇÃO: Removido import direto de zod - agora lazy loaded via useCheckoutValidation
@@ -240,7 +240,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
         {
           id: 'express',
           name: t('checkout.expressPlan'),
-          price: 4790,
+          price: 2999,
           currency: 'BRL',
           delivery: t('checkout.delivery24h'),
           featured: true,
@@ -1894,7 +1894,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
 
       // ✅ NOVO FLUXO: Usar edge function create-checkout para criar quiz + pedido em transação atômica
       // Garantir que amount_cents é sempre um número válido
-      const amountCents = isPortuguese ? 4790 : (typeof plan.price === 'number' ? plan.price : 0);
+      const amountCents = isPortuguese ? 2999 : (typeof plan.price === 'number' ? plan.price : 0);
       
       if (amountCents <= 0) {
         logger.error('Valor do pedido inválido', undefined, { step: 'order_creation', amountCents, planPrice: plan.price, isPortuguese });
@@ -2162,7 +2162,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
           checkoutLogger.log('checkout_requested', { 
             order_id: order.id,
             plan: plan?.name || selectedPlan,
-            price: 4790,
+            price: plan?.price || 2999,
             provider: 'hotmart',
             language: currentLanguage
           });
@@ -2537,32 +2537,66 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
         )}
 
 
-        <div className="grid lg:grid-cols-[1fr,500px] gap-4 md:gap-8">
-          {/* Mobile-First: Payment Card First (order-1 on mobile, order-2 on desktop) */}
-          <div className="order-1 lg:order-2 space-y-2 md:space-y-4">
-            <CheckoutForm
-              email={email}
-              emailError={emailError}
-              whatsapp={whatsapp}
-              whatsappError={whatsappError}
+        {embedded ? (
+          /* Layout embedded (passo 3 do quiz) - novo design baseado na imagem */
+          <div className="w-full max-w-2xl mx-auto">
+            <CheckoutPaymentSummary
+              price={selectedPlanData.price}
+              currency={selectedPlanData.currency}
+              onCheckout={() => handleCheckout(false)}
               processing={processing}
-              onEmailChange={(value) => {
-                setEmail(value);
-                setEmailError('');
-                setButtonError(false);
-              }}
-              onEmailBlur={validateEmail}
-              onWhatsAppChange={(value) => {
-                const formatted = formatWhatsApp(value);
-                setWhatsapp(formatted);
-                setWhatsappError('');
-                setButtonError(false);
-              }}
-              onWhatsAppBlur={validateWhatsApp}
+              priorityDeliveryPrice={1990}
             />
+          </div>
+        ) : (
+          <div className="grid lg:grid-cols-[1fr,500px] gap-4 md:gap-8">
+            {/* Mobile-First: Payment Card First (order-1 on mobile, order-2 on desktop) */}
+            <div className="order-1 lg:order-2 space-y-2 md:space-y-4">
+              <CheckoutForm
+                email={email}
+                emailError={emailError}
+                whatsapp={whatsapp}
+                whatsappError={whatsappError}
+                processing={processing}
+                onEmailChange={(value) => {
+                  setEmail(value);
+                  setEmailError('');
+                  setButtonError(false);
+                }}
+                onEmailBlur={validateEmail}
+                onWhatsAppChange={(value) => {
+                  const formatted = formatWhatsApp(value);
+                  setWhatsapp(formatted);
+                  setWhatsappError('');
+                  setButtonError(false);
+                }}
+                onWhatsAppBlur={validateWhatsApp}
+              />
 
-                {/* ✅ Botão mobile */}
-                <div className="md:hidden">
+                  {/* ✅ Botão mobile */}
+                  <div className="md:hidden">
+                    <CheckoutPaymentSection
+                      processing={processing}
+                      retryCount={retryCount}
+                      buttonError={buttonError}
+                      cameFromRestore={cameFromRestore}
+                      email={email}
+                      whatsapp={whatsapp}
+                      whatsappError={whatsappError}
+                      onCheckout={() => handleCheckout(false)}
+                      isMobile={true}
+                    />
+                  </div>
+
+                  {/* ✅ Planos mobile */}
+                  <CheckoutPlans
+                    plans={plans}
+                    selectedPlan={selectedPlan}
+                    onPlanSelect={setSelectedPlan}
+                    isMobile={true}
+                  />
+
+                  {/* ✅ Botão desktop */}
                   <CheckoutPaymentSection
                     processing={processing}
                     retryCount={retryCount}
@@ -2572,38 +2606,16 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
                     whatsapp={whatsapp}
                     whatsappError={whatsappError}
                     onCheckout={() => handleCheckout(false)}
-                    isMobile={true}
+                    isMobile={false}
                   />
-                </div>
 
-                {/* ✅ Planos mobile */}
-                <CheckoutPlans
-                  plans={plans}
-                  selectedPlan={selectedPlan}
-                  onPlanSelect={setSelectedPlan}
-                  isMobile={true}
-                />
-
-                {/* ✅ Botão desktop */}
-                <CheckoutPaymentSection
-                  processing={processing}
-                  retryCount={retryCount}
-                  buttonError={buttonError}
-                  cameFromRestore={cameFromRestore}
-                  email={email}
-                  whatsapp={whatsapp}
-                  whatsappError={whatsappError}
-                  onCheckout={() => handleCheckout(false)}
-                  isMobile={false}
-                />
-
-            {/* Compact Plan Summary */}
-            <CheckoutSummary
-              quiz={quiz}
-              selectedPlan={selectedPlanData}
-              isMobile={true}
-            />
-          </div>
+              {/* Compact Plan Summary */}
+              <CheckoutSummary
+                quiz={quiz}
+                selectedPlan={selectedPlanData}
+                isMobile={true}
+              />
+            </div>
 
           {/* Desktop: Details on Left (order-2 on mobile, order-1 on desktop) */}
           <div className="order-2 lg:order-1 space-y-2 md:space-y-4">
@@ -2771,6 +2783,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
             </Card>
           </div>
         </div>
+        )}
       </div>
       
       {/* ✅ Botão fixo na parte inferior (mobile only) */}
