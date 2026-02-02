@@ -5,7 +5,7 @@
     { "source": "/download/:id/:token", "destination": "/download.html" },
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/admin/:path*", "destination": "/admin.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/((?!api|.*\\.).*)", "destination": "/index.html" }
   ],
   "redirects": [
     { "source": "/pt", "destination": "/", "permanent": true },

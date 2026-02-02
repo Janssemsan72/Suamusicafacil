@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useUtmParams } from "@/hooks/useUtmParams";
 import { HeroVideoControls } from "./HeroVideoControls";
@@ -9,6 +9,16 @@ type HeroSectionProps = {
 
 const HeroSection = React.memo(function HeroSection({ onOpenQuiz }: HeroSectionProps) {
   const { navigateWithUtms } = useUtmParams();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const play = () => video.play().catch(() => {});
+    if (video.readyState >= 2) play();
+    else video.addEventListener("loadeddata", play, { once: true });
+    return () => video.removeEventListener("loadeddata", play);
+  }, []);
 
   const handleQuizClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -47,12 +57,13 @@ const HeroSection = React.memo(function HeroSection({ onOpenQuiz }: HeroSectionP
               {/* Vídeo */}
               <div className="relative w-full overflow-hidden bg-black aspect-video rounded-lg shadow-xl">
                 <video
+                  ref={videoRef}
                   className="w-full h-full object-cover"
                   playsInline
                   loop
                   muted
                   autoPlay
-                  preload="metadata"
+                  preload="auto"
                   poster="/images/videoframe_636.webp"
                   src="/video/video-frente-hero.mp4"
                 >
