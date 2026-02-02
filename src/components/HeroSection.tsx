@@ -52,16 +52,16 @@ const HeroSection = React.memo(function HeroSection({ onOpenQuiz }: HeroSectionP
         <div className="flex flex-col md:flex-row items-center md:items-start">
           {/* Conteúdo Esquerdo */}
           <div className="md:w-1/2 mb-12 md:mb-0 relative z-10 px-6 sm:pl-12 sm:pr-0 w-full flex flex-col items-start">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight text-left">
-              Transforme Seus <span className="handwritten">Sentimentos</span> em Música
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight text-left text-gray-900 drop-shadow-sm">
+              Transforme Seus <span className="handwritten text-purple-700">Sentimentos</span> em Música
             </h1>
-            <p className="text-xl md:text-2xl text-gray-700 mb-10 text-left">
+            <p className="text-xl md:text-2xl text-gray-800 font-medium mb-10 text-left max-w-lg">
               Conte-nos sua história — nós criamos uma música que a captura perfeitamente.
             </p>
             <div className="flex justify-center md:justify-start w-full md:w-auto">
               <Button
                 onClick={handleQuizClick}
-                className="bg-purple-600 hover:bg-purple-700 text-white py-4 px-10 rounded-full font-semibold text-base sm:text-lg transition duration-300 shadow-md animate-pulse-scale"
+                className="bg-purple-700 hover:bg-purple-800 text-white py-4 px-10 rounded-full font-bold text-base sm:text-lg transition duration-300 shadow-lg hover:shadow-xl hover:scale-105 animate-pulse-scale"
               >
                 Crie minha música personalizada agora
               </Button>
@@ -72,10 +72,11 @@ const HeroSection = React.memo(function HeroSection({ onOpenQuiz }: HeroSectionP
           <div className="w-full md:w-1/2 flex justify-center md:justify-end">
             <div className="max-w-md w-full">
               {/* Vídeo */}
-              <div className="relative w-full overflow-hidden bg-black aspect-video rounded-lg shadow-xl">
+              <div className="relative w-full overflow-hidden bg-black aspect-video rounded-lg shadow-2xl ring-1 ring-black/10">
+                <div className="absolute inset-0 bg-black/20 pointer-events-none z-[2]"></div>
                 <video
                   ref={videoRef}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover brightness-[0.9]"
                   playsInline
                   loop
                   muted
@@ -85,6 +86,12 @@ const HeroSection = React.memo(function HeroSection({ onOpenQuiz }: HeroSectionP
                   src="/video/video-frente-hero.mp4"
                   onPlaying={() => setShowVideoPlayOverlay(false)}
                   onClick={() => videoRef.current?.play().then(() => setShowVideoPlayOverlay(false)).catch(() => {})}
+                  onError={(e) => {
+                    console.error("Video Error:", e.currentTarget.error);
+                    console.log("Network State:", e.currentTarget.networkState);
+                    console.log("Ready State:", e.currentTarget.readyState);
+                    setShowVideoPlayOverlay(true);
+                  }}
                 >
                   Seu navegador não suporta o elemento de vídeo.
                 </video>
