@@ -2103,12 +2103,10 @@ export default function AdminOrderDetails() {
                       </Button>
                     )}
                     {song.audio_url && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => window.open(song.audio_url, '_blank')}
-                      >
-                        Baixar MP3
+                      <Button asChild size="sm" variant="outline">
+                        <a href={song.audio_url} id="gtm-download-mp3" target="_blank" rel="noopener noreferrer">
+                          Baixar MP3
+                        </a>
                       </Button>
                     )}
                   </div>

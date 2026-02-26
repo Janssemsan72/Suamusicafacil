@@ -107,14 +107,11 @@ export function LogDetailModal({ open, onOpenChange, log, type }: LogDetailModal
               >
                 <Copy className="h-3 w-3" />
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-6 px-2"
-                onClick={() => window.open(`/admin/orders/${event.order_id}`, '_blank')}
-              >
-                <ExternalLink className="h-3 w-3 mr-1" />
-                Ver Order
+              <Button asChild variant="ghost" size="sm" className="h-6 px-2">
+                <a href={`/admin/orders/${event.order_id}`} id="gtm-view-order" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-3 w-3 mr-1" />
+                  Ver Order
+                </a>
               </Button>
             </div>
           </div>

@@ -43,23 +43,21 @@ function CheckoutRedirect() {
 }
 
 const RouteFallback = () => (
-  <div style={{ minHeight: "60vh", padding: "24px 16px", backgroundColor: "#faf5ff", color: "#4c1d95" }}>
-    <div style={{ maxWidth: 1120, margin: "0 auto" }}>
+  <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #fdf2f8 100%)" }}>
+    <div style={{ width: "100%", maxWidth: 420, margin: "0 auto", padding: "0 16px" }}>
       <div
         style={{
           width: "100%",
-          maxWidth: 720,
-          margin: "0 auto 18px",
-          aspectRatio: "4 / 3",
+          padding: "32px",
           borderRadius: 16,
-          background: "linear-gradient(135deg, rgba(199,133,94,0.20), rgba(253,246,237,1))",
-          boxShadow: "0 20px 25px -5px rgba(0,0,0,0.10), 0 10px 10px -5px rgba(0,0,0,0.04)",
+          background: "rgba(255,255,255,0.85)",
+          boxShadow: "0 20px 25px -5px rgba(0,0,0,0.08), 0 10px 10px -5px rgba(0,0,0,0.03)",
         }}
-      />
-      <div style={{ maxWidth: 720, margin: "0 auto" }}>
-        <div style={{ height: 22, width: "70%", borderRadius: 10, background: "rgba(76,29,149,0.10)", marginBottom: 10 }} />
-        <div style={{ height: 18, width: "55%", borderRadius: 10, background: "rgba(76,29,149,0.08)", marginBottom: 8 }} />
-        <div style={{ height: 18, width: "62%", borderRadius: 10, background: "rgba(61,46,31,0.08)" }} />
+      >
+        <div style={{ height: 20, width: "50%", borderRadius: 10, background: "rgba(139,92,246,0.10)", margin: "0 auto 16px" }} />
+        <div style={{ width: 64, height: 64, borderRadius: "50%", background: "rgba(139,92,246,0.08)", margin: "0 auto 16px" }} />
+        <div style={{ height: 18, width: "60%", borderRadius: 10, background: "rgba(139,92,246,0.08)", margin: "0 auto 10px" }} />
+        <div style={{ height: 14, width: "75%", borderRadius: 10, background: "rgba(139,92,246,0.06)", margin: "0 auto" }} />
       </div>
     </div>
   </div>

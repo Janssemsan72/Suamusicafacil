@@ -194,8 +194,10 @@ export class AdminErrorBoundary extends Component<Props, State> {
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Recarregar Página
                 </Button>
-                <Button onClick={() => window.location.href = '/admin/auth'} variant="outline">
-                  Ir para Login
+                <Button asChild variant="outline">
+                  <a href="/admin/auth" id="gtm-admin-login">
+                    Ir para Login
+                  </a>
                 </Button>
               </div>
 

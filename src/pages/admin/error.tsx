@@ -224,15 +224,10 @@ export default function Error({ error, reset }: ErrorProps) {
             <Button onClick={reset} className="flex-1">
               <RefreshCw className="mr-2 h-4 w-4" /> Tentar Novamente
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  window.location.href = '/admin';
-                }
-              }}
-            >
-              Ir para Login
+            <Button asChild variant="outline">
+              <a href="/admin" id="gtm-admin-home">
+                Ir para Login
+              </a>
             </Button>
           </div>
         </CardContent>

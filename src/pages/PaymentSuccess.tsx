@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, Mail, MessageCircle } from '@/lib/icons';
@@ -52,11 +52,6 @@ export default function PaymentSuccess() {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
-
-  const handleGoNow = useCallback(() => {
-    hasRedirected.current = true;
-    window.location.href = WHATSAPP_URL;
   }, []);
 
   // Confetes
@@ -180,14 +175,22 @@ export default function PaymentSuccess() {
             </div>
           </div>
 
-          {/* Botão WhatsApp */}
+          {/* Botão WhatsApp — <a> nativo para GTM gtm.linkClick */}
           <Button
-            onClick={handleGoNow}
+            asChild
             className="w-full text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all rounded-xl py-3 text-sm sm:text-base"
             style={{ background: 'linear-gradient(135deg, #25D366 0%, #128C7E 100%)', border: 'none' }}
           >
-            <MessageCircle className="w-5 h-5 mr-2" />
-            Ir para o WhatsApp agora
+            <a
+              href={WHATSAPP_URL}
+              id="gtm-whatsapp-success"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => { hasRedirected.current = true; }}
+            >
+              <MessageCircle className="w-5 h-5 mr-2" />
+              Ir para o WhatsApp agora
+            </a>
           </Button>
 
           {/* Barra de progresso + contagem */}
