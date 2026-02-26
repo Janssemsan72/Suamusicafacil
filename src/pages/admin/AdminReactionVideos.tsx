@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -51,11 +51,7 @@ export default function AdminReactionVideos() {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    loadVideos();
-  }, [filterStatus, searchTerm]);
-
-  const loadVideos = async () => {
+  const loadVideos = useCallback(async () => {
     try {
       setLoading(true);
       let query = supabase
@@ -104,7 +100,11 @@ export default function AdminReactionVideos() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterStatus, searchTerm]);
+
+  useEffect(() => {
+    loadVideos();
+  }, [loadVideos]);
 
   const moderateVideo = async (videoId: string, newStatus: 'approved' | 'rejected' | 'featured') => {
     try {

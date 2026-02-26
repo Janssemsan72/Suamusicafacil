@@ -93,7 +93,8 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
 
   // Sem persistência do idioma: seguimos apenas a URL
   
-  // Função auxiliar para gerar URL da Cakto
+  // Função auxiliar para gerar URL de pagamento (Cakto)
+  // Redireciona para Cakto; após pagamento o webhook marca o pedido como pago e dispara letra → Suno → email
   const generateHotmartUrl = (
     orderId: string,
     email: string,
@@ -102,48 +103,24 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
     utms: Record<string, string | null>,
     customerName?: string
   ): string => {
-    // TODO: Configurar URL real via variável de ambiente
-    const HOTMART_PAYMENT_URL = import.meta.env.VITE_HOTMART_CHECKOUT_URL || 'https://pay.hotmart.com/SEU_CODIGO_PRODUTO';
-    const origin = window.location.origin;
-    const utmQuery = getUtmQueryString(false);
-    // ✅ CORREÇÃO: Padronizar redirect_url para /payment-success (sem barra antes de success)
-    // Nota: Hotmart usa configuração interna para redirect, mas podemos tentar passar via url se suportado pelo produtor
-    const redirectUrl = `${origin}/${language}/payment-success?order_id=${orderId}${utmQuery}`;
-    
-    // Normalizar WhatsApp para formato correto (55XXXXXXXXXXX)
+    const CAKTO_PAYMENT_URL = import.meta.env.VITE_CAKTO_CHECKOUT_URL || 'https://pay.cakto.com.br/37k66ko_784248';
     const normalizedWhatsapp = normalizeWhatsApp(whatsapp);
-    
-    const hotmartParams = new URLSearchParams();
-    hotmartParams.set('xcod', orderId); // External Code para rastreamento
-    hotmartParams.set('email', email);
-    if (customerName) hotmartParams.set('name', customerName);
-    
-    // ✅ Hotmart usa 'phone_number'
-    // Formato: DDD + número (ex: 5511999999999)
+
+    const params = new URLSearchParams();
+    params.set('order_id', orderId); // Para o webhook da Cakto identificar o pedido
+    params.set('email', email);
+    if (customerName) params.set('name', customerName);
     if (normalizedWhatsapp && normalizedWhatsapp.trim() !== '') {
-      hotmartParams.set('phone_number', normalizedWhatsapp);
-    } else {
-      console.warn('⚠️ [generateHotmartUrl] WhatsApp inválido ou vazio, URL será gerada sem phone', {
-        orderId,
-        email,
-        whatsapp
-      });
+      params.set('phone', normalizedWhatsapp); // Cakto costuma usar 'phone'
     }
-    // hotmartParams.set('checkoutMode', '10'); // Opção de modo de checkout
-    
-    // Adicionar parâmetros UTM para rastreamento na Hotmart (src, sck)
     const safeUtms = utms || {};
     Object.entries(safeUtms).forEach(([key, value]) => {
-      if (value) {
-        if (key === 'src' || key === 'sck') {
-           hotmartParams.set(key, value as string);
-        } else if (['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].includes(key)) {
-           hotmartParams.set(key, value as string);
-        }
+      if (value && ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].includes(key)) {
+        params.set(key, value as string);
       }
     });
 
-    return `${HOTMART_PAYMENT_URL}?${hotmartParams.toString()}`;
+    return `${CAKTO_PAYMENT_URL}?${params.toString()}`;
   };
 
   // Função auxiliar para redirecionar para Hotmart
@@ -240,7 +217,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
         {
           id: 'express',
           name: t('checkout.expressPlan'),
-          price: 2999,
+          price: 3700,
           currency: 'BRL',
           delivery: t('checkout.delivery24h'),
           featured: true,
@@ -1894,7 +1871,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
 
       // ✅ NOVO FLUXO: Usar edge function create-checkout para criar quiz + pedido em transação atômica
       // Garantir que amount_cents é sempre um número válido
-      const amountCents = isPortuguese ? 2999 : (typeof plan.price === 'number' ? plan.price : 0);
+      const amountCents = isPortuguese ? 3700 : (typeof plan.price === 'number' ? plan.price : 0);
       
       if (amountCents <= 0) {
         logger.error('Valor do pedido inválido', undefined, { step: 'order_creation', amountCents, planPrice: plan.price, isPortuguese });
@@ -1938,10 +1915,15 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
         });
 
         if (checkoutError || !checkoutResult || !checkoutResult.success) {
+          const errMsg = checkoutError?.message || checkoutResult?.error;
           logger.warn('⚠️ [Checkout] Edge function create-checkout falhou, usando fallback:', {
-            error: checkoutError?.message || checkoutResult?.error,
-            step: 'order_creation'
+            error: errMsg,
+            step: 'order_creation',
+            response_body: checkoutResult,
+            // 400 geralmente traz error do servidor (validação ou RPC)
+            server_error: checkoutResult?.error || null,
           });
+          if (errMsg) checkoutLogger.log('create_checkout_failed', { message: errMsg, body: checkoutResult });
           useCreateCheckoutFunction = false;
         } else {
           // Sucesso! Usar quiz_id e order_id retornados
@@ -2162,7 +2144,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
           checkoutLogger.log('checkout_requested', { 
             order_id: order.id,
             plan: plan?.name || selectedPlan,
-            price: plan?.price || 2999,
+            price: plan?.price || 3700,
             provider: 'hotmart',
             language: currentLanguage
           });
@@ -2545,7 +2527,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
               currency={selectedPlanData.currency}
               onCheckout={() => handleCheckout(false)}
               processing={processing}
-              priorityDeliveryPrice={1990}
+              priorityDeliveryPrice={900}
             />
           </div>
         ) : (

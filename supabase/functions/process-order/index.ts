@@ -33,10 +33,10 @@ serve(async (req) => {
 
     console.log('Processing order:', order_id);
 
-    // Buscar order com quiz
+    // Buscar order (sem join - FK não existe)
     const { data: order, error: orderError } = await supabaseClient
       .from('orders')
-      .select('*, quizzes(*)')
+      .select('*')
       .eq('id', order_id)
       .single();
 
@@ -55,8 +55,19 @@ serve(async (req) => {
       throw new Error(`Pedido com status inválido: ${order.status}. Esperado: paid`);
     }
 
-    // quizzes(*) retorna um array, pegar o primeiro elemento
-    const quiz = Array.isArray(order.quizzes) ? order.quizzes[0] : order.quizzes;
+    // Buscar quiz separadamente pelo quiz_id do order
+    const { data: quizData, error: quizFetchError } = await supabaseClient
+      .from('quizzes')
+      .select('*')
+      .eq('id', order.quiz_id)
+      .single();
+
+    if (quizFetchError) {
+      console.warn('⚠️ Erro ao buscar quiz:', quizFetchError);
+    }
+    (order as any).quizzes = quizData || null;
+
+    const quiz = quizData || null;
     if (!quiz) {
       console.error('Quiz not found for order:', order_id);
       throw new Error('Questionário não encontrado para este pedido');

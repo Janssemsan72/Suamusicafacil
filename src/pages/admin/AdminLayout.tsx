@@ -723,7 +723,7 @@ export default function AdminLayout() {
         authStateChangeSubscriptionRef.current = null;
       }
     };
-  }, [isAuthorized, isDev]);
+  }, [isAuthorized]);
 
   // ✅ Cleanup: Marcar componente como desmontado
   useEffect(() => {

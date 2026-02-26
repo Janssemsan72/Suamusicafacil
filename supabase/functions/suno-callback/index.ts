@@ -426,10 +426,11 @@ serve(async (req) => {
           language: lyrics?.language || 'pt',
           style: lyrics?.style || 'pop',
           variant_number: nextVariant,
-          suno_clip_id: finalClipId, // ✅ Sempre salvar clipId (audioId) para permitir separação de stems
-          suno_task_id: task_id, // ✅ Salvar taskId também na song
+          suno_clip_id: finalClipId,
+          suno_task_id: task_id,
           status: 'ready',
-          release_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          release_at: new Date().toISOString(),
+          released_at: new Date().toISOString(),
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         })
@@ -484,7 +485,7 @@ serve(async (req) => {
       }
       console.log(`📊 [CALLBACK] ================================================\n`);
 
-    // ✅ CORREÇÃO CRÍTICA: Atualizar job para completed e salvar suno_audio_url
+    // Atualizar job para completed e salvar suno_audio_url
     // Extrair audio_url do primeiro áudio gerado
     let jobAudioUrl = null;
     if (musicData && musicData.length > 0) {
@@ -527,27 +528,25 @@ serve(async (req) => {
       .limit(1);
     
     if (createdSongs && createdSongs.length > 0) {
-      console.log('📧📱 [CALLBACK] Notificando cliente que música está pronta...');
+      console.log('📧 [CALLBACK] Enviando email de música pronta...');
       try {
-        const internalSecret = Deno.env.get('INTERNAL_EDGE_FUNCTION_SECRET') ?? '';
-        const { data: notifyData, error: notifyError } = await supabase.functions.invoke('notify-music-ready-webhook', {
+        const { data: emailData, error: emailError } = await supabase.functions.invoke('send-music-released-email', {
           body: { 
-            order_id: jobs.order_id,
-            song_id: createdSongs[0].id
+            songId: createdSongs[0].id,
+            orderId: jobs.order_id
           },
-          headers: internalSecret ? { 'x-internal-secret': internalSecret } : undefined,
         });
         
-        if (notifyError) {
-          console.warn('⚠️ [CALLBACK] Erro ao notificar cliente (não bloqueante):', notifyError);
+        if (emailError) {
+          console.warn('⚠️ [CALLBACK] Erro ao enviar email (não bloqueante):', emailError);
         } else {
-          console.log('✅ [CALLBACK] Cliente notificado com sucesso');
+          console.log('✅ [CALLBACK] Email enviado com sucesso:', emailData);
         }
-      } catch (notifyErr) {
-        console.warn('⚠️ [CALLBACK] Erro ao chamar notify-music-ready-webhook (não bloqueante):', notifyErr);
+      } catch (emailErr) {
+        console.warn('⚠️ [CALLBACK] Erro ao chamar send-music-released-email (não bloqueante):', emailErr);
       }
     } else {
-      console.warn('⚠️ [CALLBACK] Nenhuma song encontrada para notificar cliente');
+      console.warn('⚠️ [CALLBACK] Nenhuma song encontrada para enviar email');
     }
 
     // ✅ IMPORTANTE: Retornar 200 rapidamente (API Suno espera resposta em até 15 segundos)

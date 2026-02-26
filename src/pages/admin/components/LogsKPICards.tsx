@@ -1,4 +1,5 @@
-import { ADMIN_CARD_COLORS, SolidStatCard } from "@/components/admin/SolidStatCard";
+import { SolidStatCard } from "@/components/admin/SolidStatCard";
+import { ADMIN_CARD_COLORS } from "@/constants/admin";
 import { Activity, AlertTriangle, CheckCircle2, Clock } from "@/lib/icons";
 
 interface LogsKPICardsProps {

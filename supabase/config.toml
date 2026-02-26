@@ -375,8 +375,17 @@ verify_jwt = false
 [functions.notify-payment-webhook]
 verify_jwt = false
 
+[functions.create-checkout]
+verify_jwt = false
+
 [functions.generate-lyrics-internal]
 verify_jwt = false
 
 [functions.get-quiz-metrics]
+verify_jwt = false
+
+[functions.cakto-webhook]
+verify_jwt = false
+
+[functions.admin-order-actions]
 verify_jwt = false

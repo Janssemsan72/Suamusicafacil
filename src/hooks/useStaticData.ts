@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryClient';
+import { supabase } from '@/integrations/supabase/client';
 
 /**
  * Hook para carregar planos de preços (dados estáticos)

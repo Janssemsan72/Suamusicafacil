@@ -3,9 +3,14 @@ import { queryClient, queryKeys } from '@/lib/queryClient';
 import type { SalesDataByDate, SalesData, SalesCache } from './types';
 import { MANUAL_ORDERS } from './constants';
 
-export const isHotmartOrder = (o: any) =>
+/** @deprecated Renomeada para isPaidProviderOrder. Mantida para compatibilidade. */
+export const isHotmartOrder = (o: any) => isPaidProviderOrder(o);
+
+export const isPaidProviderOrder = (o: any) =>
   o?.payment_provider === 'hotmart' ||
   o?.provider === 'hotmart' ||
+  o?.payment_provider === 'cakto' ||
+  o?.provider === 'cakto' ||
   (!o?.payment_provider && !o?.provider);
 
 /**
@@ -16,7 +21,7 @@ export const isHotmartOrder = (o: any) =>
 export async function countOrdersPaginated(filters?: {
   status?: string;
   plan?: string;
-  provider?: 'hotmart';
+  provider?: 'hotmart' | 'cakto';
 }): Promise<number> {
   try {
     // Primeiro tentar count exact
@@ -94,8 +99,8 @@ export async function countOrdersPaginated(filters?: {
       if (!data || data.length === 0) {
         hasMore = false;
       } else {
-        const canFilterByProvider = filters?.provider === 'hotmart' && fieldsToSelect.includes('payment_provider');
-        const count = canFilterByProvider ? data.filter(isHotmartOrder).length : data.length;
+        const canFilterByProvider = (filters?.provider === 'hotmart' || filters?.provider === 'cakto') && fieldsToSelect.includes('payment_provider');
+        const count = canFilterByProvider ? data.filter(isPaidProviderOrder).length : data.length;
         totalCount += count;
         from += pageSize;
         hasMore = data.length === pageSize;
@@ -125,7 +130,7 @@ export async function countOrdersPaginated(filters?: {
  */
 export async function fetchRevenuePaginated(filters?: {
   plan?: string;
-  provider?: 'hotmart';
+  provider?: 'hotmart' | 'cakto';
 }): Promise<number> {
   let totalRevenue = 0;
   let from = 0;
@@ -211,8 +216,8 @@ export async function fetchRevenuePaginated(filters?: {
       if (!data || data.length === 0) {
         hasMore = false;
       } else {
-        const canFilterByProvider = filters?.provider === 'hotmart' && fieldsToSelect.includes('payment_provider');
-        const filteredData = canFilterByProvider ? data.filter(isHotmartOrder) : data;
+        const canFilterByProvider = (filters?.provider === 'hotmart' || filters?.provider === 'cakto') && fieldsToSelect.includes('payment_provider');
+        const filteredData = canFilterByProvider ? data.filter(isPaidProviderOrder) : data;
         if (fieldsToSelect.includes('amount_cents')) {
           const pageRevenue = filteredData.reduce((sum: number, o: any) => {
             const amount = o.amount_cents || 0;

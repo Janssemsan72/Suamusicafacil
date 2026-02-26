@@ -40,7 +40,7 @@ export const CheckoutPaymentSummary = React.memo(({
   onCheckout,
   processing = false,
   onPriorityDeliveryChange,
-  priorityDeliveryPrice = 1990, // R$ 19,90 em centavos
+  priorityDeliveryPrice = 900, // R$ 9,00 em centavos
 }: CheckoutPaymentSummaryProps) => {
   const { t } = useTranslation();
   const [priorityDelivery, setPriorityDelivery] = useState(true);
@@ -187,7 +187,7 @@ export const CheckoutPaymentSummary = React.memo(({
               htmlFor="priority-delivery"
               className="text-sm cursor-pointer flex-1"
             >
-              Prioritária: em 4h por +{currency === 'BRL' ? 'R$' : '$'} {formatPrice(priorityDeliveryPrice)}
+              Prioritária: em 2h por +{currency === 'BRL' ? 'R$' : '$'} {formatPrice(priorityDeliveryPrice)}
             </label>
           </div>
         </CardContent>

@@ -76,7 +76,6 @@ export function useLocale(): UseLocaleReturn {
   useEffect(() => {
     // Detectar idioma na montagem
     console.log('🌍 [UseLocale] useEffect executado - iniciando detecção');
-    console.log('🌍 [UseLocale] Estado atual:', { locale, isLoading, error });
     
     // Aguardar um pouco para garantir que o DOM esteja pronto
     const timeoutId = setTimeout(() => {

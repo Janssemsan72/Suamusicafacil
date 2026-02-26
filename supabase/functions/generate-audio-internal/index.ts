@@ -211,10 +211,10 @@ serve(async (req) => {
 
     console.log('Processing job:', job_id);
 
-    // Buscar job com letra e quiz
+    // Buscar job (sem join - FK não existe)
     const { data: job, error: jobError } = await supabaseClient
       .from('jobs')
-      .select('*, quizzes(*)')
+      .select('*')
       .eq('id', job_id)
       .single();
 
@@ -222,46 +222,64 @@ serve(async (req) => {
       throw new Error(`Job não encontrado: ${jobError?.message}`);
     }
 
+    // Buscar quiz separadamente pelo quiz_id do job
+    const { data: quizData, error: quizError } = await supabaseClient
+      .from('quizzes')
+      .select('*')
+      .eq('id', job.quiz_id)
+      .single();
+
+    if (quizError) {
+      console.warn('⚠️ Erro ao buscar quiz:', quizError);
+    }
+    (job as any).quizzes = quizData || null;
+
     if (!job.gpt_lyrics) {
       throw new Error('Letra não encontrada no job');
     }
 
-    // ✅ CORREÇÃO: Verificar se já existe uma requisição em andamento para o mesmo pedido
-    // Isso previne múltiplas requisições simultâneas para a Suno do mesmo order_id
+    // Guard: impedir duplicação de requisições Suno para o mesmo pedido
     const orderId = job.order_id;
     if (orderId) {
-      const { data: existingJobs, error: checkError } = await supabaseClient
+      const { data: activeJobs, error: checkError } = await supabaseClient
         .from('jobs')
         .select('id, status, suno_task_id')
         .eq('order_id', orderId)
-        .in('status', ['audio_processing', 'generating_audio'])
-        .neq('id', job_id); // Excluir o job atual da verificação
+        .not('suno_task_id', 'is', null)
+        .neq('status', 'failed')
+        .neq('id', job_id);
       
       if (checkError) {
         console.warn('⚠️ Erro ao verificar jobs existentes:', checkError);
-      } else if (existingJobs && existingJobs.length > 0) {
-        // Verificar se algum job tem suno_task_id (requisição já foi feita)
-        const hasActiveRequest = existingJobs.some(j => j.suno_task_id && j.suno_task_id.trim() !== '');
+      } else if (activeJobs && activeJobs.length > 0) {
+        console.log('⚠️ [GenerateAudioInternal] Suno já acionado para este pedido:', {
+          order_id: orderId,
+          active_jobs: activeJobs.map(j => ({ id: j.id, status: j.status, task_id: j.suno_task_id }))
+        });
         
-        if (hasActiveRequest) {
-          console.log('⚠️ [GenerateAudioInternal] Já existe uma requisição ativa para a Suno neste pedido:', {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Suno já foi acionado para este pedido.',
             order_id: orderId,
-            existing_jobs: existingJobs.map(j => ({ id: j.id, status: j.status, has_task_id: !!j.suno_task_id }))
-          });
-          
-          return new Response(
-            JSON.stringify({
-              success: false,
-              error: 'Já existe uma requisição em andamento para a Suno neste pedido. Aguarde a conclusão antes de tentar novamente.',
-              order_id: orderId,
-              existing_job_ids: existingJobs.map(j => j.id)
-            }),
-            {
-              headers: corsHeaders,
-              status: 409 // Conflict
-            }
-          );
-        }
+            existing_job_ids: activeJobs.map(j => j.id)
+          }),
+          { headers: corsHeaders, status: 409 }
+        );
+      }
+      
+      const { data: existingSongs } = await supabaseClient
+        .from('songs')
+        .select('id')
+        .eq('order_id', orderId)
+        .limit(1);
+      
+      if (existingSongs && existingSongs.length > 0) {
+        console.log('⚠️ [GenerateAudioInternal] Já existem músicas para este pedido:', orderId);
+        return new Response(
+          JSON.stringify({ success: false, error: 'Música já foi gerada para este pedido.' }),
+          { headers: corsHeaders, status: 409 }
+        );
       }
     }
 

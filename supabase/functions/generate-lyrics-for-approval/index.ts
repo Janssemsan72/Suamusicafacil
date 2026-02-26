@@ -67,118 +67,89 @@ serve(async (req) => {
       timestamp: new Date().toISOString()
     });
 
-    // 1. Buscar order e quiz (desambiguando relação)
-    // ✅ CORREÇÃO: Adicionar retry com delay para garantir que o status foi commitado
+    // 1. Buscar order (sem join - evita erro de FK ausente no PostgREST)
     let order: any = null;
     let orderError: any = null;
     const maxRetries = 3;
     
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      // Aguardar um pouco antes de verificar (especialmente na primeira tentativa)
       if (attempt > 1) {
-        const delay = attempt * 500; // 1s, 1.5s, 2s
-        console.log(`⏳ [GenerateLyricsForApproval] Tentativa ${attempt}/${maxRetries} - Aguardando ${delay}ms para garantir commit...`);
+        const delay = attempt * 500;
+        console.log(`⏳ [GenerateLyricsForApproval] Tentativa ${attempt}/${maxRetries} - Aguardando ${delay}ms...`);
         await new Promise(resolve => setTimeout(resolve, delay));
       }
       
       const { data: orderData, error: orderErr } = await supabaseClient
-      .from('orders')
-      .select('id, quiz_id, customer_email, status, paid_at, quizzes:quiz_id(*)')
-      .eq('id', order_id)
-      .single();
+        .from('orders')
+        .select('id, quiz_id, customer_email, status, paid_at, plan')
+        .eq('id', order_id)
+        .single();
 
       order = orderData;
       orderError = orderErr;
       
-    if (orderError || !order) {
+      if (orderError || !order) {
         console.error(`❌ [GenerateLyricsForApproval] Erro ao buscar pedido (tentativa ${attempt}/${maxRetries}):`, {
-        order_id: order_id,
-        error: orderError,
-        message: orderError?.message
-      });
-        if (attempt < maxRetries) continue;
-        
-      return new Response(
-        JSON.stringify({ 
-          success: false,
-          error: `Order não encontrado: ${orderError?.message || 'Pedido não existe'}` 
-        }),
-        { headers: corsHeaders, status: 404 }
-      );
-    }
-
-      // ✅ CORREÇÃO: Verificar status com retry - pode haver delay no commit
-    if (order.status !== 'paid') {
-        console.warn(`⚠️ [GenerateLyricsForApproval] Pedido não está marcado como pago ainda (tentativa ${attempt}/${maxRetries}):`, {
-          order_id: order_id,
-          current_status: order.status,
-          customer_email: order.customer_email,
-          paid_at: order.paid_at
+          order_id, error: orderError, message: orderError?.message
         });
-        
-        // Se não for a última tentativa, tentar novamente
-        if (attempt < maxRetries) {
-          continue;
-        }
-        
-        // Na última tentativa, retornar erro
-        console.error('❌ [GenerateLyricsForApproval] Pedido não está marcado como pago após todas as tentativas:', {
-        order_id: order_id,
-        current_status: order.status,
-        customer_email: order.customer_email
-      });
-      return new Response(
-        JSON.stringify({ 
-          success: false,
-          error: `Pedido não está marcado como pago. Status atual: ${order.status}. A letra só pode ser gerada quando o pedido estiver com status 'paid'.` 
-        }),
-        { headers: corsHeaders, status: 400 }
+        if (attempt < maxRetries) continue;
+        return new Response(
+          JSON.stringify({ success: false, error: `Order não encontrado: ${orderError?.message || 'Pedido não existe'}` }),
+          { headers: corsHeaders, status: 404 }
         );
       }
-      
-      // Se chegou aqui, o pedido está pago
+
+      if (order.status !== 'paid') {
+        console.warn(`⚠️ [GenerateLyricsForApproval] Pedido não pago (tentativa ${attempt}/${maxRetries}): status=${order.status}`);
+        if (attempt < maxRetries) continue;
+        return new Response(
+          JSON.stringify({ success: false, error: `Pedido não está marcado como pago. Status atual: ${order.status}` }),
+          { headers: corsHeaders, status: 400 }
+        );
+      }
       break;
     }
     
     if (!order) {
       return new Response(
-        JSON.stringify({ 
-          success: false,
-          error: 'Erro ao buscar pedido após todas as tentativas' 
-        }),
+        JSON.stringify({ success: false, error: 'Erro ao buscar pedido após todas as tentativas' }),
         { headers: corsHeaders, status: 500 }
       );
     }
 
-    if (!order.quizzes) {
-      console.error('❌ [GenerateLyricsForApproval] Quiz não encontrado:', {
-        order_id: order_id,
-        quiz_id: order.quiz_id
-      });
+    // 2. Buscar quiz separadamente (evita dependência de FK no PostgREST)
+    if (!order.quiz_id) {
+      console.error('❌ [GenerateLyricsForApproval] Pedido sem quiz_id:', order_id);
       return new Response(
-        JSON.stringify({ 
-          success: false,
-          error: 'Quiz não encontrado para este order' 
-        }),
+        JSON.stringify({ success: false, error: 'Pedido não tem quiz_id vinculado' }),
         { headers: corsHeaders, status: 404 }
       );
     }
 
-    // quizzes:quiz_id(*) retorna um array, pegar o primeiro elemento
-    const quiz = Array.isArray(order.quizzes) ? order.quizzes[0] : order.quizzes;
-    if (!quiz) {
-      console.error('❌ [GenerateLyricsForApproval] Quiz inválido:', {
-        order_id: order_id,
-        quizzes: order.quizzes
+    const { data: quizData, error: quizError } = await supabaseClient
+      .from('quizzes')
+      .select('*')
+      .eq('id', order.quiz_id)
+      .single();
+
+    if (quizError || !quizData) {
+      console.error('❌ [GenerateLyricsForApproval] Quiz não encontrado:', {
+        order_id, quiz_id: order.quiz_id, error: quizError?.message
       });
       return new Response(
-        JSON.stringify({ 
-          success: false,
-          error: 'Quiz inválido para este order' 
-        }),
+        JSON.stringify({ success: false, error: `Quiz não encontrado: ${quizError?.message || 'Quiz não existe'}` }),
         { headers: corsHeaders, status: 404 }
       );
     }
+
+    let quiz = quizData;
+    // Compatibilidade: adicionar quiz como propriedade do order
+    order.quizzes = quiz;
+
+    console.log('✅ [GenerateLyricsForApproval] Order e Quiz carregados:', {
+      order_id, quiz_id: quiz.id, has_answers: !!quiz.answers,
+      style: quiz.style, vocal_gender: quiz.vocal_gender
+    });
 
     // ✅ CORREÇÃO: Verificar se existe job pendente que pode ser reutilizado
     // Se existe um job pending/processing sem letras, usar ele em vez de criar novo
@@ -323,6 +294,12 @@ serve(async (req) => {
       const answers = typeof quiz.answers === 'string' ? JSON.parse(quiz.answers) : quiz.answers;
       approvedLyrics = typeof answers?.approved_lyrics === 'string' ? answers.approved_lyrics.trim() : null;
       approvedLyricsTitle = typeof answers?.approved_lyrics_title === 'string' ? answers.approved_lyrics_title.trim() : null;
+      // Fallback: cliente viu a letra no passo 2 e foi para pagamento → tratar generated_lyrics como aprovada
+      if (!approvedLyrics && typeof answers?.generated_lyrics === 'string' && answers.generated_lyrics.trim()) {
+        approvedLyrics = answers.generated_lyrics.trim();
+        approvedLyricsTitle = typeof answers?.generated_lyrics_title === 'string' ? answers.generated_lyrics_title.trim() : null;
+        console.log('✅ [GenerateLyricsForApproval] Usando generated_lyrics como fallback (cliente foi para pagamento com essa letra)');
+      }
     } catch (parseError) {
       console.warn('⚠️ [GenerateLyricsForApproval] Erro ao parsear answers do quiz:', parseError);
     }
@@ -341,7 +318,7 @@ serve(async (req) => {
           .from('jobs')
           .update({
             gpt_lyrics: generatedLyrics,
-            status: 'completed',
+            status: 'processing',
             updated_at: new Date().toISOString()
           })
           .eq('id', job.id);

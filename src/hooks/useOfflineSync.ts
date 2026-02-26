@@ -21,18 +21,7 @@ export function useOfflineSync() {
   const syncIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  /**
-   * Atualizar status online/offline
-   */
-  const updateOnlineStatus = useCallback(() => {
-    const isOnline = navigator.onLine;
-    setState((prev) => ({ ...prev, isOnline }));
 
-    // Se voltou online, tentar sincronizar
-    if (isOnline && state.pendingCount > 0) {
-      syncAllQueues();
-    }
-  }, [state.pendingCount]);
 
   /**
    * Atualizar contagem de ações pendentes
@@ -109,6 +98,19 @@ export function useOfflineSync() {
     },
     [state.isSyncing, state.isOnline, updatePendingCount]
   );
+
+  /**
+   * Atualizar status online/offline
+   */
+  const updateOnlineStatus = useCallback(() => {
+    const isOnline = navigator.onLine;
+    setState((prev) => ({ ...prev, isOnline }));
+
+    // Se voltou online, tentar sincronizar
+    if (isOnline && state.pendingCount > 0) {
+      syncAllQueues();
+    }
+  }, [state.pendingCount, syncAllQueues]);
 
   /**
    * Limpar fila específica

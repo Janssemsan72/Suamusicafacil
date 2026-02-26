@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface OrderPublic {
@@ -35,7 +35,7 @@ export function useOrderPublic(magicToken: string | null) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     if (!magicToken) {
       setLoading(false);
       return;
@@ -70,11 +70,11 @@ export function useOrderPublic(magicToken: string | null) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [magicToken]);
 
   useEffect(() => {
     fetchOrder();
-  }, [magicToken]);
+  }, [fetchOrder]);
 
   return { data, loading, error, refetch: fetchOrder };
 }

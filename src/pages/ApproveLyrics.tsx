@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,19 +22,7 @@ export default function ApproveLyrics() {
   const [showRejectForm, setShowRejectForm] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
 
-  useEffect(() => {
-    if (!token) {
-      toast.error("Token inválido", {
-        description: "Link de aprovação inválido ou expirado.",
-      });
-      navigate('/');
-      return;
-    }
-
-    loadApproval();
-  }, [token]);
-
-  const loadApproval = async () => {
+  const loadApproval = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -118,7 +106,19 @@ export default function ApproveLyrics() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [action, navigate, token]);
+
+  useEffect(() => {
+    if (!token) {
+      toast.error("Token inválido", {
+        description: "Link de aprovação inválido ou expirado.",
+      });
+      navigate('/');
+      return;
+    }
+
+    loadApproval();
+  }, [loadApproval, navigate, token]);
 
   const handleApprove = async () => {
     setProcessing(true);

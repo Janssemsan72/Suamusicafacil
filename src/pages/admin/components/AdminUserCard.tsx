@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Trash2, Activity, Edit, Mail, Calendar, Shield, CheckCircle2, XCircle, Save, Loader2, Copy, Check } from "@/lib/icons";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -59,13 +59,7 @@ export default function AdminUserCard({
   };
 
   // Carregar permissões quando o dialog abrir
-  useEffect(() => {
-    if (showPermissionsDialog) {
-      loadPermissions();
-    }
-  }, [showPermissionsDialog, userId]);
-
-  const loadPermissions = async () => {
+  const loadPermissions = useCallback(async () => {
     setLoadingPermissions(true);
     try {
       // Buscar permissões do colaborador
@@ -102,7 +96,13 @@ export default function AdminUserCard({
     } finally {
       setLoadingPermissions(false);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    if (showPermissionsDialog) {
+      loadPermissions();
+    }
+  }, [showPermissionsDialog, loadPermissions]);
 
   const handlePermissionChange = (permissionKey: string, granted: boolean) => {
     setPermissions(prev => ({

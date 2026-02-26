@@ -211,16 +211,17 @@ serve(async (req: Request) => {
     let orderError: any = null;
     
     try {
-      const queryPromise = supabaseClient
+      // Buscar order (sem join - FK não existe)
+      const orderQueryPromise = supabaseClient
         .from('orders')
-        .select('*, quizzes!orders_quiz_id_fkey(*)')
+        .select('*')
         .eq('id', order_id)
         .single() as Promise<{ data: any; error: any }>;
       
       const queryResult = await withRetry(
         async () => {
           return await withTimeout(
-            queryPromise,
+            orderQueryPromise,
             TIMEOUTS.DATABASE_QUERY,
             'Timeout ao buscar pedido'
           );
@@ -233,6 +234,33 @@ serve(async (req: Request) => {
       }
       
       order = queryResult.data;
+
+      // Buscar quiz separadamente pelo quiz_id do order
+      if (order?.quiz_id) {
+        const quizQueryPromise = supabaseClient
+          .from('quizzes')
+          .select('*')
+          .eq('id', order.quiz_id)
+          .single() as Promise<{ data: any; error: any }>;
+        
+        const quizResult = await withRetry(
+          async () => {
+            return await withTimeout(
+              quizQueryPromise,
+              TIMEOUTS.DATABASE_QUERY,
+              'Timeout ao buscar quiz'
+            );
+          },
+          RETRY_CONFIGS.DATABASE
+        );
+
+        if (quizResult.error) {
+          console.warn('⚠️ Erro ao buscar quiz:', quizResult.error);
+        }
+        if (order) {
+          order.quizzes = quizResult.data || null;
+        }
+      }
     } catch (error) {
       orderError = error;
       console.error('❌ [NotifyPaymentWebhook] Erro ao buscar pedido:', orderError);
@@ -493,134 +521,104 @@ serve(async (req: Request) => {
     
     let emailResult: { success: boolean; error?: string; emailId?: string } = { success: false };
     
-    // ✅ REMOVIDO: Envio de WhatsApp - apenas email agora
-    console.log('📧 [NotifyPaymentWebhook] Enviando apenas email de confirmação (WhatsApp removido)');
-    
-    // ✅ RETRY LOGIC ROBUSTO: Até 5 tentativas com backoff exponencial
-    const maxRetries = 5;
-    let lastError: any = null;
-    let emailSent = false;
-    
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    console.log('📧 [NotifyPaymentWebhook] Enviando email de confirmação de pagamento...');
+
+    const customerName = order.customer_name 
+      || (order.quizzes as any)?.answers?.customer_name
+      || order.customer_email?.split('@')[0] 
+      || 'Cliente';
+    const aboutWho = (order.quizzes as any)?.about_who || 'pessoa especial';
+    const musicStyle = (order.quizzes as any)?.style || 'Pop';
+
+    const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    if (!resendApiKey) {
+      console.error('❌ [NotifyPaymentWebhook] RESEND_API_KEY não configurada');
+      emailResult = { success: false, error: 'RESEND_API_KEY not configured' };
+    } else {
+      const fromEmailEnv = Deno.env.get('RESEND_FROM_EMAIL') || Deno.env.get('EMAIL_FROM') || 'suport@suamusicafacil.com.br';
+      const fromAddress = `Sua Música Fácil <${fromEmailEnv.trim()}>`;
+      
+      const paidDate = order.paid_at ? new Date(order.paid_at) : new Date();
+      const paidDateFormatted = paidDate.toLocaleDateString('pt-BR', {
+        day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+
+      const subject = `✅ Pagamento confirmado - Sua música para ${aboutWho}`;
+      const html = `
+        <div style="font-family:'Segoe UI',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)">
+          <div style="background:linear-gradient(135deg,#7c3aed 0%,#a855f7 100%);padding:32px 24px;text-align:center">
+            <h1 style="color:#ffffff;margin:0;font-size:24px">✅ Pagamento Confirmado!</h1>
+          </div>
+          <div style="padding:32px 24px">
+            <p style="font-size:16px;color:#333">Olá <strong>${customerName}</strong>,</p>
+            <p style="font-size:16px;color:#555">Seu pagamento foi confirmado com sucesso! Agora estamos preparando sua música personalizada para <strong>${aboutWho}</strong>.</p>
+            
+            <div style="background:#f8f5ff;border-radius:8px;padding:20px;margin:24px 0;border-left:4px solid #7c3aed">
+              <p style="color:#5b21b6;margin:0 0 8px;font-weight:600">Detalhes do pedido:</p>
+              <p style="color:#333;margin:4px 0">Para: <strong>${aboutWho}</strong></p>
+              <p style="color:#333;margin:4px 0">Estilo: <strong>${musicStyle}</strong></p>
+              <p style="color:#333;margin:4px 0">Confirmado em: <strong>${paidDateFormatted}</strong></p>
+            </div>
+            
+            <div style="background:#f8f5ff;border-radius:8px;padding:16px;margin:24px 0;border-left:4px solid #a855f7">
+              <p style="color:#5b21b6;margin:0;font-size:14px">⏳ <strong>Próximo passo:</strong> Estamos compondo sua música. Você receberá outro email assim que ela estiver pronta para download!</p>
+            </div>
+
+            <p style="color:#666;font-size:14px;text-align:center">Obrigado por escolher o Sua Música Fácil! 💜</p>
+          </div>
+          <div style="background:#f4f0ff;padding:16px 24px;text-align:center">
+            <p style="color:#999;font-size:12px;margin:0">Sua Música Fácil</p>
+            <p style="color:#bbb;font-size:11px;margin:4px 0 0">suamusicafacil.com.br</p>
+          </div>
+        </div>`;
+
       try {
-        console.log(`📧 [NotifyPaymentWebhook] Tentativa ${attempt}/${maxRetries} de enviar email...`, {
-          order_id: order.id,
-          customer_email: order.customer_email,
-          language: quizLanguage,
-          template_type: 'order_paid',
-          paid_at: order.paid_at,
-          provider: order.provider,
-          caller_info: callerInfo,
-        });
-        
-        const { data: emailData, error: emailError } = await supabaseClient.functions.invoke('send-email-with-variables', {
-          body: {
-            template_type: 'order_paid',
-            order_id: order.id,
-            language: quizLanguage,
-            to_email: order.customer_email,
+        const emailResponse = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${resendApiKey}`,
+            'Content-Type': 'application/json',
           },
+          body: JSON.stringify({
+            from: fromAddress,
+            to: [order.customer_email],
+            subject,
+            html,
+            reply_to: fromEmailEnv.trim(),
+          }),
         });
 
-        if (emailError) {
-          lastError = emailError;
-          console.error(`❌ [NotifyPaymentWebhook] Erro ao chamar send-email-with-variables (tentativa ${attempt}/${maxRetries}):`, {
-            error: emailError.message,
-            name: emailError.name,
-            order_id: order.id,
-          });
-          
-          // Se não for a última tentativa, aguardar antes de tentar novamente (backoff exponencial)
-          if (attempt < maxRetries) {
-            const delayMs = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s, 16s
-            console.log(`⏳ [NotifyPaymentWebhook] Aguardando ${delayMs}ms antes da próxima tentativa...`);
-            await new Promise(resolve => setTimeout(resolve, delayMs));
-            continue;
+        if (emailResponse.ok) {
+          const emailData = await emailResponse.json();
+          console.log('✅ [NotifyPaymentWebhook] Email enviado:', emailData.id);
+          emailResult = { success: true, emailId: emailData.id };
+
+          try {
+            await supabaseClient.from('email_logs').insert({
+              email_type: 'order_paid',
+              recipient_email: order.customer_email,
+              resend_email_id: emailData.id,
+              order_id: order.id,
+              template_used: 'order_paid_inline',
+              status: 'sent',
+              metadata: { customer_name: customerName, about_who: aboutWho, caller_info: callerInfo },
+            });
+          } catch (logErr) {
+            console.warn('⚠️ [NotifyPaymentWebhook] Erro ao registrar log:', logErr);
           }
-          
-          emailResult = { success: false, error: emailError.message };
-          break;
-        } else if (emailData?.success) {
-          console.log('✅ [NotifyPaymentWebhook] Email enviado com sucesso:', {
-            order_id: order.id,
-            email_id: emailData.email_id,
-            recipient: order.customer_email,
-            template_type: 'order_paid',
-            language: quizLanguage,
-            paid_at: order.paid_at,
-            provider: order.provider,
-            caller_info: callerInfo,
-            attempt: attempt,
-          });
-          emailResult = { success: true, emailId: emailData.email_id };
-          emailSent = true;
-          break;
         } else {
-          lastError = emailData?.error || 'Erro ao enviar email';
-          console.error(`❌ [NotifyPaymentWebhook] Email não foi enviado (tentativa ${attempt}/${maxRetries}):`, {
-            order_id: order.id,
-            error: lastError,
-            recipient: order.customer_email,
-            caller_info: callerInfo,
-          });
-          
-          // Se não for a última tentativa, aguardar antes de tentar novamente
-          if (attempt < maxRetries) {
-            const delayMs = Math.pow(2, attempt) * 1000;
-            console.log(`⏳ [NotifyPaymentWebhook] Aguardando ${delayMs}ms antes da próxima tentativa...`);
-            await new Promise(resolve => setTimeout(resolve, delayMs));
-            continue;
-          }
-          
-          emailResult = { success: false, error: lastError };
-          break;
+          const errText = await emailResponse.text();
+          console.error('❌ [NotifyPaymentWebhook] Resend erro:', errText);
+          emailResult = { success: false, error: errText };
         }
-      } catch (emailErr) {
-        lastError = emailErr;
-        console.error(`❌ [NotifyPaymentWebhook] Exceção ao enviar email (tentativa ${attempt}/${maxRetries}):`, {
-          error: emailErr instanceof Error ? emailErr.message : String(emailErr),
-          stack: emailErr instanceof Error ? emailErr.stack : undefined,
-          order_id: order.id,
-        });
-        
-        // Se não for a última tentativa, aguardar antes de tentar novamente
-        if (attempt < maxRetries) {
-          const delayMs = Math.pow(2, attempt) * 1000;
-          console.log(`⏳ [NotifyPaymentWebhook] Aguardando ${delayMs}ms antes da próxima tentativa...`);
-          await new Promise(resolve => setTimeout(resolve, delayMs));
-          continue;
-        }
-        
-        emailResult = { 
-          success: false, 
-          error: emailErr instanceof Error ? emailErr.message : 'Erro ao enviar email' 
-        };
-        break;
+      } catch (emailErr: any) {
+        console.error('❌ [NotifyPaymentWebhook] Exceção ao enviar:', emailErr);
+        emailResult = { success: false, error: emailErr.message || 'Erro ao enviar email' };
       }
     }
-    
-    if (!emailSent && lastError) {
-      console.error('❌ [NotifyPaymentWebhook] Falha ao enviar email após todas as tentativas:', {
-        order_id: order.id,
-        attempts: maxRetries,
-        last_error: lastError instanceof Error ? lastError.message : String(lastError),
-      });
-    }
-
-    // ✅ REMOVIDO: Código de WhatsApp removido completamente
-    // Funil e mensagens WhatsApp não são mais usados
-
-    // Log resumo do envio
-    console.log('📊 [NotifyPaymentWebhook] Resumo do envio:');
-    console.log(`   Email: ${emailResult.success ? '✅ Enviado' : '❌ Falhou'} ${emailResult.error ? `(${emailResult.error})` : ''}`);
 
     const overallSuccess = emailResult.success;
-
-    if (overallSuccess) {
-      console.log('✅ [NotifyPaymentWebhook] Email enviado com sucesso');
-    } else {
-      console.error('❌ [NotifyPaymentWebhook] Falha ao enviar email');
-    }
+    console.log(`📊 [NotifyPaymentWebhook] Email: ${overallSuccess ? '✅ Enviado' : '❌ Falhou'}`);
 
     return new Response(
       JSON.stringify({

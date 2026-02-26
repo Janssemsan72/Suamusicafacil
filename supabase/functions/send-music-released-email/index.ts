@@ -56,23 +56,10 @@ serve(async (req) => {
     // ✅ CORREÇÃO: Usar SERVICE_ROLE para buscar dados
     const supabase = getSupabaseAdmin();
 
-    // Buscar música com relationships desambiguadas (orders e quizzes)
+    // Buscar música
     const { data: song, error: songError } = await supabase
       .from("songs")
-      .select(`
-        *,
-        orders:order_id (
-          id,
-          customer_email,
-          user_id,
-          quiz_id,
-          magic_token
-        ),
-        quizzes:quiz_id (
-          about_who,
-          style
-        )
-      `)
+      .select("*")
       .eq("id", songId)
       .single();
 
@@ -83,6 +70,30 @@ serve(async (req) => {
         { status: 404, headers: corsHeaders }
       );
     }
+
+    // Buscar order separadamente
+    let orderData: any = null;
+    if (song.order_id) {
+      const { data } = await supabase
+        .from("orders")
+        .select("id, customer_email, customer_name, user_id, quiz_id, magic_token")
+        .eq("id", song.order_id)
+        .single();
+      orderData = data;
+    }
+    song.orders = orderData;
+
+    // Buscar quiz separadamente
+    let quizData: any = null;
+    if (song.quiz_id) {
+      const { data } = await supabase
+        .from("quizzes")
+        .select("about_who, style")
+        .eq("id", song.quiz_id)
+        .single();
+      quizData = data;
+    }
+    song.quizzes = quizData;
 
     console.log(`[${errorId}] ✅ Song loaded: ${song.title}`);
 
@@ -140,23 +151,54 @@ serve(async (req) => {
     const [tplPtResult, tplLangResult] = templateResults;
     const template = tplLangResult.data || tplPtResult.data;
 
+    const fallbackTemplate = {
+      template_type: 'music_released',
+      subject: '🎵 Sua música "{{song_title_1}}" está pronta!',
+      html_content: `
+        <div style="font-family:'Segoe UI',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)">
+          <div style="background:linear-gradient(135deg,#7c3aed 0%,#a855f7 100%);padding:32px 24px;text-align:center">
+            <h1 style="color:#ffffff;margin:0;font-size:24px">🎶 Sua música está pronta!</h1>
+          </div>
+          <div style="padding:32px 24px">
+            <p style="font-size:16px;color:#333">Olá <strong>{{customer_name}}</strong>,</p>
+            <p style="font-size:16px;color:#555">Sua música personalizada para <strong>{{recipient_name}}</strong> ficou incrível! Preparamos duas versões para você escolher a favorita.</p>
+            
+            <div style="background:#f8f5ff;border-radius:8px;padding:20px;margin:24px 0">
+              <h2 style="color:#7c3aed;margin:0 0 8px;font-size:20px">{{song_title_1}}</h2>
+              <p style="color:#666;margin:0;font-size:14px">Estilo: {{music_style}} | Duração: {{duration}}</p>
+            </div>
+            
+            <div style="text-align:center;margin:32px 0">
+              <a href="{{download_url_1}}" style="background:#7c3aed;color:#ffffff;padding:14px 32px;text-decoration:none;border-radius:8px;display:inline-block;font-size:16px;font-weight:600">⬇️ Baixar Versão 1</a>
+            </div>
+            <div style="text-align:center;margin:16px 0 32px">
+              <a href="{{download_url_2}}" style="background:#9333ea;color:#ffffff;padding:14px 32px;text-decoration:none;border-radius:8px;display:inline-block;font-size:16px;font-weight:600">⬇️ Baixar Versão 2</a>
+            </div>
+            
+            <p style="color:#666;font-size:14px;text-align:center">Esperamos que você e {{recipient_name}} amem essa música! 💜</p>
+          </div>
+          <div style="background:#f4f0ff;padding:16px 24px;text-align:center">
+            <p style="color:#999;font-size:12px;margin:0">Sua Música Fácil - {{release_date}}</p>
+            <p style="color:#bbb;font-size:11px;margin:4px 0 0">suamusicafacil.com.br</p>
+          </div>
+        </div>`,
+      from_email: 'suport@suamusicafacil.com.br',
+      from_name: 'Sua Música Fácil',
+    };
+
     if (!template) {
-      console.error(`[${errorId}] Template music_released não encontrado em email_templates_i18n (lang=${language})`);
-      return new Response(
-        JSON.stringify({ error: `Template não encontrado em email_templates_i18n`, errorId }),
-        { status: 404, headers: corsHeaders }
-      );
+      console.warn(`[${errorId}] Template não encontrado no banco, usando fallback embutido`);
     }
+    const finalTemplate = template || fallbackTemplate;
 
-    logLanguageDetection(song.order_id, language, 'music_released_email', song.orders.customer_email);
+    logLanguageDetection(song.order_id, language, 'music_released_email', song.orders?.customer_email);
     console.log(`[${errorId}] 🌍 Idioma detectado: ${language}`);
-    console.log(`[${errorId}] ✅ Template encontrado: ${template.template_type}`);
+    console.log(`[${errorId}] ✅ Template: ${finalTemplate.template_type}`);
 
-    // Priorizar RESEND_FROM_EMAIL/EMAIL_FROM, senão usar template (domínio suamusicafacil.com está verificado)
     const fromEmailEnv = Deno.env.get('RESEND_FROM_EMAIL') || Deno.env.get('EMAIL_FROM');
     const appName = Deno.env.get('APP_NAME') || 'Sua Música Fácil';
-    const templateEmail = template.from_email || 'contato@suamusicafacil.com';
-    const templateName = template.from_name || appName;
+    const templateEmail = finalTemplate.from_email || 'suport@suamusicafacil.com.br';
+    const templateName = finalTemplate.from_name || appName;
 
     // RESEND_FROM_EMAIL/EMAIL_FROM tem prioridade, senão usa template
     let fromAddress: string;
@@ -168,11 +210,11 @@ serve(async (req) => {
       console.log(`[${errorId}] 📧 Usando email do template (domínio verificado): ${fromAddress}`);
     }
 
-    // Nome do cliente (já buscado em paralelo)
-    let customerName = song.orders?.customer_email?.split("@")[0] || 'Cliente';
-    if (profileResult.data?.display_name) {
-      customerName = profileResult.data.display_name;
-    }
+    // Nome do cliente: prioridade customer_name da order, depois profile, depois email
+    let customerName = song.orders?.customer_name
+      || profileResult.data?.display_name
+      || song.orders?.customer_email?.split("@")[0]
+      || 'Cliente';
 
     // Data de lançamento
     const releaseDate = new Date();
@@ -182,11 +224,10 @@ serve(async (req) => {
       year: "numeric",
     });
 
-    // ✅ CORREÇÃO: Construir links apontando para o site (suamusicafacil.com) em vez do Supabase
-    const siteUrl = Deno.env.get('SITE_URL') || 'https://suamusicafacil.com';
-    const download1 = `${siteUrl}/download/${allSongs[0].id}/${song.orders.magic_token}`;
+    // Links diretos para os arquivos no Supabase Storage
+    const download1 = allSongs[0]?.audio_url || '';
     const download2 = allSongs.length > 1 
-      ? `${siteUrl}/download/${allSongs[1].id}/${song.orders.magic_token}`
+      ? (allSongs[1]?.audio_url || download1)
       : download1;
 
     const variables = {
@@ -208,8 +249,8 @@ serve(async (req) => {
     const replaceVars = (text: string) => 
       text.replace(/\{\{(\w+)\}\}/g, (_, k) => variables[k] ?? '');
 
-    const subject = replaceVars(template.subject);
-    const html = replaceVars(template.html_content);
+    const subject = replaceVars(finalTemplate.subject);
+    const html = replaceVars(finalTemplate.html_content);
 
     console.log(`[${errorId}] 📧 Enviando email via Resend...`);
 
@@ -225,7 +266,7 @@ serve(async (req) => {
         to: [song.orders?.customer_email || 'test@example.com'],
         subject,
         html,
-        reply_to: template.reply_to,
+        reply_to: finalTemplate.reply_to || fromEmailEnv || templateEmail,
         headers: {
           'X-Entity-Ref-ID': 'noreply', // Previne avatar automático no Gmail/Outlook
         },
@@ -244,30 +285,29 @@ serve(async (req) => {
     const emailData = await emailResponse.json();
     console.log(`[${errorId}] ✅ Email enviado! Resend ID: ${emailData.id}`);
 
-    const logPromise = supabase.from('email_logs').insert({
-      email_type: 'music_released',
-      recipient_email: song.orders?.customer_email || 'test@example.com',
-      resend_email_id: emailData.id,
-      song_id: songId,
-      order_id: song.order_id,
-      template_used: `music_released_${language}`,
-      status: "sent",
-      metadata: { 
-        customer_name: customerName,
-        song_title_1: allSongs[0].title,
-        song_title_2: allSongs.length > 1 ? allSongs[1].title : "",
-        variant_count: allSongs.length,
-        release_date: releaseDateFormatted,
-        language: language,
-        error_id: errorId 
-      },
-    }).catch((error) => {
-      console.warn(`[${errorId}] ⚠️ Erro ao registrar log (não bloqueante):`, error);
-    });
-
-    logPromise.then(() => {
-      console.log(`[${errorId}] ✅ Log processado`);
-    });
+    try {
+      await supabase.from('email_logs').insert({
+        email_type: 'music_released',
+        recipient_email: song.orders?.customer_email || 'test@example.com',
+        resend_email_id: emailData.id,
+        song_id: songId,
+        order_id: song.order_id,
+        template_used: `music_released_${language}`,
+        status: "sent",
+        metadata: { 
+          customer_name: customerName,
+          song_title_1: allSongs[0]?.title,
+          song_title_2: allSongs.length > 1 ? allSongs[1]?.title : "",
+          variant_count: allSongs.length,
+          release_date: releaseDateFormatted,
+          language: language,
+          error_id: errorId 
+        },
+      });
+      console.log(`[${errorId}] ✅ Log de email registrado`);
+    } catch (logErr) {
+      console.warn(`[${errorId}] ⚠️ Erro ao registrar log (não bloqueante):`, logErr);
+    }
 
     return new Response(
       JSON.stringify({ 

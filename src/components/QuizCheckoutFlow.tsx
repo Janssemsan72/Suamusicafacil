@@ -17,6 +17,7 @@ import {
   saveQuizStepState,
   clearQuizStepState,
 } from "@/utils/quizSync";
+import { generateCaktoUrl } from "@/utils/checkoutLinks";
 import {
   normalizeStyle,
   parseAnswers,
@@ -26,9 +27,9 @@ import {
   QuizStepIndicator,
   QuizDetailsForm,
   QuizLyricsStep,
-  QuizPaymentStep,
   type QuizFormState,
 } from "@/components/quiz";
+import { Loader2 } from "@/lib/icons";
 
 type QuizCheckoutFlowProps = {
   mode?: "modal" | "page";
@@ -47,8 +48,13 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [paymentProgress, setPaymentProgress] = useState(0);
   const [hasRejectedOnce, setHasRejectedOnce] = useState(false);
+  const [redirectError, setRedirectError] = useState<string | null>(null);
+  const [pendingOrderId, setPendingOrderId] = useState<string | null>(null);
+  const redirectStartedRef = useRef(false);
   const autosaveTimeoutRef = useRef<number | null>(null);
   const lastAutosaveRef = useRef<{ title: string; text: string } | null>(null);
+  /** Guarda o quiz_id retornado pelo create-checkout para conferência no log de handleGoToPayment (quizId === response_quiz_id). */
+  const lastResponseQuizIdFromCheckoutRef = useRef<string | null>(null);
 
   const sessionId = useMemo(() => getOrCreateQuizSessionId(), []);
 
@@ -194,18 +200,87 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
     persistCheckoutDraft(sanitized);
 
     return { success: true, quizId: savedQuizId };
-  }, [buildQuizData, persistCheckoutDraft, sessionId]);
+  }, [buildQuizData, persistCheckoutDraft, sessionId, formState]);
 
   const handleNextFromDetails = useCallback(async () => {
     const result = await persistQuiz();
-    if (result.success) {
+    if (!result.success) return;
+
+    setErrorMessage(null);
+    try {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const email = formState.email?.trim();
+      const whatsapp = formState.whatsapp?.trim();
+      if (!email || !whatsapp) {
+        setErrorMessage("E-mail e WhatsApp são obrigatórios.");
+        return;
+      }
+      const messageText = (formState.message && formState.message.trim()) || "Música personalizada";
+      const aboutWho = (formState.aboutWho && formState.aboutWho.trim()) || "Cliente";
+      const style = (formState.style && formState.style.trim()) || "pop";
+      const quizPayload = {
+        about_who: aboutWho,
+        relationship: formState.relationship || formState.customRelationship || "",
+        occasion: formState.occasion || "",
+        style,
+        language: "pt",
+        vocal_gender: formState.vocalGender || null,
+        message: messageText,
+        qualities: null,
+        memories: null,
+        key_moments: null,
+        desired_tone: null,
+        answers: {
+          approved_lyrics: null,
+          approved_lyrics_title: null,
+          customer_name: formState.customerName || null,
+        },
+      };
+      // #region agent log
+      fetch('http://127.0.0.1:7248/ingest/60dc581b-3e59-43ad-b4ac-15455495ba58', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '110b4e' }, body: JSON.stringify({ sessionId: '110b4e', runId: 'orders-save', hypothesisId: 'H1-H2', location: 'QuizCheckoutFlow.tsx:create-checkout-step1', message: 'Before create-checkout (step1->2)', data: { session_id: sessionId, customer_email: email, has_quiz: !!quizPayload?.about_who }, timestamp: Date.now() }) }).catch(() => { });
+      // #endregion
+      const { data: checkoutResult, error: checkoutError } = await supabase.functions.invoke("create-checkout", {
+        body: {
+          session_id: sessionId,
+          quiz: quizPayload,
+          customer_email: email,
+          customer_whatsapp: whatsapp,
+          customer_name: formState.customerName?.trim() || null,
+          plan: "express",
+          amount_cents: 3700,
+          transaction_id: crypto.randomUUID(),
+          provider: "cakto",
+        },
+      });
+      if (checkoutError || !checkoutResult?.success) {
+        const msg = checkoutResult?.error || checkoutError?.message || "Não foi possível criar o pedido. Tente novamente.";
+        setErrorMessage(msg);
+        return;
+      }
+      const orderId = checkoutResult.order_id;
+      const responseQuizId = checkoutResult.quiz_id ?? null;
+      if (!orderId) {
+        setErrorMessage("Pedido não foi criado. Tente novamente.");
+        return;
+      }
+      if (responseQuizId) {
+        lastResponseQuizIdFromCheckoutRef.current = responseQuizId;
+        setQuizId(responseQuizId);
+      }
+      // #region agent log — conferir: front_sets_quiz_id_from_response: true
+      fetch('http://127.0.0.1:7248/ingest/60dc581b-3e59-43ad-b4ac-15455495ba58', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '110b4e' }, body: JSON.stringify({ sessionId: '110b4e', hypothesisId: 'H1', location: 'QuizCheckoutFlow.tsx:after-create-checkout', message: 'Step1->2: response quiz_id vs order', data: { order_id: orderId, response_quiz_id: responseQuizId, front_sets_quiz_id_from_response: !!responseQuizId }, timestamp: Date.now() }) }).catch(() => { });
+      // #endregion
+      setPendingOrderId(orderId);
       setLyricsTitle("");
       setLyricsText("");
       setLyricsApproved(false);
       setHasRejectedOnce(false);
       setStep(2);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Erro ao criar pedido. Tente novamente.";
+      setErrorMessage(msg);
     }
-  }, [persistQuiz]);
+  }, [persistQuiz, formState, sessionId]);
 
   const handleGenerateLyrics = useCallback(async () => {
     if (isGeneratingLyrics) return;
@@ -258,8 +333,16 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
       // Salvar letra gerada no quiz imediatamente (rascunho antes da aprovação)
       if (currentQuizId) {
         const { supabase: sb } = await import("@/integrations/supabase/client");
-        const currentQuiz = loadQuizFromStorage();
-        const existingAnswers = (typeof currentQuiz?.answers === "object" && currentQuiz?.answers) || {};
+        // ✅ FIX: Buscar answers atuais do banco em vez de localStorage
+        let existingAnswers: Record<string, any> = {};
+        try {
+          const { data: dbQuiz } = await sb
+            .from("quizzes")
+            .select("answers")
+            .eq("id", currentQuizId)
+            .maybeSingle();
+          existingAnswers = (dbQuiz?.answers && typeof dbQuiz.answers === "object") ? dbQuiz.answers : {};
+        } catch { /* fallback to empty */ }
         const updatedAnswers = {
           ...existingAnswers,
           generated_lyrics: limitedText,
@@ -270,6 +353,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
           .from("quizzes")
           .update({ answers: updatedAnswers })
           .eq("id", currentQuizId);
+        const currentQuiz = loadQuizFromStorage();
         await saveQuizToStorage({
           ...(currentQuiz || {}),
           answers: updatedAnswers,
@@ -299,8 +383,16 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
       }
 
       const { supabase } = await import("@/integrations/supabase/client");
-      const currentQuiz = loadQuizFromStorage();
-      const existingAnswers = (typeof currentQuiz?.answers === "object" && currentQuiz?.answers) || {};
+      // ✅ FIX: Buscar answers atuais do banco em vez de localStorage
+      let existingAnswers: Record<string, any> = {};
+      try {
+        const { data: dbQuiz } = await supabase
+          .from("quizzes")
+          .select("answers")
+          .eq("id", currentQuizId)
+          .maybeSingle();
+        existingAnswers = (dbQuiz?.answers && typeof dbQuiz.answers === "object") ? dbQuiz.answers : {};
+      } catch { /* fallback to empty */ }
       const updatedAnswers = {
         ...existingAnswers,
         approved_lyrics: trimmedText || null,
@@ -313,6 +405,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
         .update({ answers: updatedAnswers })
         .eq("id", currentQuizId);
 
+      const currentQuiz = loadQuizFromStorage();
       await saveQuizToStorage({
         ...(currentQuiz || {}),
         answers: updatedAnswers,
@@ -338,10 +431,22 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
     setErrorMessage(null);
 
     try {
+      // #region agent log — conferir: quizId deve ser igual ao response_quiz_id do after-create-checkout
+      const response_quiz_id = lastResponseQuizIdFromCheckoutRef.current;
+      fetch('http://127.0.0.1:7248/ingest/60dc581b-3e59-43ad-b4ac-15455495ba58', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '110b4e' }, body: JSON.stringify({ sessionId: '110b4e', hypothesisId: 'H2', location: 'QuizCheckoutFlow.tsx:handleGoToPayment', message: 'Before save lyrics to DB', data: { quizId: quizId ?? null, response_quiz_id: response_quiz_id ?? null, quizId_equals_response_quiz_id: quizId != null && response_quiz_id != null && quizId === response_quiz_id, has_lyrics: !!lyricsText?.trim() }, timestamp: Date.now() }) }).catch(() => { });
+      // #endregion
       if (quizId) {
         const { supabase } = await import("@/integrations/supabase/client");
-        const currentQuiz = loadQuizFromStorage();
-        const existingAnswers = (typeof currentQuiz?.answers === "object" && currentQuiz?.answers) || {};
+        // ✅ FIX: Buscar answers atuais do banco em vez de localStorage
+        let existingAnswers: Record<string, any> = {};
+        try {
+          const { data: dbQuiz } = await supabase
+            .from("quizzes")
+            .select("answers")
+            .eq("id", quizId)
+            .maybeSingle();
+          existingAnswers = (dbQuiz?.answers && typeof dbQuiz.answers === "object") ? dbQuiz.answers : {};
+        } catch { /* fallback to empty */ }
         const updatedAnswers = {
           ...existingAnswers,
           approved_lyrics: lyricsText.trim(),
@@ -352,19 +457,14 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
           .from("quizzes")
           .update({ answers: updatedAnswers })
           .eq("id", quizId);
-      }
 
-      const currentQuiz = loadQuizFromStorage();
-      if (currentQuiz) {
-        await saveQuizToStorage({
-          ...currentQuiz,
-          answers: {
-            ...(currentQuiz.answers || {}),
-            approved_lyrics: lyricsText.trim(),
-            approved_lyrics_title: lyricsTitle.trim() || "Sua música personalizada",
-            approved_lyrics_at: new Date().toISOString(),
-          },
-        });
+        const currentQuiz = loadQuizFromStorage();
+        if (currentQuiz) {
+          await saveQuizToStorage({
+            ...currentQuiz,
+            answers: updatedAnswers,
+          });
+        }
       }
 
       setLyricsApproved(true);
@@ -411,22 +511,93 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
     };
   }, [isGeneratingLyrics, lyricsText, lyricsTitle, saveLyricsDraft, step]);
 
+  // Passo 3: redirecionar para a Cakto (usa pedido já criado no passo 1 ou cria agora como fallback)
   useEffect(() => {
-    if (step !== 3) return;
-    setPaymentProgress(0);
-    const interval = window.setInterval(() => {
-      setPaymentProgress((prev) => {
-        if (prev >= 100) {
-          window.clearInterval(interval);
-          return 100;
-        }
-        return Math.min(prev + 5, 100);
-      });
-    }, 120);
-    return () => window.clearInterval(interval);
-  }, [step]);
+    if (step !== 3 || redirectStartedRef.current) return;
+    redirectStartedRef.current = true;
+    setRedirectError(null);
 
-  // Persistir step + letra para restaurar ao retornar à página
+    const runRedirect = async () => {
+      const email = formState.email?.trim();
+      const whatsapp = formState.whatsapp?.trim();
+      if (!email || !whatsapp) {
+        setRedirectError("E-mail e WhatsApp são obrigatórios.");
+        redirectStartedRef.current = false;
+        return;
+      }
+
+      try {
+        let orderId = pendingOrderId;
+        if (!orderId) {
+          const { supabase } = await import("@/integrations/supabase/client");
+          const messageText = (formState.message && formState.message.trim()) || (lyricsText.trim().split("\n")[0] || "Música personalizada");
+          const aboutWho = (formState.aboutWho && formState.aboutWho.trim()) || "Cliente";
+          const style = (formState.style && formState.style.trim()) || "pop";
+          const quizPayload = {
+            about_who: aboutWho,
+            relationship: formState.relationship || formState.customRelationship || "",
+            occasion: formState.occasion || "",
+            style,
+            language: "pt",
+            vocal_gender: formState.vocalGender || null,
+            message: messageText,
+            qualities: null,
+            memories: null,
+            key_moments: null,
+            desired_tone: null,
+            answers: {
+              approved_lyrics: lyricsText.trim(),
+              approved_lyrics_title: lyricsTitle.trim() || "Sua música personalizada",
+              customer_name: formState.customerName || null,
+            },
+          };
+          // #region agent log
+          fetch('http://127.0.0.1:7248/ingest/60dc581b-3e59-43ad-b4ac-15455495ba58', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '110b4e' }, body: JSON.stringify({ sessionId: '110b4e', runId: 'orders-save', hypothesisId: 'H1-H2', location: 'QuizCheckoutFlow.tsx:create-checkout-step3', message: 'Before create-checkout (step3 redirect)', data: { session_id: sessionId, customer_email: email, reason: 'no_pending_order_id' }, timestamp: Date.now() }) }).catch(() => { });
+          // #endregion
+          const { data: checkoutResult, error: checkoutError } = await supabase.functions.invoke("create-checkout", {
+            body: {
+              session_id: sessionId,
+              quiz: quizPayload,
+              customer_email: email,
+              customer_whatsapp: whatsapp,
+              customer_name: formState.customerName?.trim() || null,
+              plan: "express",
+              amount_cents: 3700,
+              transaction_id: crypto.randomUUID(),
+              provider: "cakto",
+            },
+          });
+          if (checkoutError || !checkoutResult?.success) {
+            const serverMsg = checkoutResult?.error;
+            const sdkMsg = checkoutError?.message;
+            const isGenericSdk = sdkMsg?.includes('non-2xx') || sdkMsg?.includes('status code');
+            const msg = serverMsg || (isGenericSdk ? 'Não foi possível criar o pedido. Verifique os dados e tente novamente.' : sdkMsg) || 'Erro ao preparar pagamento.';
+            setRedirectError(msg);
+            redirectStartedRef.current = false;
+            return;
+          }
+          orderId = checkoutResult.order_id;
+        }
+        if (!orderId) {
+          setRedirectError("Pedido não foi criado. Tente novamente.");
+          redirectStartedRef.current = false;
+          return;
+        }
+        const caktoUrl = generateCaktoUrl(orderId, email, whatsapp, "pt");
+        window.location.replace(caktoUrl);
+      } catch (err) {
+        const raw = err instanceof Error ? err.message : "Erro ao redirecionar. Tente novamente.";
+        const isGenericSdk = raw?.includes('non-2xx') || raw?.includes('status code');
+        const msg = isGenericSdk ? 'Não foi possível criar o pedido. Verifique os dados e tente novamente.' : raw;
+        setRedirectError(msg);
+        redirectStartedRef.current = false;
+      }
+    };
+
+    runRedirect();
+  }, [step, pendingOrderId, formState.email, formState.whatsapp, formState.aboutWho, formState.relationship, formState.customRelationship, formState.occasion, formState.style, formState.vocalGender, formState.message, formState.customerName, lyricsText, lyricsTitle, sessionId]);
+
+  // Persistir step + letra + orderId para restaurar ao retornar à página
   useEffect(() => {
     if (step >= 2) {
       saveQuizStepState({
@@ -435,9 +606,10 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
         lyricsText,
         lyricsApproved,
         quizId,
+        orderId: pendingOrderId ?? undefined,
       });
     }
-  }, [step, lyricsTitle, lyricsText, lyricsApproved, quizId]);
+  }, [step, lyricsTitle, lyricsText, lyricsApproved, quizId, pendingOrderId]);
 
   useEffect(() => {
     if (mode !== "page") return;
@@ -482,6 +654,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
         setLyricsTitle(storedTitle || stepState.lyricsTitle);
         setLyricsText(storedLyrics || stepState.lyricsText);
         setLyricsApproved(!!stepState.lyricsApproved);
+        if (stepState.orderId) setPendingOrderId(stepState.orderId);
       }
     }
 
@@ -582,7 +755,25 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
         )}
 
         {step === 3 && (
-          <QuizPaymentStep paymentProgress={paymentProgress} onEditQuiz={() => setStep(1)} />
+          <div className="rounded-2xl border border-purple-100 bg-purple-50/40 p-8 flex flex-col items-center justify-center gap-4 min-h-[200px]">
+            {redirectError ? (
+              <>
+                <p className="text-sm text-red-600 text-center">{redirectError}</p>
+                <button
+                  type="button"
+                  onClick={() => { setRedirectError(null); redirectStartedRef.current = false; setStep(2); }}
+                  className="text-sm font-medium text-purple-600 hover:text-purple-700"
+                >
+                  Voltar e tentar novamente
+                </button>
+              </>
+            ) : (
+              <>
+                <Loader2 className="h-12 w-12 animate-spin text-purple-600" aria-hidden />
+                <p className="text-sm font-medium text-purple-700">Redirecionando para o pagamento...</p>
+              </>
+            )}
+          </div>
         )}
       </div>
     </div>

@@ -364,12 +364,19 @@ export default function AdminDashboard() {
       toast.info("Retentando job...");
 
       const supabase = await getSupabase();
-      // ✅ CORREÇÃO: Usar generate-lyrics-internal (Anthropic Claude) em vez de generate-lyrics (Lovable)
-      const { error } = await supabase.functions.invoke("generate-lyrics-internal", {
-        body: { job_id: jobId }
-      });
-
-      if (error) throw error;
+      
+      const targetJob = jobs.find(j => j.id === jobId);
+      if (targetJob?.order_id) {
+        const { error } = await supabase.functions.invoke("generate-lyrics-for-approval", {
+          body: { order_id: targetJob.order_id }
+        });
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.functions.invoke("generate-lyrics-internal", {
+          body: { job_id: jobId }
+        });
+        if (error) throw error;
+      }
 
       toast.success("Job reenviado com sucesso!");
       invalidateDashboardStats();

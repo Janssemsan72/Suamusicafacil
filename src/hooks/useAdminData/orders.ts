@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { queryKeys, queryClient } from '@/lib/queryClient';
-import { countOrdersPaginated, fetchRevenuePaginated, isHotmartOrder } from './utils';
+import { countOrdersPaginated, fetchRevenuePaginated } from './utils';
 
 /**
  * Hook para carregar pedidos com filtros e paginação otimizada
@@ -26,9 +26,10 @@ export function useOrders(filters?: {
     queryKey: queryKeys.orders.list(filters),
     queryFn: async () => {
       try {
+        const listFields = "id, customer_email, status, plan, created_at, payment_provider, provider, is_test_order";
         let baseQuery = supabase
           .from("orders")
-          .select("id, customer_email, status, plan, created_at")
+          .select(listFields)
           .order("created_at", { ascending: false });
 
         if (filters?.status && filters.status !== 'all') {
@@ -126,24 +127,44 @@ export function useOrders(filters?: {
             if (dataResult.error) {
               const isTableError = dataResult.error.code === '42P01' || dataResult.error.message?.includes('does not exist');
               const isPermissionError = dataResult.error.code === '42501' || dataResult.error.message?.includes('permission');
-              if (isTableError || isPermissionError) return { orders: [], total: 0 };
-              console.warn('Erro ao carregar pedidos paginados:', dataResult.error);
-              return { orders: [], total: 0 };
+              if (isTableError || isPermissionError) {
+                const err = new Error(dataResult.error.message || 'Acesso negado ou tabela não encontrada');
+                (err as any).code = dataResult.error.code;
+                throw err;
+              }
+              const isColumnError = dataResult.error.code === '400' && (dataResult.error.message?.includes('column') || dataResult.error.message?.includes('PGRST'));
+              if (isColumnError) {
+                let fallbackQuery = supabase
+                  .from("orders")
+                  .select("id, customer_email, status, created_at")
+                  .order("created_at", { ascending: false });
+                if (filters?.status && filters.status !== 'all') fallbackQuery = fallbackQuery.eq('status', filters.status);
+                const { data: fallbackData, error: fallbackError } = await fallbackQuery.range(from, to);
+                if (!fallbackError && fallbackData) {
+                  allOrders = (fallbackData as any[]).map((o) => ({ ...o, plan: null }));
+                  return { orders: allOrders, total: countResult?.count ?? allOrders.length };
+                }
+              }
+              const apiErr = new Error(dataResult.error.message || 'Erro ao carregar lista de pedidos');
+              (apiErr as any).code = dataResult.error.code;
+              throw apiErr;
             }
 
             allOrders = dataResult.data || [];
-            const totalCount = countResult.count ?? allOrders.length;
+            const totalCount = countResult?.count ?? allOrders.length;
             return { orders: allOrders, total: totalCount };
           }
         }
       } catch (error: any) {
         console.error('Erro ao carregar pedidos:', error);
-        return { orders: [], total: 0 };
+        const msg = error?.message ?? String(error);
+        const code = error?.code ?? error?.status;
+        throw new Error(code ? `[${code}] ${msg}` : msg);
       }
     },
     staleTime: 3 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchInterval: false,
     retry: (failureCount, error: any) => {
@@ -173,24 +194,8 @@ export function useOrdersStats(filters?: {
   return useQuery({
     queryKey: queryKeys.orders.stats(filters),
     queryFn: async () => {
-      if (!hasFilters) {
-        try {
-          const cachedData = queryClient.getQueryData(queryKeys.dashboard.stats());
-          if (cachedData && typeof cachedData === 'object') {
-            const dashboard = cachedData as any;
-            const pending = Math.max(0, (dashboard.totalOrders || 0) - (dashboard.paidOrders || 0));
-            return {
-              total: dashboard.totalOrders || 0,
-              paid: dashboard.paidOrders || 0,
-              totalPaid: dashboard.totalRevenueBRLConverted || 0,
-              pending,
-              conversionRate: dashboard.totalOrders > 0
-                ? ((dashboard.paidOrders || 0) / dashboard.totalOrders) * 100
-                : 0
-            };
-          }
-        } catch {}
-      }
+      // Não usar cache do dashboard: estatísticas devem vir da mesma fonte que a lista de pedidos,
+      // para evitar cards com totais corretos e lista vazia (ex.: RLS ou coluna faltando).
 
       if (filters?.search && filters.search.trim()) {
         const searchTerm = filters.search.trim();
@@ -230,9 +235,12 @@ export function useOrdersStats(filters?: {
       }
 
       let total = 0, paid = 0, pending = 0;
+      const providerFilter = filters?.provider === 'hotmart' ? 'hotmart' as const
+        : filters?.provider === 'cakto' ? 'cakto' as const
+        : undefined;
       const baseFilters = {
         status: filters?.status !== 'all' ? filters?.status : undefined,
-        provider: filters?.provider === 'hotmart' ? 'hotmart' as const : undefined,
+        provider: providerFilter,
         plan: filters?.plan !== 'all' ? filters?.plan : undefined
       };
 
@@ -250,32 +258,11 @@ export function useOrdersStats(filters?: {
       let totalPaid = 0;
       if (paid > 0) {
         const hasPlanFilter = filters?.plan && filters.plan !== 'all';
-        const hasProviderFilter = filters?.provider && filters.provider !== 'all';
 
-        if (hasProviderFilter && filters?.provider !== 'hotmart') {
-          totalPaid = 0;
-        } else if (!hasPlanFilter) {
-          totalPaid = await fetchRevenuePaginated({ provider: 'hotmart' });
+        if (!hasPlanFilter) {
+          totalPaid = await fetchRevenuePaginated();
         } else {
-          let offset = 0;
-          const pageSize = 1000;
-          let hasMore = true;
-          let totalCents = 0;
-
-          while (hasMore) {
-            let query = supabase.from("orders").select("amount_cents, payment_provider, provider").eq('status', 'paid').order("created_at", { ascending: false });
-            if (filters?.plan && filters.plan !== 'all') query = query.eq('plan', filters.plan);
-            const { data, error } = await query.range(offset, offset + pageSize - 1);
-
-            if (error) break;
-            if (!data || data.length === 0) break;
-
-            const hotmartData = data.filter(isHotmartOrder);
-            totalCents += hotmartData.reduce((sum, o) => sum + (o.amount_cents || 0), 0);
-            offset += pageSize;
-            hasMore = data.length === pageSize;
-          }
-          totalPaid = totalCents / 100;
+          totalPaid = await fetchRevenuePaginated({ plan: filters!.plan! });
         }
       }
 

@@ -1,7 +1,8 @@
 import { useFeedbackStats } from '@/hooks/useCustomerFeedbacks';
 import { useVideoStats } from '@/hooks/useReactionVideos';
 import { Loader2, MessageSquare, Video, Star, Eye } from "@/lib/icons";
-import { ADMIN_CARD_COLORS, SolidStatCard } from '@/components/admin/SolidStatCard';
+import { SolidStatCard } from '@/components/admin/SolidStatCard';
+import { ADMIN_CARD_COLORS } from "@/constants/admin";
 
 export function StatsTab() {
   const { data: feedbackStats, isLoading: loadingFeedback } = useFeedbackStats();

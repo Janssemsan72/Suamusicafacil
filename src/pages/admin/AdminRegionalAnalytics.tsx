@@ -17,7 +17,8 @@ import { BarChart3,
   MapPin,
   Flag } from "@/lib/icons";
 import { useTranslation } from '@/hooks/useTranslation';
-import { ADMIN_CARD_COLORS, SolidStatCard } from "@/components/admin/SolidStatCard";
+import { SolidStatCard } from "@/components/admin/SolidStatCard";
+import { ADMIN_CARD_COLORS } from "@/constants/admin";
 
 interface RegionalAnalytics {
   region: string;

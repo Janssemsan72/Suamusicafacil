@@ -9,7 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { EmailLogDetailModal } from "./EmailLogDetailModal";
 import { Search, Filter, Mail, CheckCircle, Clock, Eye, MousePointerClick, XCircle, AlertTriangle, Send } from "@/lib/icons";
 import { format } from "date-fns";
-import { SolidStatCard, ADMIN_CARD_COLORS } from "@/components/admin/SolidStatCard";
+import { SolidStatCard } from "@/components/admin/SolidStatCard";
+import { ADMIN_CARD_COLORS } from "@/constants/admin";
 
 interface EmailLog {
   id: string;
@@ -38,9 +39,9 @@ export function EmailLogsList() {
 
   useEffect(() => {
     loadLogs();
-  }, [filters]);
+  }, [loadLogs]);
 
-  const loadLogs = async () => {
+  const loadLogs = useCallback(async () => {
     setLoading(true);
     try {
       let query = supabase
@@ -92,7 +93,7 @@ export function EmailLogsList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
   const getStatusBadge = (log: EmailLog) => {
     if (log.bounced_at) {

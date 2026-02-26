@@ -8,7 +8,8 @@ import { toast } from "sonner";
 import { Activity, DollarSign, Loader2, Sparkles } from "@/lib/icons";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { ADMIN_CARD_COLORS, SolidStatCard } from "@/components/admin/SolidStatCard";
+import { SolidStatCard } from "@/components/admin/SolidStatCard";
+import { ADMIN_CARD_COLORS } from "@/constants/admin";
 
 // Lazy load components for better performance
 // ✅ CORREÇÃO: Componentes comentados pois não existem no diretório atual

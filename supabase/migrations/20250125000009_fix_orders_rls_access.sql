@@ -31,6 +31,8 @@ DROP POLICY IF EXISTS "Users can view their own orders" ON public.orders;
 DROP POLICY IF EXISTS "Allow all operations on orders" ON public.orders;
 DROP POLICY IF EXISTS "Public can read orders" ON public.orders;
 DROP POLICY IF EXISTS "Public can select orders" ON public.orders;
+DROP POLICY IF EXISTS "Public can insert orders" ON public.orders;
+DROP POLICY IF EXISTS "Public can update orders" ON public.orders;
 
 -- 4. Criar política permissiva para SELECT (leitura)
 CREATE POLICY "Public can select orders"

@@ -1,6 +1,17 @@
 import { useEffect, useMemo } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 
+const TRACKING_PARAMS = [
+  'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
+  'gclid', 'gclsrc', 'gad_source', 'gad_campaignid', 'gbraid',
+  '_ga', '_gid',
+  'fbclid', 'fb_action_ids', 'fb_action_types',
+  'msclkid',
+  'hsa_acc', 'hsa_cam', 'hsa_grp', 'hsa_ad', 'hsa_src', 'hsa_tgt', 'hsa_kw', 'hsa_mt', 'hsa_net', 'hsa_ver',
+  'ref', 'source', 'sck', 'xcod', 'network',
+  '_gac',
+];
+
 /**
  * Hook para capturar, salvar e preservar parâmetros UTM através do funil
  * Mantém UTMs em localStorage e injeta em todas as navegações
@@ -13,26 +24,6 @@ export function useUtmParams() {
   // ✅ Verificar se está em rota administrativa - não capturar nem preservar UTMs
   const isAdminRoute = location.pathname.startsWith('/admin') || 
                        location.pathname.startsWith('/app/admin');
-
-  // Parâmetros de tracking completos (UTMs + Google Ads + Facebook + outros)
-  const TRACKING_PARAMS = [
-    // UTMs padrão
-    'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
-    // Google Ads
-    'gclid', 'gclsrc', 'gad_source', 'gad_campaignid', 'gbraid',
-    // Google Analytics
-    '_ga', '_gid',
-    // Facebook
-    'fbclid', 'fb_action_ids', 'fb_action_types',
-    // Microsoft/Bing
-    'msclkid',
-    // Google Ads HSA (Historical Search Ads)
-    'hsa_acc', 'hsa_cam', 'hsa_grp', 'hsa_ad', 'hsa_src', 'hsa_tgt', 'hsa_kw', 'hsa_mt', 'hsa_net', 'hsa_ver',
-    // Outros parâmetros de tracking
-    'ref', 'source', 'sck', 'xcod', 'network',
-    // Google Analytics Campaign
-    '_gac',
-  ];
 
   // Capturar TODOS os parâmetros de tracking da URL atual
   const currentTrackingParams = useMemo(() => {

@@ -27,6 +27,7 @@ interface OrderDetails {
   created_at: string;
   paid_at?: string;
   provider: string;
+  payment_provider?: string | null;
   provider_ref?: string;
   quiz_id?: string;
   customer_whatsapp?: string;
@@ -83,9 +84,9 @@ export default function AdminOrderDetails() {
       'quiz_music_prompt': 'Prompt de música',
       'quiz_vocal_gender': 'Gênero vocal',
     };
-    
+
     const label = fieldLabels[fieldName] || fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    
+
     try {
       await navigator.clipboard.writeText(text);
       setCopiedField(fieldName);
@@ -115,7 +116,7 @@ export default function AdminOrderDetails() {
   // Função helper para traduzir valores de quiz
   const translateQuizValue = (value: string | null | undefined): string => {
     if (!value) return "Não informado";
-    
+
     // Se já é um valor traduzido (não começa com "quiz."), retornar como está
     if (!value.startsWith("quiz.")) {
       // Verificar se contém ":" (caso de relationship com custom value)
@@ -123,7 +124,7 @@ export default function AdminOrderDetails() {
         const parts = value.split(":");
         const key = parts[0].trim();
         const customValue = parts.slice(1).join(":").trim();
-        
+
         // Se a primeira parte é uma chave de tradução, traduzir
         if (key.startsWith("quiz.")) {
           try {
@@ -137,7 +138,7 @@ export default function AdminOrderDetails() {
       }
       return value;
     }
-    
+
     // Tentar traduzir a chave
     try {
       return t(value);
@@ -186,7 +187,7 @@ export default function AdminOrderDetails() {
   const loadOrderDetails = async () => {
     try {
       setLoading(true);
-      
+
       if (!id) {
         toast.error("ID do pedido não fornecido");
         return;
@@ -316,19 +317,19 @@ export default function AdminOrderDetails() {
       // Usar maybeSingle() em vez de single() para evitar problemas com relacionamentos automáticos
       const { data: orderData, error: orderError } = await supabase
         .from("orders")
-        .select("id, customer_email, status, plan, amount_cents, created_at, paid_at, provider, provider_ref, quiz_id, updated_at, customer_whatsapp, is_test_order, magic_token")
+        .select("id, customer_email, customer_name, status, plan, amount_cents, created_at, paid_at, provider, payment_provider, provider_ref, quiz_id, updated_at, customer_whatsapp, is_test_order, magic_token")
         .eq("id", id)
         .maybeSingle();
 
       if (orderError) {
         console.error("Erro ao buscar pedido:", orderError);
         // Verificar se é erro de relacionamento ambíguo
-        if (orderError.message?.includes('more than one relationship') || 
-            orderError.message?.includes('Could not embed')) {
+        if (orderError.message?.includes('more than one relationship') ||
+          orderError.message?.includes('Could not embed')) {
           // Tentar primeiro com query mínima apenas para status
           let orderDataRetry: any = null;
           let orderErrorRetry: any = null;
-          
+
           try {
             // Query mínima apenas com campos essenciais
             const statusResult = await supabase
@@ -336,18 +337,18 @@ export default function AdminOrderDetails() {
               .select("id, status, paid_at, updated_at")
               .eq("id", id)
               .maybeSingle();
-            
+
             if (!statusResult.error && statusResult.data) {
               // Se conseguimos pelo menos o status, tentar buscar o resto
               const fullResult = await supabase
                 .from("orders")
-                .select("id, customer_email, status, plan, amount_cents, created_at, paid_at, provider, provider_ref, quiz_id, updated_at, customer_whatsapp, is_test_order, magic_token")
+                .select("id, customer_email, customer_name, status, plan, amount_cents, created_at, paid_at, provider, payment_provider, provider_ref, quiz_id, updated_at, customer_whatsapp, is_test_order, magic_token")
                 .eq("id", id)
                 .maybeSingle();
-              
+
               orderDataRetry = fullResult.data;
               orderErrorRetry = fullResult.error;
-              
+
               // Se ainda falhar, usar pelo menos os dados do status
               if (orderErrorRetry && !orderDataRetry) {
                 orderDataRetry = statusResult.data;
@@ -360,7 +361,7 @@ export default function AdminOrderDetails() {
             console.error("Erro no retry:", retryErr);
             orderErrorRetry = retryErr;
           }
-          
+
           if (orderErrorRetry || !orderDataRetry) {
             // Se ainda falhou, tentar uma última vez com query ainda mais simples
             const lastTry = await supabase
@@ -368,7 +369,7 @@ export default function AdminOrderDetails() {
               .select("id, status")
               .eq("id", id)
               .maybeSingle();
-            
+
             if (!lastTry.error && lastTry.data) {
               orderDataRetry = lastTry.data;
               orderErrorRetry = null;
@@ -376,23 +377,38 @@ export default function AdminOrderDetails() {
               throw orderError; // Usar erro original
             }
           }
-          
+
           // Usar dados do retry
           const orderData = orderDataRetry;
-          
+
           // Continuar com busca separada de relacionamentos
           let quizResult: any = { data: null, error: null };
           let jobsResult: any = { data: [], error: null };
           let songsResult: any = { data: [], error: null };
 
-          // Buscar quiz
+          // Buscar quiz (fallback progressivo)
           if (orderData.quiz_id) {
             try {
-              const result = await supabase
+              let result = await supabase
                 .from("quizzes")
-                .select("id, about_who, style, language, relationship, desired_tone, occasion, qualities, memories, key_moments, message, music_prompt, vocal_gender, created_at, updated_at")
+                .select("id, about_who, style, language, relationship, desired_tone, occasion, qualities, memories, key_moments, message, music_prompt, vocal_gender, created_at, updated_at, answers")
                 .eq("id", orderData.quiz_id)
                 .maybeSingle();
+              const is400 = (r: any) => r.error && (String(r.error.code) === '400' || r.error.code === '42703' || r.error.message?.includes('column') || r.error.message?.includes('does not exist'));
+              if (is400(result)) {
+                result = await supabase
+                  .from("quizzes")
+                  .select("id, about_who, style, language, relationship, desired_tone, occasion, qualities, memories, key_moments, message, vocal_gender, created_at, updated_at")
+                  .eq("id", orderData.quiz_id)
+                  .maybeSingle();
+              }
+              if (is400(result)) {
+                result = await supabase
+                  .from("quizzes")
+                  .select("id, about_who, style, language, created_at, updated_at")
+                  .eq("id", orderData.quiz_id)
+                  .maybeSingle();
+              }
               quizResult = result;
             } catch (err: any) {
               console.error("Erro ao buscar quiz:", err);
@@ -406,15 +422,15 @@ export default function AdminOrderDetails() {
               .from("jobs")
               .select("id, order_id, status, created_at, updated_at, error, gpt_lyrics, suno_task_id")
               .eq("order_id", id);
-            
+
             if (result.error) {
-              const isTableNotFound = result.error.code === 'PGRST116' || 
-                                     result.error.code === '42P01' || 
-                                     result.error.code === '404' ||
-                                     result.error.message?.includes('does not exist') ||
-                                     result.error.message?.includes('relation') ||
-                                     result.error.message?.includes('not found');
-              
+              const isTableNotFound = result.error.code === 'PGRST116' ||
+                result.error.code === '42P01' ||
+                result.error.code === '404' ||
+                result.error.message?.includes('does not exist') ||
+                result.error.message?.includes('relation') ||
+                result.error.message?.includes('not found');
+
               if (isTableNotFound) {
                 // Tabela não existe, usar array vazio silenciosamente
                 jobsResult = { data: [], error: null };
@@ -428,12 +444,12 @@ export default function AdminOrderDetails() {
               jobsResult = result;
             }
           } catch (err: any) {
-            const isTableNotFound = err?.code === 'PGRST116' || 
-                                   err?.code === '42P01' || 
-                                   err?.code === '404' ||
-                                   err?.message?.includes('does not exist') ||
-                                   err?.message?.includes('relation');
-            
+            const isTableNotFound = err?.code === 'PGRST116' ||
+              err?.code === '42P01' ||
+              err?.code === '404' ||
+              err?.message?.includes('does not exist') ||
+              err?.message?.includes('relation');
+
             if (isTableNotFound) {
               jobsResult = { data: [], error: null };
             } else {
@@ -444,12 +460,25 @@ export default function AdminOrderDetails() {
             }
           }
 
-          // Buscar songs
+          // Buscar songs (fallback progressivo)
           try {
-            const result = await supabase
+            const is400 = (r: any) => r.error && (String(r.error.code) === '400' || r.error.code === '42703' || r.error.message?.includes('column') || r.error.message?.includes('does not exist'));
+            let result = await supabase
               .from("songs")
               .select("id, order_id, quiz_id, title, variant_number, status, audio_url, cover_url, lyrics, release_at, released_at, created_at, updated_at, vocals_url, instrumental_url")
               .eq("order_id", id);
+            if (is400(result)) {
+              result = await supabase
+                .from("songs")
+                .select("id, order_id, title, variant_number, status, audio_url, cover_url, lyrics, release_at, released_at, created_at, updated_at")
+                .eq("order_id", id);
+            }
+            if (is400(result)) {
+              result = await supabase
+                .from("songs")
+                .select("id, order_id, title, status, audio_url, cover_url, lyrics, created_at, updated_at")
+                .eq("order_id", id);
+            }
             songsResult = result;
           } catch (err: any) {
             console.error("Erro ao buscar songs:", err);
@@ -465,16 +494,15 @@ export default function AdminOrderDetails() {
 
           setOrder(orderWithRelations as any);
 
-          // Verificar se já existe aprovação pendente
+          // Verificar se já existe aprovação pendente (tabela pode não existir → ignorar 404)
           if (orderData.quiz_id) {
-            const { data: pendingApproval } = await supabase
+            const { data: pendingApproval, error: approvalError } = await supabase
               .from('lyrics_approvals')
               .select('id, status')
               .eq('order_id', id)
               .eq('status', 'pending')
               .maybeSingle();
-            
-            setHasPendingLyrics(!!pendingApproval);
+            setHasPendingLyrics(!approvalError && !!pendingApproval);
           } else {
             setHasPendingLyrics(false);
           }
@@ -494,14 +522,32 @@ export default function AdminOrderDetails() {
       let jobsResult: any = { data: [], error: null };
       let songsResult: any = { data: [], error: null };
 
-      // Buscar quiz
+      // Buscar quiz (fallback progressivo: full → sem extras → mínimo garantido)
       if (orderData.quiz_id) {
         try {
-          const result = await supabase
+          // Tentativa 1: Todas as colunas
+          let result = await supabase
             .from("quizzes")
-            .select("id, about_who, style, language, relationship, desired_tone, occasion, qualities, memories, key_moments, message, music_prompt, vocal_gender, created_at, updated_at")
+            .select("id, about_who, style, language, relationship, desired_tone, occasion, qualities, memories, key_moments, message, music_prompt, vocal_gender, created_at, updated_at, answers")
             .eq("id", orderData.quiz_id)
             .maybeSingle();
+          const is400 = (r: any) => r.error && (String(r.error.code) === '400' || r.error.code === '42703' || r.error.message?.includes('column') || r.error.message?.includes('does not exist'));
+          if (is400(result)) {
+            // Tentativa 2: Sem music_prompt, answers (podem não existir)
+            result = await supabase
+              .from("quizzes")
+              .select("id, about_who, style, language, relationship, desired_tone, occasion, qualities, memories, key_moments, message, vocal_gender, created_at, updated_at")
+              .eq("id", orderData.quiz_id)
+              .maybeSingle();
+          }
+          if (is400(result)) {
+            // Tentativa 3: Mínimo garantido (colunas originais do CREATE TABLE)
+            result = await supabase
+              .from("quizzes")
+              .select("id, about_who, style, language, created_at, updated_at")
+              .eq("id", orderData.quiz_id)
+              .maybeSingle();
+          }
           quizResult = result;
         } catch (err: any) {
           console.error("Erro ao buscar quiz:", err);
@@ -515,15 +561,15 @@ export default function AdminOrderDetails() {
           .from("jobs")
           .select("id, order_id, status, created_at, updated_at, error, gpt_lyrics, suno_task_id")
           .eq("order_id", id);
-        
+
         if (result.error) {
-          const isTableNotFound = result.error.code === 'PGRST116' || 
-                                 result.error.code === '42P01' || 
-                                 result.error.code === '404' ||
-                                 result.error.message?.includes('does not exist') ||
-                                 result.error.message?.includes('relation') ||
-                                 result.error.message?.includes('not found');
-          
+          const isTableNotFound = result.error.code === 'PGRST116' ||
+            result.error.code === '42P01' ||
+            result.error.code === '404' ||
+            result.error.message?.includes('does not exist') ||
+            result.error.message?.includes('relation') ||
+            result.error.message?.includes('not found');
+
           if (isTableNotFound) {
             // Tabela não existe, usar array vazio silenciosamente
             jobsResult = { data: [], error: null };
@@ -537,12 +583,12 @@ export default function AdminOrderDetails() {
           jobsResult = result;
         }
       } catch (err: any) {
-        const isTableNotFound = err?.code === 'PGRST116' || 
-                               err?.code === '42P01' || 
-                               err?.code === '404' ||
-                               err?.message?.includes('does not exist') ||
-                               err?.message?.includes('relation');
-        
+        const isTableNotFound = err?.code === 'PGRST116' ||
+          err?.code === '42P01' ||
+          err?.code === '404' ||
+          err?.message?.includes('does not exist') ||
+          err?.message?.includes('relation');
+
         if (isTableNotFound) {
           jobsResult = { data: [], error: null };
         } else {
@@ -553,12 +599,27 @@ export default function AdminOrderDetails() {
         }
       }
 
-      // Buscar songs
+      // Buscar songs (fallback progressivo: full → sem extras → mínimo garantido)
       try {
-        const result = await supabase
+        const is400 = (r: any) => r.error && (String(r.error.code) === '400' || r.error.code === '42703' || r.error.message?.includes('column') || r.error.message?.includes('does not exist'));
+        let result = await supabase
           .from("songs")
           .select("id, order_id, quiz_id, title, variant_number, status, audio_url, cover_url, lyrics, release_at, released_at, created_at, updated_at, vocals_url, instrumental_url")
           .eq("order_id", id);
+        if (is400(result)) {
+          // Sem quiz_id, vocals_url, instrumental_url
+          result = await supabase
+            .from("songs")
+            .select("id, order_id, title, variant_number, status, audio_url, cover_url, lyrics, release_at, released_at, created_at, updated_at")
+            .eq("order_id", id);
+        }
+        if (is400(result)) {
+          // Mínimo garantido (colunas originais do CREATE TABLE)
+          result = await supabase
+            .from("songs")
+            .select("id, order_id, title, status, audio_url, cover_url, lyrics, created_at, updated_at")
+            .eq("order_id", id);
+        }
         songsResult = result;
       } catch (err: any) {
         console.error("Erro ao buscar songs:", err);
@@ -574,16 +635,15 @@ export default function AdminOrderDetails() {
 
       setOrder(orderWithRelations as any);
 
-      // Verificar se já existe aprovação pendente
+      // Verificar se já existe aprovação pendente (tabela pode não existir → ignorar 404)
       if (orderData.quiz_id) {
-        const { data: pendingApproval } = await supabase
+        const { data: pendingApproval, error: approvalError } = await supabase
           .from('lyrics_approvals')
           .select('id, status')
           .eq('order_id', id)
           .eq('status', 'pending')
           .maybeSingle();
-        
-        setHasPendingLyrics(!!pendingApproval);
+        setHasPendingLyrics(!approvalError && !!pendingApproval);
       }
     } catch (error: any) {
       console.error("Erro ao carregar detalhes:", error);
@@ -620,7 +680,7 @@ export default function AdminOrderDetails() {
 
   const handleStartEditQuiz = () => {
     if (!order) return;
-    const currentQuiz = order.quizzes 
+    const currentQuiz = order.quizzes
       ? (Array.isArray(order.quizzes) ? order.quizzes[0] : order.quizzes)
       : null;
     if (!currentQuiz) return;
@@ -635,7 +695,7 @@ export default function AdminOrderDetails() {
 
   const handleSaveQuiz = async () => {
     if (!order || !editedQuiz) return;
-    const currentQuiz = order.quizzes 
+    const currentQuiz = order.quizzes
       ? (Array.isArray(order.quizzes) ? order.quizzes[0] : order.quizzes)
       : null;
     if (!currentQuiz) return;
@@ -658,7 +718,7 @@ export default function AdminOrderDetails() {
 
     try {
       setSavingQuiz(true);
-      
+
       const updateData: any = {
         about_who: editedQuiz.about_who.trim(),
         style: editedQuiz.style.trim(),
@@ -672,6 +732,8 @@ export default function AdminOrderDetails() {
         message: editedQuiz.message?.trim() || null,
         music_prompt: editedQuiz.music_prompt?.trim() || null,
         vocal_gender: editedQuiz.vocal_gender?.trim() || null,
+        // ✅ FIX: Preservar answers (contém letras) ao editar quiz
+        answers: currentQuiz.answers || null,
         updated_at: new Date().toISOString()
       };
 
@@ -688,7 +750,7 @@ export default function AdminOrderDetails() {
       toast.success("Quiz atualizado com sucesso!");
       setIsEditingQuiz(false);
       setEditedQuiz(null);
-      
+
       // Recarregar dados do pedido
       await loadOrderDetails();
     } catch (error: any) {
@@ -703,7 +765,7 @@ export default function AdminOrderDetails() {
     if (!order) return;
 
     const confirmMessage = `⚠️ ATENÇÃO: Esta ação é IRREVERSÍVEL!\n\nTem certeza que deseja EXCLUIR PERMANENTEMENTE este pedido?\n\nIsso irá:\n1. Excluir o pedido do banco de dados\n2. Excluir todos os dados relacionados (jobs, songs, etc.)\n3. Excluir o quiz se não estiver em uso por outros pedidos\n\nEsta ação NÃO pode ser desfeita!`;
-    
+
     if (!confirm(confirmMessage)) {
       return;
     }
@@ -765,7 +827,7 @@ export default function AdminOrderDetails() {
 
       // Obter token de autenticação
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
+
       if (sessionError || !session) {
         console.error("❌ [AdminOrderDetails] Erro de autenticação:", sessionError);
         toast.error("Erro de autenticação. Por favor, faça login novamente.");
@@ -797,14 +859,14 @@ export default function AdminOrderDetails() {
         } else if (error.status) {
           errorMessage = `Edge Function retornou status ${error.status}`;
         }
-        
+
         console.error("❌ [AdminOrderDetails] Erro ao marcar como pago:", {
           error,
           message: errorMessage,
           status: error.status,
           order_id: order.id
         });
-        
+
         throw new Error(errorMessage);
       }
 
@@ -815,7 +877,7 @@ export default function AdminOrderDetails() {
         if (data?.details) {
           errorMessage += `: ${data.details}`;
         }
-        
+
         console.error("❌ [AdminOrderDetails] Operação falhou:", {
           error: data?.error,
           details: data?.details,
@@ -823,33 +885,33 @@ export default function AdminOrderDetails() {
           order_id: order.id,
           fullResponse: data
         });
-        
+
         // Verificar se o erro é de relacionamento ambíguo mas o status pode ter sido atualizado
-        const isRelationshipError = errorMessage.includes('more than one relationship') || 
-                                    errorMessage.includes('Could not embed');
-        
+        const isRelationshipError = errorMessage.includes('more than one relationship') ||
+          errorMessage.includes('Could not embed');
+
         if (isRelationshipError) {
           toast.warning("Aviso: Erro ao verificar relacionamento, mas o status pode ter sido atualizado. Verificando...", { duration: 5000 });
         } else {
           toast.error(errorMessage, { duration: 6000 });
         }
-        
+
         // Mostrar warnings se houver
         if (data?.warnings && Array.isArray(data.warnings)) {
           data.warnings.forEach((warning: string) => {
             toast.warning(warning, { duration: 5000 });
           });
         }
-        
+
         // ✅ CORREÇÃO: Recarregar dados mesmo em caso de erro para verificar estado atual
         await new Promise(resolve => setTimeout(resolve, 1000));
         await loadOrderDetails();
-        
+
         // Se o erro foi de relacionamento ambíguo, verificar se o status foi atualizado
         if (isRelationshipError) {
           // Aguardar mais um pouco e verificar novamente
           await new Promise(resolve => setTimeout(resolve, 500));
-          
+
           // Tentar buscar apenas o status para verificar se foi atualizado
           try {
             const { data: statusCheck, error: statusError } = await supabase
@@ -857,7 +919,7 @@ export default function AdminOrderDetails() {
               .select("id, status, paid_at")
               .eq("id", order.id)
               .maybeSingle();
-            
+
             if (!statusError && statusCheck) {
               // Se o status foi atualizado, atualizar o estado local
               if (statusCheck.status === 'paid' && order.status !== 'paid') {
@@ -875,7 +937,7 @@ export default function AdminOrderDetails() {
           } catch (statusCheckErr: any) {
             // Ignorar erros de verificação de status
           }
-          
+
           // Recarregar dados completos
           await loadOrderDetails();
         }
@@ -885,7 +947,7 @@ export default function AdminOrderDetails() {
         if (data?.warnings && Array.isArray(data.warnings) && data.warnings.length > 0) {
           // Mostrar sucesso principal
           toast.success(data?.message || "Pedido marcado como pago!");
-          
+
           // Mostrar warnings separadamente
           data.warnings.forEach((warning: string) => {
             toast.warning(warning, { duration: 5000 });
@@ -897,16 +959,16 @@ export default function AdminOrderDetails() {
 
         // ✅ CORREÇÃO: Recarregar dados após sucesso com delay para garantir persistência
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         // Verificar se há aviso de relacionamento ambíguo na resposta
-        const hasRelationshipWarning = data?.warnings && 
-          Array.isArray(data.warnings) && 
-          data.warnings.some((w: string) => 
-            w.includes('relacionamento') || 
-            w.includes('more than one relationship') || 
+        const hasRelationshipWarning = data?.warnings &&
+          Array.isArray(data.warnings) &&
+          data.warnings.some((w: string) =>
+            w.includes('relacionamento') ||
+            w.includes('more than one relationship') ||
             w.includes('Could not embed')
           );
-        
+
         // Se houver aviso de relacionamento, verificar status diretamente primeiro
         if (hasRelationshipWarning && order) {
           try {
@@ -915,7 +977,7 @@ export default function AdminOrderDetails() {
               .select("id, status, paid_at")
               .eq("id", order.id)
               .maybeSingle();
-            
+
             if (!statusError && statusCheck && statusCheck.status === 'paid') {
               // Atualizar estado local imediatamente
               setOrder((prevOrder) => {
@@ -931,20 +993,20 @@ export default function AdminOrderDetails() {
             // Ignorar erros de verificação de status
           }
         }
-        
+
         await loadOrderDetails();
       }
     } catch (error: any) {
       console.error("❌ [AdminOrderDetails] Erro ao marcar como pago:", error);
-      
+
       // Mensagem de erro mais detalhada
       let errorMessage = error.message || "Erro ao marcar pedido como pago";
-      
+
       // Verificar se é erro de Edge Function não-2xx
       if (error.status && error.status >= 400) {
         errorMessage = `Erro do servidor (${error.status}): ${errorMessage}`;
       }
-      
+
       toast.error(errorMessage, { duration: 6000 });
     } finally {
       setMarkingAsPaid(false);
@@ -980,7 +1042,7 @@ export default function AdminOrderDetails() {
         } else if (typeof error === 'string') {
           errorMessage = error;
         }
-        
+
         console.error("❌ [AdminOrderDetails] Erro ao marcar como reembolsado:", error);
         toast.error(errorMessage);
         return;
@@ -993,10 +1055,10 @@ export default function AdminOrderDetails() {
       }
 
       toast.success(data?.message || "Pedido marcado como reembolsado com sucesso!");
-      
+
       // Recarregar dados do pedido
       await loadOrderDetails();
-      
+
     } catch (error: any) {
       console.error("❌ [AdminOrderDetails] Erro ao marcar como reembolsado:", error);
       toast.error(error.message || "Erro ao marcar pedido como reembolsado");
@@ -1057,7 +1119,7 @@ export default function AdminOrderDetails() {
       setTimeout(async () => {
         await loadOrderDetails();
       }, 2000);
-      
+
     } catch (error: any) {
       console.error("❌ [AdminOrderDetails] Erro ao gerar letra:", error);
       toast.error(`Erro ao gerar letra: ${error.message || 'Erro desconhecido'}`);
@@ -1105,20 +1167,20 @@ export default function AdminOrderDetails() {
       // ✅ CORREÇÃO: Usar send-music-released-email para músicas já liberadas, ou send-music-ready-email para músicas prontas
       const songsReady = songsWithAudio.filter(s => s.status === 'ready' && !s.released_at);
       const songsReleased = songsWithAudio.filter(s => s.status === 'released');
-      
+
       // Se houver músicas já liberadas, usar a função de música liberada
       // Caso contrário, usar a função de música pronta
       const edgeFunction = songsReleased.length > 0 ? 'send-music-released-email' : 'send-music-ready-email';
       const songId = songsWithAudio[0].id; // Usar primeira música para o email
-      
+
       // Obter dados do quiz para o webhook
       const about = (order.quizzes as any)?.about_who || 'N/A';
-      
+
       // ✅ NOVO: Enviar email e webhook em paralelo (igual ao botão "enviar de release")
       const [emailResult, webhookResult] = await Promise.allSettled([
         // Enviar email
         supabase.functions.invoke(edgeFunction, {
-          body: songsReleased.length > 0 
+          body: songsReleased.length > 0
             ? { songId, orderId: order.id, force: true } // Para released, precisa de songId e force
             : { order_id: order.id } // Para ready, precisa de order_id
         }),
@@ -1140,11 +1202,11 @@ export default function AdminOrderDetails() {
           about
         )
       ]);
-      
+
       // Processar resultado do email
       if (emailResult.status === 'fulfilled') {
         const { data, error } = emailResult.value;
-        
+
         if (error) {
           console.error("❌ [AdminOrderDetails] Erro ao reenviar email:", error);
           throw new Error(`Erro ao reenviar email: ${error.message || 'Erro desconhecido'}`);
@@ -1198,7 +1260,7 @@ export default function AdminOrderDetails() {
   }
 
   // Normalizar quizzes para um objeto único (pode vir como array ou objeto)
-  const quiz = order.quizzes 
+  const quiz = order.quizzes
     ? (Array.isArray(order.quizzes) ? order.quizzes[0] : order.quizzes)
     : null;
 
@@ -1221,9 +1283,9 @@ export default function AdminOrderDetails() {
             <CardTitle className="text-sm md:text-lg">Informações do Pedido</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 md:space-y-4 p-2 md:p-6 select-text">
-            <CopyableField 
-              label="ID" 
-              value={order.id} 
+            <CopyableField
+              label="ID"
+              value={order.id}
               fieldName="order_id"
               className="font-mono text-sm"
             />
@@ -1269,27 +1331,6 @@ export default function AdminOrderDetails() {
                       <>
                         <XCircle className="h-4 w-4 mr-2" />
                         Marcar como Reembolsado
-                      </>
-                    )}
-                  </Button>
-                )}
-                {order.quiz_id && !hasPendingLyrics && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={handleGenerateLyrics}
-                    disabled={generatingLyrics}
-                    className="ml-2 border-[#C7916B] text-[#C7916B] hover:bg-[#C7916B] hover:text-white"
-                  >
-                    {generatingLyrics ? (
-                      <>
-                        <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                        Gerando...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="h-4 w-4 mr-2" />
-                        Gerar Letra
                       </>
                     )}
                   </Button>
@@ -1343,25 +1384,26 @@ export default function AdminOrderDetails() {
               </div>
             </div>
             <div data-testid="order-amount">
-              <CopyableField 
-                label="Valor" 
-                value={`R$ ${(order.amount_cents / 100).toFixed(2)}`} 
+              <CopyableField
+                label="Valor"
+                value={`R$ ${(order.amount_cents / 100).toFixed(2)}`}
                 fieldName="amount"
                 className="text-lg font-bold"
               />
             </div>
-            <CopyableField 
-              label="Criado em" 
-              value={new Date(order.created_at).toLocaleString("pt-BR")} 
+            <CopyableField
+              label="Criado em"
+              value={new Date(order.created_at).toLocaleString("pt-BR")}
               fieldName="created_at"
             />
             {order.paid_at && (
-              <CopyableField 
-                label="Pago em" 
-                value={new Date(order.paid_at).toLocaleString("pt-BR")} 
+              <CopyableField
+                label="Pago em"
+                value={new Date(order.paid_at).toLocaleString("pt-BR")}
                 fieldName="paid_at"
               />
             )}
+
           </CardContent>
         </Card>
 
@@ -1370,6 +1412,13 @@ export default function AdminOrderDetails() {
             <CardTitle className="text-sm md:text-lg">Informações do Cliente</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 md:space-y-4 p-2 md:p-6 select-text">
+            {(order.customer_name || (quiz as any)?.answers?.customer_name) && (
+              <CopyableField
+                label="Nome"
+                value={order.customer_name || (quiz as any)?.answers?.customer_name || ''}
+                fieldName="customer_name"
+              />
+            )}
             {/* Campo de Email Editável */}
             <div>
               <div className="flex items-center justify-between mb-1">
@@ -1416,9 +1465,9 @@ export default function AdminOrderDetails() {
                           .from("orders")
                           .update({ customer_email: editedEmail.trim() })
                           .eq("id", id);
-                        
+
                         if (error) throw error;
-                        
+
                         setOrder({ ...order, customer_email: editedEmail.trim() });
                         setIsEditingEmail(false);
                         toast.success("Email atualizado com sucesso!");
@@ -1468,29 +1517,29 @@ export default function AdminOrderDetails() {
               )}
             </div>
             {order.customer_whatsapp && (
-              <CopyableField 
-                label="Telefone" 
-                value={order.customer_whatsapp} 
+              <CopyableField
+                label="Telefone"
+                value={order.customer_whatsapp}
                 fieldName="phone"
               />
             )}
-            <CopyableField 
-              label="Provedor de Pagamento" 
-              value={order.provider} 
+            <CopyableField
+              label="Provedor de Pagamento"
+              value={(order as any).payment_provider === 'cakto' ? 'Cakto' : (order.provider || (order as any).payment_provider || 'N/A')}
               fieldName="provider"
             />
             {order.provider_ref && (
-              <CopyableField 
-                label="Referência do Provedor" 
-                value={order.provider_ref} 
+              <CopyableField
+                label="Referência do Provedor"
+                value={order.provider_ref}
                 fieldName="provider_ref"
                 className="font-mono text-xs"
               />
             )}
             {order.quiz_id && (
-              <CopyableField 
-                label="Quiz ID" 
-                value={order.quiz_id} 
+              <CopyableField
+                label="Quiz ID"
+                value={order.quiz_id}
                 fieldName="quiz_id"
                 className="font-mono text-xs"
               />
@@ -1656,29 +1705,29 @@ export default function AdminOrderDetails() {
                 </>
               ) : (
                 <>
-                  <CopyableField 
-                    label="Sobre quem" 
-                    value={quiz.about_who} 
+                  <CopyableField
+                    label="Sobre quem"
+                    value={quiz.about_who}
                     fieldName="quiz_about_who"
                   />
-                  <CopyableField 
-                    label="Relacionamento" 
-                    value={translateQuizValue(quiz.relationship)} 
+                  <CopyableField
+                    label="Relacionamento"
+                    value={translateQuizValue(quiz.relationship)}
                     fieldName="quiz_relationship"
                   />
-                  <CopyableField 
-                    label="Estilo Musical" 
-                    value={translateQuizValue(quiz.style)} 
+                  <CopyableField
+                    label="Estilo Musical"
+                    value={translateQuizValue(quiz.style)}
                     fieldName="quiz_style"
                   />
-                  <CopyableField 
-                    label="Ocasião" 
-                    value={quiz.occasion || "Não informado"} 
+                  <CopyableField
+                    label="Ocasião"
+                    value={quiz.occasion || "Não informado"}
                     fieldName="quiz_occasion"
                   />
-                  <CopyableField 
-                    label="Idioma" 
-                    value={quiz.language} 
+                  <CopyableField
+                    label="Idioma"
+                    value={quiz.language}
                     fieldName="quiz_language"
                   />
                   {(quiz.message || quiz.qualities || quiz.memories || quiz.key_moments) && (
@@ -1731,12 +1780,72 @@ export default function AdminOrderDetails() {
                     </div>
                   )}
                   {quiz.vocal_gender && (
-                    <CopyableField 
-                      label="Gênero Vocal" 
-                      value={quiz.vocal_gender} 
+                    <CopyableField
+                      label="Gênero Vocal"
+                      value={quiz.vocal_gender}
                       fieldName="quiz_vocal_gender"
                     />
                   )}
+                  {(() => {
+                    const answers = quiz.answers && typeof quiz.answers === 'object' ? quiz.answers : {};
+                    const approvedText = typeof answers.approved_lyrics === 'string' ? answers.approved_lyrics.trim() : '';
+                    const generatedText = typeof answers.generated_lyrics === 'string' ? answers.generated_lyrics.trim() : '';
+                    let lyricsText = approvedText || generatedText;
+                    let lyricsLabel = approvedText ? 'Letra aprovada' : 'Letra gerada';
+                    let lyricsTitle = answers.approved_lyrics_title || answers.generated_lyrics_title;
+                    if (!lyricsText && order.jobs?.length) {
+                      const jobLyrics = typeof order.jobs[0]?.gpt_lyrics === 'string' ? order.jobs[0].gpt_lyrics.trim() : '';
+                      if (jobLyrics) {
+                        lyricsText = jobLyrics;
+                        lyricsLabel = 'Letra (job)';
+                        lyricsTitle = undefined;
+                      }
+                    }
+                    if (!lyricsText && order.songs?.length) {
+                      const songLyrics = typeof order.songs[0]?.lyrics === 'string' ? order.songs[0].lyrics.trim() : '';
+                      if (songLyrics) {
+                        lyricsText = songLyrics;
+                        lyricsLabel = 'Letra (música)';
+                        lyricsTitle = undefined;
+                      }
+                    }
+                    return (
+                      <div className="md:col-span-2">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <p className="text-sm font-medium text-muted-foreground">
+                            {lyricsText ? lyricsLabel : 'Letra'}
+                            {lyricsTitle && typeof lyricsTitle === 'string' && lyricsTitle.trim() ? `: ${lyricsTitle.trim()}` : ''}
+                          </p>
+                          {lyricsText && (
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleCopy(lyricsText, 'quiz_lyrics');
+                              }}
+                              className="opacity-60 hover:opacity-100 transition-opacity p-0.5 hover:bg-muted rounded flex-shrink-0"
+                              title="Copiar letra"
+                            >
+                              {copiedField === 'quiz_lyrics' ? (
+                                <Check className="h-3.5 w-3.5 text-green-600" />
+                              ) : (
+                                <Copy className="h-3.5 w-3.5" />
+                              )}
+                            </button>
+                          )}
+                        </div>
+                        {lyricsText ? (
+                          <p className="text-sm whitespace-pre-wrap select-text bg-muted/50 p-3 rounded-md max-h-64 overflow-y-auto">
+                            {lyricsText}
+                          </p>
+                        ) : (
+                          <p className="text-sm text-muted-foreground italic bg-muted/30 p-3 rounded-md">
+                            Nenhuma letra registrada. Crie a coluna no Supabase (SQL Editor): <code className="text-xs block mt-1 p-2 bg-muted rounded">ALTER TABLE quizzes ADD COLUMN IF NOT EXISTS answers JSONB;</code> Ou use &quot;Gerar Letra&quot; no card do pedido.
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </>
               )}
             </CardContent>
@@ -1783,7 +1892,7 @@ export default function AdminOrderDetails() {
                       </div>
                       <JobStatusBadge status={job.status} />
                     </div>
-                    
+
                     {job.error && (
                       <div className="p-2 bg-destructive/10 border border-destructive/20 rounded">
                         <div className="flex items-center gap-1.5 mb-1">
@@ -1816,9 +1925,9 @@ export default function AdminOrderDetails() {
                               <li>Adicione a variável <code className="bg-yellow-100 dark:bg-yellow-900 px-1 rounded">ANTHROPIC_API_KEY</code></li>
                               <li>Faça o deploy novamente das funções <code className="bg-yellow-100 dark:bg-yellow-900 px-1 rounded">generate-lyrics-internal</code> e <code className="bg-yellow-100 dark:bg-yellow-900 px-1 rounded">generate-lyrics-for-approval</code></li>
                             </ol>
-                            <a 
-                              href="https://supabase.com/dashboard/project/pszyhjshppvrzhkrgmrz/settings/functions" 
-                              target="_blank" 
+                            <a
+                              href="https://supabase.com/dashboard/project/pszyhjshppvrzhkrgmrz/settings/functions"
+                              target="_blank"
                               rel="noopener noreferrer"
                               className="mt-2 inline-block text-yellow-800 dark:text-yellow-200 underline text-[11px] hover:text-yellow-900 dark:hover:text-yellow-100"
                             >
@@ -1830,9 +1939,9 @@ export default function AdminOrderDetails() {
                     )}
 
                     {job.suno_task_id && (
-                      <CopyableField 
-                        label="Suno Task ID" 
-                        value={job.suno_task_id} 
+                      <CopyableField
+                        label="Suno Task ID"
+                        value={job.suno_task_id}
                         fieldName={`suno_task_id_${job.id}`}
                         className="font-mono text-xs"
                       />
@@ -1880,52 +1989,60 @@ export default function AdminOrderDetails() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
-                    <CopyableField 
-                      label="Data de Liberação" 
-                      value={new Date(song.release_at).toLocaleString("pt-BR")} 
+                    <CopyableField
+                      label="Data de Liberação"
+                      value={new Date(song.release_at).toLocaleString("pt-BR")}
                       fieldName={`song_release_at_${song.id}`}
                     />
                     {song.released_at && (
-                      <CopyableField 
-                        label="Liberado em" 
-                        value={new Date(song.released_at).toLocaleString("pt-BR")} 
+                      <CopyableField
+                        label="Liberado em"
+                        value={new Date(song.released_at).toLocaleString("pt-BR")}
                         fieldName={`song_released_at_${song.id}`}
                       />
                     )}
                     {song.duration_sec && (
-                      <CopyableField 
-                        label="Duração" 
-                        value={`${Math.floor(song.duration_sec / 60)}:${(song.duration_sec % 60).toString().padStart(2, '0')}`} 
+                      <CopyableField
+                        label="Duração"
+                        value={`${Math.floor(song.duration_sec / 60)}:${(song.duration_sec % 60).toString().padStart(2, '0')}`}
                         fieldName={`song_duration_${song.id}`}
                       />
                     )}
                   </div>
 
-                  {song.lyrics && (
-                    <div>
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <p className="text-sm font-medium text-muted-foreground">Letra</p>
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handleCopy(song.lyrics, `song_lyrics_${song.id}`);
-                          }}
-                          className="opacity-60 hover:opacity-100 transition-opacity p-0.5 hover:bg-muted rounded flex-shrink-0"
-                          title="Copiar letra"
-                        >
-                          {copiedField === `song_lyrics_${song.id}` ? (
-                            <Check className="h-3.5 w-3.5 text-green-600" />
-                          ) : (
-                            <Copy className="h-3.5 w-3.5" />
-                          )}
-                        </button>
+                  {/* Mostrar letra da música APENAS se diferente da letra já exibida no card do pedido */}
+                  {(() => {
+                    if (!song.lyrics) return null;
+                    const q = order.quizzes ? (Array.isArray(order.quizzes) ? order.quizzes[0] : order.quizzes) : null;
+                    const ans = q?.answers && typeof q.answers === 'object' ? q.answers : {};
+                    const shownLyrics = (typeof ans.approved_lyrics === 'string' ? ans.approved_lyrics.trim() : '') || (typeof ans.generated_lyrics === 'string' ? ans.generated_lyrics.trim() : '');
+                    if (shownLyrics && song.lyrics.trim() === shownLyrics) return null;
+                    return (
+                      <div>
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <p className="text-sm font-medium text-muted-foreground">Letra</p>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleCopy(song.lyrics, `song_lyrics_${song.id}`);
+                            }}
+                            className="opacity-60 hover:opacity-100 transition-opacity p-0.5 hover:bg-muted rounded flex-shrink-0"
+                            title="Copiar letra"
+                          >
+                            {copiedField === `song_lyrics_${song.id}` ? (
+                              <Check className="h-3.5 w-3.5 text-green-600" />
+                            ) : (
+                              <Copy className="h-3.5 w-3.5" />
+                            )}
+                          </button>
+                        </div>
+                        <div className="p-3 bg-muted/30 rounded border text-sm whitespace-pre-wrap max-h-48 overflow-y-auto select-text">
+                          {song.lyrics}
+                        </div>
                       </div>
-                      <div className="p-3 bg-muted/30 rounded border text-sm whitespace-pre-wrap max-h-48 overflow-y-auto select-text">
-                        {song.lyrics}
-                      </div>
-                    </div>
-                  )}
+                    );
+                  })()}
 
                   {song.audio_url && (
                     <div>

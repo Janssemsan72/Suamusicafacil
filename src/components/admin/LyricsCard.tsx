@@ -99,6 +99,33 @@ export const LyricsCard = memo(function LyricsCard({
   const [isLoadingLyrics, setIsLoadingLyrics] = useState(false);
   const queryClient = useQueryClient();
 
+  // Função para acessar dados de lyrics de forma robusta
+  // ✅ OTIMIZAÇÃO: Usar loadedLyrics (carregado sob demanda) ou approval.lyrics (se já estiver disponível)
+  // Definida ANTES dos useEffects que a utilizam
+  const getLyricsData = useCallback(() => {
+    const lyrics = loadedLyrics || approval.lyrics;
+    if (!lyrics) {
+      return null;
+    }
+
+    // Se for string, tentar parsear JSON
+    if (typeof lyrics === 'string') {
+      try {
+        return JSON.parse(lyrics);
+      } catch (e) {
+        logger.warn('Erro ao parsear lyrics JSON', { error: e, approvalId: approval.id });
+        return null;
+      }
+    }
+
+    // Se já for objeto, retornar diretamente
+    if (typeof lyrics === 'object') {
+      return lyrics;
+    }
+
+    return null;
+  }, [loadedLyrics, approval.lyrics, approval.id]);
+
   // ✅ OTIMIZAÇÃO: Carregar lyrics apenas quando o modal for aberto (lazy loading)
   useEffect(() => {
     if (showLyricsDialog && !loadedLyrics && !isLoadingLyrics) {
@@ -166,7 +193,7 @@ export const LyricsCard = memo(function LyricsCard({
         refetchType: 'active'
       });
     }
-  }, [loadedLyrics, approval.lyrics, approval.lyrics_preview, approval.id, queryClient]);
+  }, [loadedLyrics, approval.lyrics, approval.lyrics_preview, approval.id, queryClient, getLyricsData]);
 
   // Função para atualizar o estado de destaque no banco
   const handleHighlightChange = async (checked: boolean) => {
@@ -383,31 +410,7 @@ export const LyricsCard = memo(function LyricsCard({
     }
   };
 
-  // Função para acessar dados de lyrics de forma robusta
-  // ✅ OTIMIZAÇÃO: Usar loadedLyrics (carregado sob demanda) ou approval.lyrics (se já estiver disponível)
-  const getLyricsData = () => {
-    const lyrics = loadedLyrics || approval.lyrics;
-    if (!lyrics) {
-      return null;
-    }
 
-    // Se for string, tentar parsear JSON
-    if (typeof lyrics === 'string') {
-      try {
-        return JSON.parse(lyrics);
-      } catch (e) {
-        logger.warn('Erro ao parsear lyrics JSON', { error: e, approvalId: approval.id });
-        return null;
-      }
-    }
-
-    // Se já for objeto, retornar diretamente
-    if (typeof lyrics === 'object') {
-      return lyrics;
-    }
-
-    return null;
-  };
 
   // Extrair título da música
   const getMusicTitle = () => {

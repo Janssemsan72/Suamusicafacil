@@ -4,7 +4,7 @@
  * Hooks para usar o sistema de cache de forma reativa
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { cacheManager } from './manager';
 import type { CacheConfig } from './types';
@@ -18,16 +18,21 @@ export function useCache<T = any>(
   fetcher: () => Promise<T>,
   config?: Partial<CacheConfig>
 ) {
-  const queryKey = Array.isArray(key) ? key : [key];
+  const queryKey = useMemo(() => (Array.isArray(key) ? key : [key]), [key]);
+  const cacheKey = useMemo(() => queryKey.join(':'), [queryKey]);
   const strategy = config?.strategy || 'dynamic';
-  const cacheConfig = { ...CACHE_STRATEGIES[strategy], ...config };
+  const cacheConfig = useMemo(
+    () => ({ ...CACHE_STRATEGIES[strategy], ...config }),
+    [strategy, config],
+  );
+  const shouldPreload = cacheConfig.preload;
   const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey,
     queryFn: async () => {
       // Tentar cache primeiro
-      const cached = await cacheManager.get<T>(queryKey.join(':'), cacheConfig);
+      const cached = await cacheManager.get<T>(cacheKey, cacheConfig);
       if (cached !== null) {
         return cached;
       }
@@ -36,7 +41,7 @@ export function useCache<T = any>(
       const data = await fetcher();
       
       // Salvar no cache
-      await cacheManager.set(queryKey.join(':'), data, cacheConfig);
+      await cacheManager.set(cacheKey, data, cacheConfig);
       
       return data;
     },
@@ -49,10 +54,10 @@ export function useCache<T = any>(
 
   // Pré-carregar se configurado
   useEffect(() => {
-    if (cacheConfig.preload && !query.data) {
-      cacheManager.preload(queryKey.join(':'), fetcher, cacheConfig);
+    if (shouldPreload && !query.data) {
+      cacheManager.preload(cacheKey, fetcher, cacheConfig);
     }
-  }, [cacheConfig.preload, queryKey.join(':')]);
+  }, [shouldPreload, cacheKey, fetcher, cacheConfig, query.data]);
 
   return query;
 }
@@ -138,12 +143,14 @@ export function useCachePreload<T = any>(
   fetcher: () => Promise<T>,
   config?: Partial<CacheConfig>
 ) {
-  const cacheKey = Array.isArray(key) ? key.join(':') : key;
+  const cacheKey = useMemo(() => (Array.isArray(key) ? key.join(':') : key), [key]);
   const strategy = config?.strategy || 'dynamic';
-  const cacheConfig = { ...CACHE_STRATEGIES[strategy], ...config };
+  const cacheConfig = useMemo(
+    () => ({ ...CACHE_STRATEGIES[strategy], ...config }),
+    [strategy, config],
+  );
 
   useEffect(() => {
     cacheManager.preload(cacheKey, fetcher, cacheConfig);
-  }, [cacheKey]);
+  }, [cacheKey, fetcher, cacheConfig]);
 }
-

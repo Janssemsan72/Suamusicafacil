@@ -277,8 +277,7 @@ export function useCollaboratorPermissions(requiredPermission?: string) {
     };
 
     checkPermission();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requiredPermission]); // Remover navigate das dependências (função estável)
+  }, [requiredPermission, navigate]); // Remover navigate das dependências (função estável)
 
   return { hasPermission, isLoading, userRole };
 }

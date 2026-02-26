@@ -81,20 +81,5 @@ export function LazyComponent({
   );
 }
 
-/**
- * Helper para criar lazy components com retry
- */
-export function createLazyComponent<T extends React.ComponentType<any>>(
-  importFn: () => Promise<{ default: T }>
-) {
-  return lazy(async () => {
-    try {
-      return await importFn();
-    } catch (error) {
-      // Retry uma vez após 1 segundo
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      return await importFn();
-    }
-  });
-}
+
 

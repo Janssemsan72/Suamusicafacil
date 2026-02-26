@@ -11,7 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Mail, Send, Edit, Save, X, Eye, TestTube, Globe, Inbox, Archive, CheckCircle2, Reply, FileText, Loader2, LayoutTemplate } from "@/lib/icons";
-import { SolidStatCard, ADMIN_CARD_COLORS } from "@/components/admin/SolidStatCard";
+import { SolidStatCard } from "@/components/admin/SolidStatCard";
+import { ADMIN_CARD_COLORS } from "@/constants/admin";
 
 interface EmailTemplate {
   id: string;

@@ -1,35 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { getCountryByIP } from '@/lib/detectLocale';
 
 export type Country = 'BR' | 'PT' | 'ES' | 'MX' | 'AR' | 'CO' | 'CL' | 'PE' | 'VE' | 'EC' | 'GT' | 'CU' | 'BO' | 'DO' | 'HN' | 'PY' | 'SV' | 'NI' | 'CR' | 'PA' | 'UY' | 'GQ' | 'PR' | 'AO' | 'MZ' | 'CV' | 'GW' | 'ST' | 'TL' | 'MO' | 'US' | 'CA' | 'GB' | 'AU' | 'DE' | 'FR' | 'IT' | 'NL' | 'SE' | 'NO' | 'DK' | 'FI' | 'PL' | 'CZ' | 'HU' | 'RO' | 'BG' | 'HR' | 'SI' | 'SK' | 'EE' | 'LV' | 'LT' | 'MT' | 'CY' | 'LU' | 'IE' | 'AT' | 'BE' | 'CH' | 'LI' | 'IS' | 'AD' | 'MC' | 'SM' | 'VA' | 'AL' | 'BA' | 'ME' | 'MK' | 'RS' | 'XK' | 'MD' | 'UA' | 'BY' | 'RU' | 'TR' | 'GR' | 'OTHER';
 
-export type Language = 'pt';
+export type Language = 'pt' | 'en' | 'es';
 
 export function countryToLanguage(_country: Country): Language {
   return 'pt';
 }
 
+const normalizeCountryCode = (code: string): Country => {
+  const normalized = code.toUpperCase();
+  if (/^[A-Z]{2}$/.test(normalized)) return normalized as Country;
+  return 'OTHER';
+};
+
 export function useCountryDetection() {
   const [country, setCountry] = useState<Country | null>(null);
   const [language, setLanguage] = useState<Language>('pt');
   const [isLoading, setIsLoading] = useState(true);
-  const [lastDetection, setLastDetection] = useState<number>(0);
+  const lastDetectionRef = useRef<number>(0);
 
-  const normalizeCountryCode = (code: string): Country => {
-    const normalized = code.toUpperCase();
-    if (/^[A-Z]{2}$/.test(normalized)) return normalized as Country;
-    return 'OTHER';
-  };
-
-  const detectCountry = async (forceRefresh = false) => {
+  const detectCountry = useCallback(async (forceRefresh = false) => {
     // Evitar detecções muito frequentes (máximo a cada 30 segundos)
     const now = Date.now();
-    if (!forceRefresh && now - lastDetection < 30000) {
+    if (!forceRefresh && now - lastDetectionRef.current < 30000) {
       return;
     }
 
     setIsLoading(true);
-    setLastDetection(now);
+    lastDetectionRef.current = now;
     const timestamp = Date.now();
 
     try {
@@ -65,7 +65,7 @@ export function useCountryDetection() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     // Verificar se há detecção recente no localStorage
@@ -88,7 +88,7 @@ export function useCountryDetection() {
     
     // Detectar país
     detectCountry();
-  }, []);
+  }, [detectCountry]);
 
   // Adicionar listener para mudanças de visibilidade da página
   useEffect(() => {
@@ -113,7 +113,7 @@ export function useCountryDetection() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('focus', handleFocus);
     };
-  }, []);
+  }, [detectCountry]);
 
   const clearCache = () => {
     localStorage.removeItem('detectedCountry');
@@ -123,7 +123,7 @@ export function useCountryDetection() {
     localStorage.removeItem('detectedIP');
     setCountry(null);
     setLanguage('pt');
-    setLastDetection(0);
+    lastDetectionRef.current = 0;
     console.log('🗑️ [CountryDetection] Cache limpo');
   };
 

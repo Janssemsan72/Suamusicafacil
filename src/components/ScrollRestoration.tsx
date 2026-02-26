@@ -1,6 +1,38 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
+// Lista de rotas que devem iniciar no topo
+const scrollToTopRoutes = [
+  '/terms',
+  '/privacy',
+  '/pricing',
+  '/about',
+  '/company',
+  '/how-it-works',
+  '/quiz',
+  '/pt/terms',
+  '/pt/privacy',
+  '/pt/pricing',
+  '/pt/about',
+  '/pt/company',
+  '/pt/how-it-works',
+  '/pt/quiz',
+  '/en/terms',
+  '/en/privacy',
+  '/en/pricing',
+  '/en/about',
+  '/en/company',
+  '/en/how-it-works',
+  '/en/quiz',
+  '/es/terms',
+  '/es/privacy',
+  '/es/pricing',
+  '/es/about',
+  '/es/company',
+  '/es/how-it-works',
+  '/es/quiz'
+];
+
 /**
  * Componente que posiciona a página no topo em rotas específicas
  * Executa apenas uma vez quando a rota muda
@@ -8,38 +40,6 @@ import { useLocation } from 'react-router-dom';
 export default function ScrollRestoration() {
   const location = useLocation();
   const lastPathnameRef = useRef<string>('');
-
-  // Lista de rotas que devem iniciar no topo
-  const scrollToTopRoutes = [
-    '/terms',
-    '/privacy',
-    '/pricing',
-    '/about',
-    '/company',
-    '/how-it-works',
-    '/quiz',
-    '/pt/terms',
-    '/pt/privacy',
-    '/pt/pricing',
-    '/pt/about',
-    '/pt/company',
-    '/pt/how-it-works',
-    '/pt/quiz',
-    '/en/terms',
-    '/en/privacy',
-    '/en/pricing',
-    '/en/about',
-    '/en/company',
-    '/en/how-it-works',
-    '/en/quiz',
-    '/es/terms',
-    '/es/privacy',
-    '/es/pricing',
-    '/es/about',
-    '/es/company',
-    '/es/how-it-works',
-    '/es/quiz'
-  ];
 
   useEffect(() => {
     const currentPath = location.pathname;

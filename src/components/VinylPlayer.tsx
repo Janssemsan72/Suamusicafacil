@@ -278,7 +278,7 @@ export default function VinylPlayer() {
   }, [track?.audioUrl, playing]);
 
 
-  const togglePlay = async () => {
+  const togglePlay = useCallback(async () => {
     const audio = audioRef.current;
     if (!audio || !track.audioUrl || track.audioUrl === '') {
       devLog.warn('Audio aún no cargado - espera');
@@ -338,7 +338,7 @@ export default function VinylPlayer() {
       setIsBuffering(false);
       setPlaying(false);
     }
-  };
+  }, [playing, track.audioUrl]);
 
   const handleSeek = (newTime: number) => {
     const audio = audioRef.current;

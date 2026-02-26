@@ -15,7 +15,8 @@ import { AdminPageLoading } from "@/components/admin/AdminPageLoading";
 import { useOrders, useOrdersStats } from "@/hooks/useAdminData";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useCollaboratorPermissions } from "@/hooks/useCollaboratorPermissions";
-import { SolidStatCard, ADMIN_CARD_COLORS } from "@/components/admin/SolidStatCard";
+import { SolidStatCard } from "@/components/admin/SolidStatCard";
+import { ADMIN_CARD_COLORS } from "@/constants/admin";
 
 interface Order {
   id: string;
@@ -67,6 +68,7 @@ export default function AdminOrders() {
   const [sortField, setSortField] = useState<"email" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [convertingOrder, setConvertingOrder] = useState<string | null>(null);
+  const [testingConnection, setTestingConnection] = useState(false);
   const ordersPerPage = 50; // ✅ Aumentado para melhor performance
   const seededOrders = useMemo<Order[]>(
     () => [
@@ -273,6 +275,31 @@ export default function AdminOrders() {
     }
   }, [ordersError]);
 
+  async function handleTestConnection() {
+    setTestingConnection(true);
+    try {
+      const { count, error } = await supabase.from("orders").select("id", { count: "exact", head: true });
+      if (error) {
+        toast.error("Falha na conexão com a tabela de pedidos", {
+          description: `${error.code || "Erro"}: ${error.message}`,
+          duration: 8000,
+        });
+        return;
+      }
+      toast.success("Conexão com o banco OK", {
+        description: `Total de registros na tabela orders: ${count ?? 0}. Se os pedidos não aparecem, verifique RLS ou colunas da tabela.`,
+        duration: 6000,
+      });
+    } catch (e: any) {
+      toast.error("Erro ao testar conexão", {
+        description: e?.message ?? String(e),
+        duration: 8000,
+      });
+    } finally {
+      setTestingConnection(false);
+    }
+  }
+
   // Função para formatar telefone: +55 41 99898-2514
   const formatPhone = (phone: string): string => {
     const numbers = phone.replace(/\D/g, '');
@@ -380,7 +407,7 @@ export default function AdminOrders() {
       pending: statsData.pending,
       conversionRate: statsData.conversionRate
     };
-  }, [enableE2ESeedOrders, seededOrders, showTestOrders, statsData, statsLoading]);
+  }, [enableE2ESeedOrders, seededOrders, statsData, statsLoading]);
 
   // ✅ OTIMIZAÇÃO: Removido loadOrders - agora usa React Query
 
@@ -625,8 +652,8 @@ export default function AdminOrders() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem data-testid="provider-option-all" value="all">Todos</SelectItem>
+                  <SelectItem data-testid="provider-option-cakto" value="cakto">Cakto</SelectItem>
                   <SelectItem data-testid="provider-option-hotmart" value="hotmart">Hotmart</SelectItem>
-                  <SelectItem data-testid="provider-option-mercadopago" value="mercadopago">Mercado Pago</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -660,6 +687,22 @@ export default function AdminOrders() {
                     ? "Tente ajustar os filtros de busca"
                     : "Quando houver pedidos, eles aparecerão aqui"}
                 </p>
+                {!searchTerm && statusFilter === "all" && planFilter === "all" && providerFilter === "all" && (
+                  <div className="mt-4 flex flex-col items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={testingConnection}
+                      onClick={handleTestConnection}
+                    >
+                      {testingConnection ? "Testando…" : "Testar conexão com o banco"}
+                    </Button>
+                    <p className="text-muted-foreground text-xs max-w-sm">
+                      Se você já criou pedidos e nada aparece, verifique no Supabase (Table Editor → orders) e as variáveis VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no .env.
+                    </p>
+                  </div>
+                )}
               </div>
             ) : (
               <div data-testid="orders-table" role="table" className="w-full overflow-x-auto">

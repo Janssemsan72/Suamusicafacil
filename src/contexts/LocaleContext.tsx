@@ -27,6 +27,7 @@ const LocaleContext = createContext<LocaleContextType>({
   isLocaleForced: false
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useLocaleContext = () => useContext(LocaleContext);
 
 /**

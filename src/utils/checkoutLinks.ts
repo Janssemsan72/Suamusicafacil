@@ -1,13 +1,39 @@
 import { supabase } from "@/integrations/supabase/client";
 
+/** URL da página de pagamento Cakto — redirecionamento ao clicar em "Ir para pagamento" */
+export const CAKTO_PAYMENT_BASE_URL = import.meta.env.VITE_CAKTO_CHECKOUT_URL || 'https://pay.cakto.com.br/37k66ko_784248';
+
 /**
- * Gera URL da Hotmart para pagamento
- * @param orderId ID do pedido
- * @param email Email do cliente
- * @param whatsapp WhatsApp do cliente (normalizado)
- * @param language Idioma (pt, en, es)
- * @param utms Parâmetros UTM opcionais
- * @returns URL completa da Hotmart
+ * Gera URL da Cakto para pagamento (redirecionamento direto).
+ * Após o pagamento, o webhook da Cakto marca o pedido como pago e dispara: letra → Suno (sunoapi.org) → email ao cliente.
+ */
+export function generateCaktoUrl(
+  orderId: string,
+  email: string,
+  whatsapp: string,
+  language: string = 'pt',
+  utms?: Record<string, string>
+): string {
+  let normalizedWhatsapp = whatsapp.replace(/\D/g, '');
+  if (!normalizedWhatsapp.startsWith('55')) {
+    normalizedWhatsapp = `55${normalizedWhatsapp}`;
+  }
+  const params = new URLSearchParams();
+  params.set('order_id', orderId);
+  params.set('email', email);
+  if (normalizedWhatsapp && normalizedWhatsapp.trim() !== '') {
+    params.set('phone', normalizedWhatsapp);
+  }
+  if (utms) {
+    Object.entries(utms).forEach(([key, value]) => {
+      if (value) params.set(key, value);
+    });
+  }
+  return `${CAKTO_PAYMENT_BASE_URL}?${params.toString()}`;
+}
+
+/**
+ * @deprecated Use generateCaktoUrl. Mantido para compatibilidade.
  */
 export function generateHotmartUrl(
   orderId: string,
@@ -16,73 +42,7 @@ export function generateHotmartUrl(
   language: string = 'pt',
   utms?: Record<string, string>
 ): string {
-  const HOTMART_PAYMENT_URL = 'https://pay.hotmart.com.br/d877u4t_665160';
-  
-  // Normalizar WhatsApp (apenas números)
-  let normalizedWhatsapp = whatsapp.replace(/\D/g, '');
-  
-  // ✅ CORREÇÃO: Garantir que WhatsApp tenha prefixo 55 (código do país)
-  if (!normalizedWhatsapp.startsWith('55')) {
-    // Se já começa com 55, não duplicar
-    normalizedWhatsapp = `55${normalizedWhatsapp}`;
-  }
-  
-  // Logs detalhados para auditoria
-  console.log('🔍 [generateHotmartUrl] Gerando URL da Hotmart:', {
-    orderId,
-    email,
-    whatsapp_original: whatsapp,
-    whatsapp_normalized: normalizedWhatsapp,
-    language,
-    hasUtms: !!utms,
-  });
-  
-  // URL de redirecionamento após pagamento
-  const redirectUrl = `${window.location.origin}/${language}/payment-success`;
-  
-  const hotmartParams = new URLSearchParams();
-  hotmartParams.set('order_id', orderId);
-  hotmartParams.set('email', email);
-  // ✅ Hotmart usa 'phone' para pré-preencher o telefone (não 'whatsapp')
-  // Formato: código do país + DDD + número (ex: 5511999999999)
-  // ✅ CORREÇÃO: Só adicionar phone se WhatsApp for válido
-  if (normalizedWhatsapp && normalizedWhatsapp.trim() !== '') {
-    hotmartParams.set('phone', normalizedWhatsapp);
-  } else {
-    console.warn('⚠️ [generateHotmartUrl] WhatsApp inválido ou vazio, URL será gerada sem phone', {
-      orderId,
-      email,
-      whatsapp
-    });
-  }
-  hotmartParams.set('language', language);
-  hotmartParams.set('redirect_url', redirectUrl);
-  
-  // Adicionar parâmetros UTM se fornecidos
-  if (utms) {
-    Object.entries(utms).forEach(([key, value]) => {
-      if (value) {
-        hotmartParams.set(key, value);
-      }
-    });
-  }
-  
-  const finalUrl = `${HOTMART_PAYMENT_URL}?${hotmartParams.toString()}`;
-  
-  // Validação e log da URL final
-  if (!finalUrl.startsWith('https://pay.hotmart.com.br')) {
-    console.error('❌ [generateHotmartUrl] URL gerada não começa com https://pay.hotmart.com.br:', finalUrl);
-  } else {
-    console.log('✅ [generateHotmartUrl] URL da Hotmart gerada com sucesso:', {
-      url: finalUrl,
-      urlLength: finalUrl.length,
-      hasOrderId: finalUrl.includes(`order_id=${orderId}`),
-      hasEmail: finalUrl.includes(`email=`),
-      hasPhone: finalUrl.includes(`phone=${normalizedWhatsapp}`),
-    });
-  }
-  
-  return finalUrl;
+  return generateCaktoUrl(orderId, email, whatsapp, language, utms);
 }
 
 /**

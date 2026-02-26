@@ -65,7 +65,7 @@ serve(async (req) => {
       console.error('❌ [create-checkout] Erro ao fazer parse do body:', parseError);
       return new Response(
         JSON.stringify({ success: false, error: 'Invalid JSON' }),
-        { status: 400, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -74,18 +74,22 @@ serve(async (req) => {
       quiz,
       customer_email,
       customer_whatsapp,
+      customer_name,
       plan,
       amount_cents,
-      transaction_id
+      transaction_id,
+      provider: bodyProvider
     } = body;
-    
-    const normalizedProvider = 'hotmart';
+    // Gateway em uso é Cakto; aceitar provider do body ou default 'cakto'
+    const normalizedProvider = (bodyProvider === 'cakto' || bodyProvider === 'hotmart')
+      ? bodyProvider
+      : 'cakto';
 
     // Validações
     if (!session_id || !isValidUUID(session_id)) {
       return new Response(
         JSON.stringify({ success: false, error: 'Invalid or missing session_id' }),
-        { status: 400, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -97,34 +101,34 @@ serve(async (req) => {
     if (!quiz || !quiz.about_who || !quiz.style) {
       return new Response(
         JSON.stringify({ success: false, error: 'Invalid quiz data: about_who and style are required' }),
-        { status: 400, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
       );
     }
     if (!hasNewPattern && !hasLegacyPattern) {
       return new Response(
         JSON.stringify({ success: false, error: 'Invalid quiz data: message (or qualities/memories/key_moments for legacy) is required' }),
-        { status: 400, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     if (!customer_email || !customer_whatsapp) {
       return new Response(
         JSON.stringify({ success: false, error: 'customer_email and customer_whatsapp are required' }),
-        { status: 400, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     if (!plan || !['standard', 'express'].includes(plan)) {
       return new Response(
         JSON.stringify({ success: false, error: 'Invalid plan: must be standard or express' }),
-        { status: 400, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     if (!amount_cents || typeof amount_cents !== 'number' || amount_cents <= 0) {
       return new Response(
         JSON.stringify({ success: false, error: 'Invalid amount_cents: must be a positive number' }),
-        { status: 400, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -155,7 +159,8 @@ serve(async (req) => {
       p_transaction_id: transaction_id || null,
       p_source: 'edge_function',
       p_ip_address: ipAddress,
-      p_user_agent: userAgent
+      p_user_agent: userAgent,
+      p_customer_name: customer_name || quiz?.answers?.customer_name || null,
     });
 
     if (rpcError || !result || !result.success) {
@@ -188,7 +193,7 @@ serve(async (req) => {
           quiz_id: result?.quiz_id || null,
           error_code: rpcError?.code || null
         }),
-        { status: 400, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...secureHeaders, 'Content-Type': 'application/json' } }
       );
     }
 

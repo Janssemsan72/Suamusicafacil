@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,8 @@ import { Users,
   Shield } from "@/lib/icons";
 import AdminUserCard from "./components/AdminUserCard";
 import { useDebounce } from "@/hooks/use-debounce";
-import { SolidStatCard, ADMIN_CARD_COLORS } from "@/components/admin/SolidStatCard";
+import { SolidStatCard } from "@/components/admin/SolidStatCard";
+import { ADMIN_CARD_COLORS } from "@/constants/admin";
 
 interface UserRole {
   id: string;
@@ -120,7 +121,7 @@ export default function AdminCollaborators() {
         supabase.removeChannel(channel);
       }
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   // Estado de colaboradores é gerenciado automaticamente
 

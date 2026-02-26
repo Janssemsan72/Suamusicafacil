@@ -27,8 +27,33 @@ if (typeof window !== 'undefined' && isDev) {
 }
 
 // ✅ CORREÇÃO: Garantir que sempre usa URL remota (não localhost)
-let finalUrl = SUPABASE_URL || SUPABASE_URL_FALLBACK;
-const finalKey = SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY_FALLBACK;
+let finalUrl = (SUPABASE_URL || SUPABASE_URL_FALLBACK)?.trim?.() || SUPABASE_URL_FALLBACK;
+let finalKey = SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY_FALLBACK;
+
+// ✅ CORREÇÃO ERR_NAME_NOT_RESOLVED: normalizar URL — sempre com https://
+if (finalUrl && typeof finalUrl === 'string') {
+  const u = finalUrl.trim();
+  if (u.includes('.supabase.co') && !u.startsWith('http://') && !u.startsWith('https://')) {
+    finalUrl = `https://${u}`;
+    if (isDev) {
+      console.warn('[Supabase] URL normalizada com https://');
+    }
+  }
+}
+
+// ✅ Validação: URL deve ser https e conter .supabase.co
+const isValidSupabaseUrl = (url: string) =>
+  typeof url === 'string' &&
+  url.startsWith('https://') &&
+  url.includes('.supabase.co') &&
+  url.length > 30;
+if (finalUrl && !isValidSupabaseUrl(finalUrl)) {
+  if (isDev) {
+    console.warn('⚠️ [Supabase] VITE_SUPABASE_URL inválida (use https://SEU_PROJECT.supabase.co), usando fallback');
+  }
+  finalUrl = SUPABASE_URL_FALLBACK;
+  finalKey = SUPABASE_PUBLISHABLE_KEY_FALLBACK; // URL e chave do mesmo projeto (evita 401)
+}
 
 // ✅ CORREÇÃO CRÍTICA: Se detectar localhost, forçar uso da URL remota
 if (
@@ -42,6 +67,7 @@ if (
     console.warn('⚠️ [Supabase] URL localhost detectada, forçando uso da URL remota');
   }
   finalUrl = SUPABASE_URL_FALLBACK;
+  finalKey = SUPABASE_PUBLISHABLE_KEY_FALLBACK; // URL e chave do mesmo projeto (evita 401)
 }
 
 // ✅ CORREÇÃO CRÍTICA: Singleton pattern robusto para evitar loops de HMR

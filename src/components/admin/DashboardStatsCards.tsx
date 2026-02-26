@@ -126,9 +126,9 @@ export function DashboardStatsCards() {
         </div>
       </div>
 
-      {/* Hotmart */}
+      {/* Cakto */}
       <div 
-        data-testid="stats-card-hotmart"
+        data-testid="stats-card-cakto"
         role="region"
         style={getCardStyle(CARD_COLORS.hotmart)}
         onMouseEnter={(e) => handleMouseEnter(e, CARD_COLORS.hotmart)}
@@ -136,7 +136,7 @@ export function DashboardStatsCards() {
       >
         <div className="flex justify-between items-center mb-5">
           <h3 className="text-[0.8125rem] font-semibold uppercase tracking-wider text-white/95">
-            Hotmart (BRL)
+            Cakto (BRL)
           </h3>
           <Button
             variant="ghost"

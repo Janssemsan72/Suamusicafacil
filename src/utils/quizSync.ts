@@ -446,6 +446,8 @@ export interface QuizStepState {
   lyricsText: string;
   lyricsApproved: boolean;
   quizId: string | null;
+  /** ID do pedido criado como pendente no passo 1 (ao ir gerar letra) */
+  orderId?: string | null;
 }
 
 /**
@@ -476,6 +478,7 @@ export function loadQuizStepState(): QuizStepState | null {
         lyricsText: typeof parsed.lyricsText === 'string' ? parsed.lyricsText : '',
         lyricsApproved: !!parsed.lyricsApproved,
         quizId: parsed.quizId || null,
+        orderId: typeof parsed.orderId === 'string' ? parsed.orderId : null,
       };
     }
     return null;

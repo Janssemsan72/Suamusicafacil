@@ -42,21 +42,24 @@ export function usePWA() {
   const [isInstalled, setIsInstalled] = useState(false);
   const [shouldShowNotification, setShouldShowNotification] = useState(false);
   const notificationShownRef = useRef(false); // ✅ Evitar múltiplas notificações
+  const isInstalledRef = useRef(false);
   const isAdminRoute = location.pathname.startsWith('/admin');
 
-  // Registrar service worker apenas na área admin
+  useEffect(() => {
+    isInstalledRef.current = isInstalled;
+  }, [isInstalled]);
+
+  // Registrar service worker apenas na área admin (e apenas em produção)
   useEffect(() => {
     if (!isAdminRoute) {
-      if (isDev) {
-        console.log('[PWA] Não está na área admin, pulando registro');
-      }
+      return;
+    }
+
+    if (isDev) {
       return;
     }
     
     if (!('serviceWorker' in navigator)) {
-      if (isDev) {
-        console.warn('[PWA] Service Worker não suportado neste navegador');
-      }
       return;
     }
 
@@ -244,7 +247,7 @@ export function usePWA() {
       }
       
       // Verificar se deve mostrar a notificação
-      if (checkNotificationDismissed() && !isInstalled) {
+      if (checkNotificationDismissed() && !isInstalledRef.current) {
         if (isDev) {
           console.log('[PWA] Evento beforeinstallprompt recebido, mostrando notificação em 1 segundo...');
         }
@@ -276,7 +279,7 @@ export function usePWA() {
         if (isDev) {
           console.log('[PWA] Notificação não será mostrada:', {
             checkNotificationDismissed: checkNotificationDismissed(),
-            isInstalled
+            isInstalled: isInstalledRef.current
           });
         }
       }

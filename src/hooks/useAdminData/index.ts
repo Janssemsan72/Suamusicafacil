@@ -7,6 +7,7 @@ export {
   countOrdersPaginated,
   fetchRevenuePaginated,
   isHotmartOrder,
+  isPaidProviderOrder,
   getBrasiliaDate,
   createBrasiliaDate,
   processSalesDataForCharts,

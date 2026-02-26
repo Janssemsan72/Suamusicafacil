@@ -4,7 +4,6 @@ export interface CheckoutLogEvent {
   type: 'checkout_started' | 'quiz_creation_started' | 'quiz_created' | 'order_creation_started' | 'order_created' | 'checkout_requested' | 'checkout_received' | 'redirect' | 'redirect_direct' | 'error';
   timestamp: string;
   transactionId: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
   error?: string;
 }
@@ -17,8 +16,7 @@ class CheckoutLogger {
     this.transactionId = transactionId;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  log(type: CheckoutLogEvent['type'], data?: any, error?: string) {
+  log(type: CheckoutLogEvent['type'], data?: unknown, error?: string) {
     const event: CheckoutLogEvent = {
       type,
       timestamp: new Date().toISOString(),
@@ -62,10 +60,7 @@ class CheckoutLogger {
     }
   }
 
-  // Enviar logs para o banco (opcional - para monitoring dashboard)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async sendToDatabase(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     supabaseClient: any, 
     orderId?: string
   ) {
@@ -74,12 +69,10 @@ class CheckoutLogger {
         transaction_id: this.transactionId,
         order_id: orderId || null,
         event_type: log.type,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         payload: log.data || {},
         error: log.error || null
       }));
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       const { error } = await supabaseClient
         .from('checkout_events')
         .insert(events);

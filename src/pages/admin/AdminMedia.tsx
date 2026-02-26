@@ -11,7 +11,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { Image, Music, MessageSquare, HelpCircle, Plus, Trash2, Edit, Upload, Star, RefreshCw, Sparkles, Video, Loader2 } from "@/lib/icons";
-import { ADMIN_CARD_COLORS, SolidStatCard } from "@/components/admin/SolidStatCard";
+import { SolidStatCard } from "@/components/admin/SolidStatCard";
+import { ADMIN_CARD_COLORS } from "@/constants/admin";
 
 interface Testimonial {
   id: string;

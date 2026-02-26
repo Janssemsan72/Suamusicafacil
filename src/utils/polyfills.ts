@@ -7,7 +7,6 @@
 // Buffer será definido globalmente - importar dinamicamente do pacote buffer
 if (typeof window !== 'undefined' && typeof Buffer === 'undefined') {
   // Criar polyfill básico imediatamente (síncrono)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const BufferPolyfill: any = {
     from: function(data: string | ArrayBuffer | Uint8Array, encoding?: string): Uint8Array {
       if (typeof data === 'string') {
@@ -58,16 +57,12 @@ if (typeof window !== 'undefined' && typeof Buffer === 'undefined') {
       };
   
   // Definir Buffer globalmente imediatamente
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (globalThis as any).Buffer = BufferPolyfill;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (window as any).Buffer = BufferPolyfill;
   
   // Tentar substituir pelo buffer real do npm quando disponível (assíncrono)
   import('buffer').then((bufferModule) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (globalThis as any).Buffer = bufferModule.Buffer;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).Buffer = bufferModule.Buffer;
   }).catch(() => {
     // Se falhar, manter o polyfill básico

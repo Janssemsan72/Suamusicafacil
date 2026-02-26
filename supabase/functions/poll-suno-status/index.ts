@@ -23,43 +23,21 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // ✅ CORREÇÃO: Buscar também jobs 'completed' sem suno_audio_url (para recuperar áudio perdido)
-    // Buscar jobs com status 'audio_processing' ou 'processing' que têm suno_task_id
-    const { data: jobsProcessing, error: fetchErrorProcessing } = await supabase
+    // Buscar jobs que precisam de polling: audio_processing, processing, ou completed com suno_task_id
+    const { data: jobsWithTask, error: fetchError } = await supabase
       .from('jobs')
       .select('*')
-      .in('status', ['audio_processing', 'processing'])
       .not('suno_task_id', 'is', null)
+      .in('status', ['audio_processing', 'processing', 'completed'])
       .order('created_at', { ascending: true })
       .limit(50);
     
-    // Buscar jobs 'completed' sem suno_audio_url mas com suno_task_id (para recuperar)
-    const { data: jobsCompletedWithoutAudio, error: fetchErrorCompleted } = await supabase
-      .from('jobs')
-      .select('*')
-      .eq('status', 'completed')
-      .not('suno_task_id', 'is', null)
-      .or('suno_audio_url.is.null,suno_audio_url.eq.')
-      .order('created_at', { ascending: true })
-      .limit(20);
-    
-    if (fetchErrorProcessing) {
-      console.error('❌ Error fetching processing jobs:', fetchErrorProcessing);
-    }
-    if (fetchErrorCompleted) {
-      console.error('❌ Error fetching completed jobs without audio:', fetchErrorCompleted);
+    if (fetchError) {
+      console.error('❌ Error fetching jobs:', fetchError);
     }
     
-    // Combinar ambos os arrays
-    const jobs = [
-      ...(jobsProcessing || []),
-      ...(jobsCompletedWithoutAudio || [])
-    ];
-
-    if (fetchErrorProcessing || fetchErrorCompleted) {
-      console.error('❌ Error fetching jobs:', { fetchErrorProcessing, fetchErrorCompleted });
-      // Não bloquear se houver erro em uma das queries, continuar com as que funcionaram
-    }
+    // Filtrar: manter jobs que não têm songs criadas (verificar no loop abaixo)
+    const jobs = jobsWithTask || [];
 
     if (!jobs || jobs.length === 0) {
       console.log('✅ No jobs to poll');
@@ -78,9 +56,22 @@ serve(async (req) => {
     // Processar cada job
     for (const job of jobs) {
       try {
+        // Pular jobs que já têm songs criadas
+        const { data: existingSongs } = await supabase
+          .from('songs')
+          .select('id')
+          .eq('order_id', job.order_id)
+          .limit(1);
+        
+        if (existingSongs && existingSongs.length > 0) {
+          console.log(`⏭️ Job ${job.id} já tem songs, pulando`);
+          completed++;
+          continue;
+        }
+
         console.log(`🔍 Checking job ${job.id} with task ${job.suno_task_id}`);
 
-        const endpoint = `https://api.sunoapi.org/api/v1/query?id=${job.suno_task_id}`;
+        const endpoint = `https://api.sunoapi.org/api/v1/generate/record-info?taskId=${job.suno_task_id}`;
         console.log(`📡 Calling Suno query: ${endpoint}`);
 
         const response = await fetch(endpoint, {
@@ -112,7 +103,8 @@ serve(async (req) => {
 
         console.log(`✅ Suno Response parsed:`, JSON.stringify(result, null, 2));
 
-        // Suno retorna { code: 200, data: { progress: "100%", status: "complete", musics: [...] } }
+        // record-info retorna: { data: { status: "SUCCESS"|"PENDING"|..., response: { sunoData: [...] } } }
+        // Formato alternativo: { code: 200, data: { progress, status, musics } }
         const taskData = result.data || result;
         
         if (!taskData) {
@@ -121,25 +113,25 @@ serve(async (req) => {
           continue;
         }
 
-        const status = taskData.status || '';
+        const status = (taskData.status || '').toUpperCase();
         const progress = taskData.progress || '0%';
         
         console.log(`📊 Task status: ${status}, progress: ${progress}`);
 
-        // ✅ CORREÇÃO: Se job já está completed mas sem suno_audio_url, processar mesmo assim
-        const isJobCompletedWithoutAudio = job.status === 'completed' && (!job.suno_audio_url || job.suno_audio_url.trim() === '');
-        
-        // Se ainda está processando (e não é um job completed sem áudio), continue
-        if (!isJobCompletedWithoutAudio && (status === 'processing' || status === 'queued' || status === 'pending' || progress !== '100%')) {
-          console.log(`⏳ Task ${job.suno_task_id} still processing (${progress})`);
+        const isJobNeedingRecovery = job.status === 'completed' || job.status === 'processing';
+
+        const isStillProcessing = ['PENDING', 'TEXT_SUCCESS', 'PROCESSING', 'QUEUED'].includes(status);
+        if (!isJobNeedingRecovery && isStillProcessing) {
+          console.log(`⏳ Task ${job.suno_task_id} still processing (status=${status})`);
           stillProcessing++;
           continue;
         }
 
-        // Se completou (status === 'complete' OU progress === '100%' OU job completed sem áudio), extrair as músicas
-        if (status === 'complete' || progress === '100%' || isJobCompletedWithoutAudio) {
-          // Suno retorna { musics: [...] } ou { Musics: [...] }
-          const musics = taskData.musics || taskData.Musics || [];
+        const isSuccess = ['SUCCESS', 'FIRST_SUCCESS', 'COMPLETE', 'COMPLETED'].includes(status) || progress === '100%' || isJobNeedingRecovery;
+        if (isSuccess) {
+          // Extrair músicas: sunoData (novo formato) ou musics/Musics (formato antigo)
+          const sunoData = taskData.response?.sunoData || [];
+          const musics = sunoData.length > 0 ? sunoData : (taskData.musics || taskData.Musics || []);
           
           if (!Array.isArray(musics) || musics.length === 0) {
             console.error(`❌ No musics found for job ${job.id}. Full taskData:`, JSON.stringify(taskData, null, 2));
@@ -172,10 +164,7 @@ serve(async (req) => {
           }
 
           // Criar/atualizar todas as variantes em songs (suporta 2+ músicas)
-          const scheduledTime = new Date();
-          scheduledTime.setHours(scheduledTime.getHours() + 22); // 22 horas depois
-
-          // Processar TODAS as músicas retornadas (não limitar a 2)
+          // Processar TODAS as músicas retornadas
           for (let i = 0; i < clips.length; i++) {
             const clip = clips[i];
             const variantNumber = i + 1;
@@ -208,6 +197,53 @@ serve(async (req) => {
               continue;
             }
 
+            // Download audio e upload para Supabase Storage
+            let storageAudioUrl = audioUrl;
+            try {
+              console.log(`⬇️ [POLL] Baixando áudio variante ${variantNumber}...`);
+              const audioResp = await fetch(audioUrl);
+              if (audioResp.ok) {
+                const audioBlob = await audioResp.blob();
+                const storagePath = `media/${job.suno_task_id}-${variantNumber}.mp3`;
+                
+                // Garantir bucket existe
+                try { await supabase.storage.createBucket('suno-tracks', { public: true }); } catch (_) {}
+                
+                const { error: uploadErr } = await supabase.storage
+                  .from('suno-tracks')
+                  .upload(storagePath, audioBlob, { contentType: 'audio/mpeg', upsert: true });
+                
+                if (!uploadErr) {
+                  const { data: publicUrl } = supabase.storage.from('suno-tracks').getPublicUrl(storagePath);
+                  storageAudioUrl = publicUrl.publicUrl;
+                  console.log(`✅ [POLL] Áudio salvo no storage: ${storageAudioUrl}`);
+                } else {
+                  console.warn(`⚠️ [POLL] Upload falhou, usando URL externa:`, uploadErr.message);
+                }
+              }
+            } catch (dlErr) {
+              console.warn(`⚠️ [POLL] Download falhou, usando URL externa:`, dlErr);
+            }
+
+            // Upload cover se disponível
+            let storageCoverUrl = coverUrl;
+            if (coverUrl) {
+              try {
+                const coverResp = await fetch(coverUrl);
+                if (coverResp.ok) {
+                  const coverBlob = await coverResp.blob();
+                  const coverPath = `media/${job.suno_task_id}-${variantNumber}-cover.jpg`;
+                  const { error: coverUpErr } = await supabase.storage
+                    .from('suno-tracks')
+                    .upload(coverPath, coverBlob, { contentType: 'image/jpeg', upsert: true });
+                  if (!coverUpErr) {
+                    const { data: coverPubUrl } = supabase.storage.from('suno-tracks').getPublicUrl(coverPath);
+                    storageCoverUrl = coverPubUrl.publicUrl;
+                  }
+                }
+              } catch (_) {}
+            }
+
             // Verificar se já existe song para este order + variant
             const { data: existingSong } = await supabase
               .from('songs')
@@ -220,16 +256,15 @@ serve(async (req) => {
               order_id: jobData.order_id,
               quiz_id: job.quiz_id,
               variant_number: variantNumber,
-              title: jobData.gpt_lyrics?.title || `Música Personalizada ${variantNumber}`,
+              title: clip.title || jobData.gpt_lyrics?.title || `Música Personalizada ${variantNumber}`,
               lyrics: JSON.stringify(jobData.gpt_lyrics),
-              audio_url: audioUrl,
-              cover_url: coverUrl,
-              suno_clip_id: finalClipId, // ✅ Sempre salvar clipId (audioId) para permitir separação de stems
-              language: quizData?.about_who ? 'pt' : 'en',
-              style: quizData?.style || 'pop',
-              status: 'ready', // ✅ CORREÇÃO: Status deve ser 'ready' quando áudio está pronto
-              scheduled_release_at: scheduledTime.toISOString(),
-              release_at: scheduledTime.toISOString(),
+              audio_url: storageAudioUrl,
+              cover_url: storageCoverUrl,
+              suno_clip_id: finalClipId,
+              status: 'ready',
+              release_at: new Date().toISOString(),
+              released_at: new Date().toISOString(),
+              duration_sec: clip.duration ? Math.round(clip.duration) : null,
               updated_at: new Date().toISOString()
             };
 
@@ -348,35 +383,13 @@ serve(async (req) => {
             }
           }
 
-          // ✅ CORREÇÃO CRÍTICA: Garantir que suno_audio_url seja sempre salvo
-          // Extrair audio_url do primeiro clip válido
-          let jobAudioUrl = null;
-          for (const clip of clips) {
-            const clipAudioUrl = clip.audio_url || clip.audioUrl || clip.AudioUrl || clip.url;
-            if (clipAudioUrl && clipAudioUrl.trim() !== '') {
-              jobAudioUrl = clipAudioUrl;
-              break; // Usar o primeiro clip válido
-            }
-          }
-          
-          // Atualizar job como completo
-          const jobUpdateData: any = {
-            status: 'completed',
-            completed_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          };
-          
-          // ✅ SEMPRE salvar suno_audio_url se disponível
-          if (jobAudioUrl) {
-            jobUpdateData.suno_audio_url = jobAudioUrl;
-            console.log(`✅ Salvando suno_audio_url no job ${job.id}: ${jobAudioUrl.substring(0, 50)}...`);
-          } else {
-            console.warn(`⚠️ Job ${job.id} completado mas nenhum audio_url encontrado nos clips`);
-          }
-          
           const { error: jobUpdateError } = await supabase
             .from('jobs')
-            .update(jobUpdateData)
+            .update({
+              status: 'completed',
+              completed_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            })
             .eq('id', job.id);
           
           if (jobUpdateError) {
@@ -384,34 +397,25 @@ serve(async (req) => {
           } else {
             console.log(`✅ Job ${job.id} marcado como completed`);
           }
-          
-          // ✅ VERIFICAÇÃO ADICIONAL: Garantir que todas as songs do pedido tenham audio_url
-          // Se alguma song foi criada/atualizada mas não tem audio_url, usar o do job
-          if (jobAudioUrl) {
-            const { data: songsWithoutAudio } = await supabase
+
+          // Notificar cliente que a música está pronta
+          try {
+            const { data: readySongs } = await supabase
               .from('songs')
-              .select('id, audio_url')
+              .select('id')
               .eq('order_id', jobData.order_id)
-              .or('audio_url.is.null,audio_url.eq.');
+              .eq('status', 'ready')
+              .limit(1);
             
-            if (songsWithoutAudio && songsWithoutAudio.length > 0) {
-              console.log(`🔧 Corrigindo ${songsWithoutAudio.length} song(s) sem audio_url...`);
-              for (const song of songsWithoutAudio) {
-                const { error: fixError } = await supabase
-                  .from('songs')
-                  .update({
-                    audio_url: jobAudioUrl,
-                    updated_at: new Date().toISOString()
-                  })
-                  .eq('id', song.id);
-                
-                if (fixError) {
-                  console.error(`❌ Erro ao corrigir song ${song.id}:`, fixError);
-                } else {
-                  console.log(`✅ Song ${song.id} corrigida com audio_url do job`);
-                }
-              }
+            if (readySongs && readySongs.length > 0) {
+              console.log('📧 [POLL] Notificando cliente...');
+              await supabase.functions.invoke('send-music-released-email', {
+                body: { songId: readySongs[0].id, orderId: jobData.order_id }
+              });
+              console.log('✅ [POLL] Email de notificação enviado');
             }
+          } catch (notifyErr) {
+            console.warn('⚠️ [POLL] Erro ao enviar notificação (não bloqueante):', notifyErr);
           }
 
           completed++;
@@ -484,12 +488,39 @@ serve(async (req) => {
       }
     }
 
+    const debugInfo: any[] = [];
+    for (const job of jobs) {
+      if (!job.suno_task_id) continue;
+      try {
+        const dbg = await fetch(`https://api.sunoapi.org/api/v1/generate/record-info?taskId=${job.suno_task_id}`, {
+          headers: { 'Authorization': `Bearer ${sunoApiKey}`, 'Content-Type': 'application/json' },
+        });
+        const txt = await dbg.text();
+        try {
+          const parsed = JSON.parse(txt);
+          const d = parsed.data || {};
+          debugInfo.push({
+            job_id: job.id,
+            task_id: job.suno_task_id,
+            http: dbg.status,
+            suno_status: d.status,
+            has_response: !!d.response,
+            sunoData_count: d.response?.sunoData?.length || 0,
+            musics_count: (d.musics || d.Musics || []).length
+          });
+        } catch (_) {
+          debugInfo.push({ job_id: job.id, task_id: job.suno_task_id, http: dbg.status, resp: txt.substring(0, 500) });
+        }
+      } catch (_) {}
+    }
+
     const summary = {
       total: jobs.length,
       completed,
       failed,
       stillProcessing,
       timestamp: new Date().toISOString(),
+      debug: debugInfo,
     };
 
     console.log('📊 Polling summary:', summary);

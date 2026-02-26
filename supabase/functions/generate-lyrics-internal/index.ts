@@ -170,10 +170,10 @@ serve(async (req) => {
     } else {
       console.log('Processing job:', job_id);
 
-      // Buscar job com quiz
+      // Buscar job (sem join - FK não existe)
       const { data: job, error: jobError } = await supabaseClient
         .from('jobs')
-        .select('*, quizzes(*)')
+        .select('*')
         .eq('id', job_id)
         .single();
 
@@ -181,14 +181,22 @@ serve(async (req) => {
         throw new Error(`Job não encontrado: ${jobError?.message}`);
       }
 
-      // quizzes(*) retorna um array, pegar o primeiro elemento
+      // Buscar quiz separadamente pelo quiz_id do job
+      const { data: quizData, error: quizError } = await supabaseClient
+        .from('quizzes')
+        .select('*')
+        .eq('id', job.quiz_id)
+        .single();
+
+      if (quizError) {
+        console.warn('⚠️ Erro ao buscar quiz:', quizError);
+      }
+
       console.log('✅ Job encontrado, verificando quiz...', { 
-        hasQuizzes: !!job.quizzes, 
-        isArray: Array.isArray(job.quizzes),
-        length: Array.isArray(job.quizzes) ? job.quizzes.length : 'N/A'
+        hasQuiz: !!quizData
       });
       
-      quiz = Array.isArray(job.quizzes) ? job.quizzes[0] : job.quizzes;
+      quiz = quizData || null;
       if (!quiz) {
         console.error('❌ Quiz não encontrado:', { jobId: job.id, quizzes: job.quizzes });
         throw new Error('Quiz não encontrado para este job');

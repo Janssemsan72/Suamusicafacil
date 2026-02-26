@@ -55,7 +55,7 @@ export function useSongGrouping(options: UseSongGroupingOptions = {}) {
     orderDirection = 'asc'
   } = options;
 
-  const loadGroups = async () => {
+  const loadGroups = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -212,16 +212,16 @@ export function useSongGrouping(options: UseSongGroupingOptions = {}) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [status, includeEmailLogs, orderBy, orderDirection]);
 
   useEffect(() => {
     loadGroups();
-  }, [status, includeEmailLogs, orderBy, orderDirection]);
+  }, [loadGroups]);
 
   // Função refetch simples
   const refetch = useCallback(() => {
     loadGroups();
-  }, []);
+  }, [loadGroups]);
 
   return {
     groups,

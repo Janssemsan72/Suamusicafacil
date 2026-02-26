@@ -13,7 +13,8 @@ import { RefreshCw,
   Calendar,
   Filter,
   Download } from "@/lib/icons";
-import { ADMIN_CARD_COLORS, SolidStatCard } from "@/components/admin/SolidStatCard";
+import { SolidStatCard } from "@/components/admin/SolidStatCard";
+import { ADMIN_CARD_COLORS } from "@/constants/admin";
 import { OrderStatusBadge } from "@/components/admin/OrderStatusBadge";
 import { usePayments } from "@/hooks/useAdminData";
 
