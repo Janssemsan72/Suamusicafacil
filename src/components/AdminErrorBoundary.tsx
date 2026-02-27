@@ -195,7 +195,7 @@ export class AdminErrorBoundary extends Component<Props, State> {
                   Recarregar Página
                 </Button>
                 <Button asChild variant="outline">
-                  <a href="/admin/auth" id="gtm-admin-login">
+                  <a href="/admin/auth">
                     Ir para Login
                   </a>
                 </Button>

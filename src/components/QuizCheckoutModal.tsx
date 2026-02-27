@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import QuizCheckoutFlow from "./QuizCheckoutFlow";
-import { gtmCheckoutOpen } from "@/utils/gtmTracking";
 
 type QuizCheckoutModalProps = {
   isOpen: boolean;
@@ -10,7 +9,6 @@ type QuizCheckoutModalProps = {
 const QuizCheckoutModal = ({ isOpen, onClose }: QuizCheckoutModalProps) => {
   useEffect(() => {
     if (!isOpen) return;
-    gtmCheckoutOpen();
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {

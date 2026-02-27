@@ -39,7 +39,7 @@ export function HeatmapLinks() {
         <CardContent className="space-y-3">
           {clarityLinks.dashboard && (
             <Button asChild variant="outline" className="w-full justify-between hover:bg-blue-50 hover:border-blue-300 transition-colors">
-              <a href={clarityLinks.dashboard} id="gtm-clarity-dashboard" target="_blank" rel="noopener noreferrer">
+              <a href={clarityLinks.dashboard} target="_blank" rel="noopener noreferrer">
                 <span className="flex items-center gap-2">
                   <BarChart3 className="h-4 w-4 text-blue-600" />
                   Dashboard Principal
@@ -50,7 +50,7 @@ export function HeatmapLinks() {
           )}
           {clarityLinks.heatmaps && (
             <Button asChild variant="outline" className="w-full justify-between hover:bg-blue-50 hover:border-blue-300 transition-colors">
-              <a href={clarityLinks.heatmaps} id="gtm-clarity-heatmaps" target="_blank" rel="noopener noreferrer">
+              <a href={clarityLinks.heatmaps} target="_blank" rel="noopener noreferrer">
                 <span className="flex items-center gap-2">
                   <Map className="h-4 w-4 text-blue-600" />
                   Heatmaps
@@ -61,7 +61,7 @@ export function HeatmapLinks() {
           )}
           {clarityLinks.recordings && (
             <Button asChild variant="outline" className="w-full justify-between hover:bg-blue-50 hover:border-blue-300 transition-colors">
-              <a href={clarityLinks.recordings} id="gtm-clarity-recordings" target="_blank" rel="noopener noreferrer">
+              <a href={clarityLinks.recordings} target="_blank" rel="noopener noreferrer">
                 <span className="flex items-center gap-2">
                   <Video className="h-4 w-4 text-blue-600" />
                   Gravações de Sessão
@@ -72,7 +72,7 @@ export function HeatmapLinks() {
           )}
           {clarityLinks.insights && (
             <Button asChild variant="outline" className="w-full justify-between hover:bg-blue-50 hover:border-blue-300 transition-colors">
-              <a href={clarityLinks.insights} id="gtm-clarity-insights" target="_blank" rel="noopener noreferrer">
+              <a href={clarityLinks.insights} target="_blank" rel="noopener noreferrer">
                 <span className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4 text-blue-600" />
                   Insights
@@ -83,7 +83,7 @@ export function HeatmapLinks() {
           )}
           {clarityLinks.errors && (
             <Button asChild variant="outline" className="w-full justify-between hover:bg-blue-50 hover:border-blue-300 transition-colors">
-              <a href={clarityLinks.errors} id="gtm-clarity-errors" target="_blank" rel="noopener noreferrer">
+              <a href={clarityLinks.errors} target="_blank" rel="noopener noreferrer">
                 <span className="flex items-center gap-2">
                   <AlertCircle className="h-4 w-4 text-blue-600" />
                   Erros JavaScript
@@ -111,7 +111,7 @@ export function HeatmapLinks() {
         <CardContent className="space-y-3">
           {hotjarLinks.dashboard && (
             <Button asChild variant="outline" className="w-full justify-between hover:bg-orange-50 hover:border-orange-300 transition-colors">
-              <a href={hotjarLinks.dashboard} id="gtm-hotjar-dashboard" target="_blank" rel="noopener noreferrer">
+              <a href={hotjarLinks.dashboard} target="_blank" rel="noopener noreferrer">
                 <span className="flex items-center gap-2">
                   <BarChart3 className="h-4 w-4 text-orange-600" />
                   Dashboard Principal
@@ -122,7 +122,7 @@ export function HeatmapLinks() {
           )}
           {hotjarLinks.heatmaps && (
             <Button asChild variant="outline" className="w-full justify-between hover:bg-orange-50 hover:border-orange-300 transition-colors">
-              <a href={hotjarLinks.heatmaps} id="gtm-hotjar-heatmaps" target="_blank" rel="noopener noreferrer">
+              <a href={hotjarLinks.heatmaps} target="_blank" rel="noopener noreferrer">
                 <span className="flex items-center gap-2">
                   <Map className="h-4 w-4 text-orange-600" />
                   Heatmaps
@@ -133,7 +133,7 @@ export function HeatmapLinks() {
           )}
           {hotjarLinks.recordings && (
             <Button asChild variant="outline" className="w-full justify-between hover:bg-orange-50 hover:border-orange-300 transition-colors">
-              <a href={hotjarLinks.recordings} id="gtm-hotjar-recordings" target="_blank" rel="noopener noreferrer">
+              <a href={hotjarLinks.recordings} target="_blank" rel="noopener noreferrer">
                 <span className="flex items-center gap-2">
                   <Video className="h-4 w-4 text-orange-600" />
                   Gravações de Sessão
@@ -144,7 +144,7 @@ export function HeatmapLinks() {
           )}
           {hotjarLinks.funnels && (
             <Button asChild variant="outline" className="w-full justify-between hover:bg-orange-50 hover:border-orange-300 transition-colors">
-              <a href={hotjarLinks.funnels} id="gtm-hotjar-funnels" target="_blank" rel="noopener noreferrer">
+              <a href={hotjarLinks.funnels} target="_blank" rel="noopener noreferrer">
                 <span className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4 text-orange-600" />
                   Funis de Conversão
@@ -155,7 +155,7 @@ export function HeatmapLinks() {
           )}
           {hotjarLinks.feedback && (
             <Button asChild variant="outline" className="w-full justify-between hover:bg-orange-50 hover:border-orange-300 transition-colors">
-              <a href={hotjarLinks.feedback} id="gtm-hotjar-feedback" target="_blank" rel="noopener noreferrer">
+              <a href={hotjarLinks.feedback} target="_blank" rel="noopener noreferrer">
                 <span className="flex items-center gap-2">
                   <MessageSquare className="h-4 w-4 text-orange-600" />
                   Feedback de Usuários

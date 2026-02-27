@@ -202,7 +202,6 @@ export function QuizLyricsStep({
           Voltar
         </Button>
         <Button
-          id="gtm-go-to-payment"
           onClick={onNext}
           disabled={!lyricsText.trim()}
           className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full px-6"

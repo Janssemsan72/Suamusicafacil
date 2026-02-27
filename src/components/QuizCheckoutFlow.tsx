@@ -30,13 +30,6 @@ import {
   type QuizFormState,
 } from "@/components/quiz";
 import { Loader2 } from "@/lib/icons";
-import {
-  gtmQuizDetailsSubmit,
-  gtmLyricsGenerated,
-  gtmInitiatePayment,
-  gtmVirtualPageview,
-} from "@/utils/gtmTracking";
-
 type QuizCheckoutFlowProps = {
   mode?: "modal" | "page";
   onClose?: () => void;
@@ -275,7 +268,6 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
       setLyricsText("");
       setLyricsApproved(false);
       setHasRejectedOnce(false);
-      gtmQuizDetailsSubmit({ style: formState.style, occasion: formState.occasion });
       setStep(2);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erro ao criar pedido. Tente novamente.";
@@ -330,8 +322,6 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
       setLyricsTitle(limitedTitle);
       setLyricsText(limitedText);
       setLyricsApproved(false);
-      gtmLyricsGenerated();
-
       // Salvar letra gerada no quiz imediatamente (rascunho antes da aprovação)
       if (currentQuizId) {
         const { supabase: sb } = await import("@/integrations/supabase/client");
@@ -465,7 +455,6 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
         }
       }
 
-      gtmInitiatePayment({ quiz_id: quizId, order_id: pendingOrderId });
       setLyricsApproved(true);
       setStep(3);
     } catch (error) {

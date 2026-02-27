@@ -225,7 +225,7 @@ export default function Error({ error, reset }: ErrorProps) {
               <RefreshCw className="mr-2 h-4 w-4" /> Tentar Novamente
             </Button>
             <Button asChild variant="outline">
-              <a href="/admin" id="gtm-admin-home">
+              <a href="/admin">
                 Ir para Login
               </a>
             </Button>

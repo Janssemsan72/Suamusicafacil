@@ -2104,7 +2104,7 @@ export default function AdminOrderDetails() {
                     )}
                     {song.audio_url && (
                       <Button asChild size="sm" variant="outline">
-                        <a href={song.audio_url} id="gtm-download-mp3" target="_blank" rel="noopener noreferrer">
+                        <a href={song.audio_url} target="_blank" rel="noopener noreferrer">
                           Baixar MP3
                         </a>
                       </Button>

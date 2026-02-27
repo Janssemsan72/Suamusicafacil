@@ -182,7 +182,7 @@ export default function PaymentSuccess() {
             </div>
           </div>
 
-          {/* Botão WhatsApp — <a> nativo para GTM gtm.linkClick */}
+          {/* Botão WhatsApp */}
           <Button
             asChild
             className="w-full text-white font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all rounded-xl py-3 text-sm sm:text-base"
@@ -190,7 +190,6 @@ export default function PaymentSuccess() {
           >
             <a
               href={whatsappUrl}
-              id="gtm-whatsapp-success"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => { hasRedirected.current = true; }}
