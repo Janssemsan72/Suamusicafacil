@@ -30,10 +30,12 @@ const QuizCheckoutModal = ({ isOpen, onClose }: QuizCheckoutModalProps) => {
   return (
     <div
       className="fixed inset-0 z-[70] flex items-start justify-center overflow-y-auto scrollbar-hide bg-black/50 backdrop-blur-sm px-3 py-4 sm:px-4 sm:py-10"
-      onClick={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       role="presentation"
     >
-      <div className="w-full max-w-4xl" onClick={(event) => event.stopPropagation()}>
+      <div className="w-full max-w-4xl">
         <QuizCheckoutFlow mode="modal" onClose={onClose} />
       </div>
     </div>

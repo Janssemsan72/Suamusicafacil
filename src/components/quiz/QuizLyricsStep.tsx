@@ -210,11 +210,7 @@ export function QuizLyricsStep({
             data-cta="checkout"
             data-cta-id="cta-quiz-payment"
             className={`gtm-link ${buttonVariants({ variant: "default", size: "default" })} rounded-full px-6`}
-            onClick={(e) => {
-              e.preventDefault();
-              onNext();
-              setTimeout(() => { window.location.href = paymentUrl; }, 200);
-            }}
+            onClick={() => onNext()}
           >
             Ir para pagamento
           </a>
