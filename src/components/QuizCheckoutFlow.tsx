@@ -168,10 +168,8 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
       session_id: sessionId,
     };
 
-    setIsSaving(true);
     const { insertQuizWithRetry } = await import("@/utils/quizInsert");
     const result = await insertQuizWithRetry(payload);
-    setIsSaving(false);
 
     if (!result.success) {
       const err = result.error as { code?: string; message?: string } | undefined;
@@ -205,11 +203,14 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
   }, [buildQuizData, persistCheckoutDraft, sessionId, formState]);
 
   const handleNextFromDetails = useCallback(async () => {
-    const result = await persistQuiz();
-    if (!result.success) return;
-
+    if (isSaving) return;
+    setIsSaving(true);
     setErrorMessage(null);
+
     try {
+      const result = await persistQuiz();
+      if (!result.success) return;
+
       const { supabase } = await import("@/integrations/supabase/client");
       const email = formState.email?.trim();
       const whatsapp = formState.whatsapp?.trim();
@@ -276,8 +277,10 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erro ao criar pedido. Tente novamente.";
       setErrorMessage(msg);
+    } finally {
+      setIsSaving(false);
     }
-  }, [persistQuiz, formState, sessionId]);
+  }, [isSaving, persistQuiz, formState, sessionId]);
 
   const handleGenerateLyrics = useCallback(async () => {
     if (isGeneratingLyrics) return;
