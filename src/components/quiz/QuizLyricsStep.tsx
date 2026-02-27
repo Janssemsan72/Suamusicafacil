@@ -2,7 +2,7 @@
  * Step 2 do fluxo Quiz → Checkout: visualização e aprovação da letra gerada.
  */
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Star, CheckCircle } from "@/lib/icons";
@@ -204,19 +204,27 @@ export function QuizLyricsStep({
           Voltar
         </Button>
         {paymentUrl && lyricsText.trim() ? (
-          <Button
-            asChild
-            className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full px-6"
+          <a
+            href={paymentUrl}
+            id="gtm-go-to-payment"
+            className={`gtm-link ${buttonVariants({ variant: "default", size: "default" })} rounded-full px-6`}
+            onClick={(e) => {
+              e.preventDefault();
+              onNext();
+              const w = window as any;
+              w.dataLayer = w.dataLayer || [];
+              w.dataLayer.push({
+                event: 'begin_checkout',
+                click_url: paymentUrl,
+                click_id: 'gtm-go-to-payment',
+              });
+              setTimeout(() => {
+                window.location.href = paymentUrl;
+              }, 300);
+            }}
           >
-            <a
-              href={paymentUrl}
-              id="gtm-go-to-payment"
-              className="gtm-link"
-              onClick={() => onNext()}
-            >
-              Ir para pagamento
-            </a>
-          </Button>
+            Ir para pagamento
+          </a>
         ) : (
           <Button
             disabled

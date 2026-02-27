@@ -472,7 +472,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
     };
   }, [isGeneratingLyrics, lyricsText, lyricsTitle, saveLyricsDraft, step]);
 
-  // Persistir step + letra + orderId para restaurar ao retornar à página
+  // Persistir step + letra + orderId + email/whatsapp para restaurar ao retornar à página
   useEffect(() => {
     if (step >= 2) {
       saveQuizStepState({
@@ -482,9 +482,11 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
         lyricsApproved,
         quizId,
         orderId: pendingOrderId ?? undefined,
+        email: formState.email || undefined,
+        whatsapp: formState.whatsapp || undefined,
       });
     }
-  }, [step, lyricsTitle, lyricsText, lyricsApproved, quizId, pendingOrderId]);
+  }, [step, lyricsTitle, lyricsText, lyricsApproved, quizId, pendingOrderId, formState.email, formState.whatsapp]);
 
   useEffect(() => {
     if (mode !== "page") return;
@@ -530,6 +532,13 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
         setLyricsText(storedLyrics || stepState.lyricsText);
         setLyricsApproved(!!stepState.lyricsApproved);
         if (stepState.orderId) setPendingOrderId(stepState.orderId);
+        if (stepState.email || stepState.whatsapp) {
+          setFormState((prev) => ({
+            ...prev,
+            ...(stepState.email ? { email: stepState.email } : {}),
+            ...(stepState.whatsapp ? { whatsapp: stepState.whatsapp } : {}),
+          }));
+        }
       }
     }
 

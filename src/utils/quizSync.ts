@@ -441,6 +441,10 @@ export interface QuizStepState {
   quizId: string | null;
   /** ID do pedido criado como pendente no passo 1 (ao ir gerar letra) */
   orderId?: string | null;
+  /** Email do cliente (necessário para gerar paymentUrl na restauração) */
+  email?: string;
+  /** WhatsApp do cliente (necessário para gerar paymentUrl na restauração) */
+  whatsapp?: string;
 }
 
 /**
@@ -472,6 +476,8 @@ export function loadQuizStepState(): QuizStepState | null {
         lyricsApproved: !!parsed.lyricsApproved,
         quizId: parsed.quizId || null,
         orderId: typeof parsed.orderId === 'string' ? parsed.orderId : null,
+        email: typeof parsed.email === 'string' ? parsed.email : undefined,
+        whatsapp: typeof parsed.whatsapp === 'string' ? parsed.whatsapp : undefined,
       };
     }
     return null;
