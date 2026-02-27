@@ -6,8 +6,14 @@ import { clearQuizSessionId, clearQuizStepState } from '@/utils/quizSync';
 import { scheduleNonCriticalRender } from '@/utils/scheduleNonCriticalRender';
 import Logo from '@/components/Logo';
 
-const WHATSAPP_URL =
-  'https://wa.me/5585920054357?text=Ol%C3%A1,%20quero%20acompanhar%20meu%20pedido!';
+function getWhatsAppUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get('order_id');
+  const text = orderId
+    ? `Olá, quero acompanhar meu pedido ${orderId}!`
+    : 'Olá, quero acompanhar meu pedido!';
+  return `https://wa.me/5585920054357?text=${encodeURIComponent(text)}`;
+}
 
 const BRAND = {
   purple: '#8b5cf6',
@@ -23,6 +29,7 @@ const COUNTDOWN_SECONDS = 20;
 export default function PaymentSuccess() {
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
   const hasRedirected = useRef(false);
+  const whatsappUrl = getWhatsAppUrl();
 
   useEffect(() => {
     clearQuizSessionId();
@@ -44,7 +51,7 @@ export default function PaymentSuccess() {
           clearInterval(timer);
           if (!hasRedirected.current) {
             hasRedirected.current = true;
-            window.location.href = WHATSAPP_URL;
+            window.location.href = whatsappUrl;
           }
           return 0;
         }
@@ -182,7 +189,7 @@ export default function PaymentSuccess() {
             style={{ background: 'linear-gradient(135deg, #25D366 0%, #128C7E 100%)', border: 'none' }}
           >
             <a
-              href={WHATSAPP_URL}
+              href={whatsappUrl}
               id="gtm-whatsapp-success"
               target="_blank"
               rel="noopener noreferrer"

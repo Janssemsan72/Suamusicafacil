@@ -74,7 +74,11 @@ export default function CheckoutRedirectWrapper({ children }: { children: React.
         .single()
         .then(({ data: orderData, error }) => {
           if (!error && orderData && orderData.status === 'pending' && orderData.customer_email && orderData.customer_whatsapp) {
-            const HOTMART_PAYMENT_URL = 'https://pay.hotmart.com/XYZ'; // TODO: Update with real URL
+            const HOTMART_PAYMENT_URL = import.meta.env.VITE_HOTMART_CHECKOUT_URL || 'https://pay.hotmart.com';
+            if (!import.meta.env.VITE_HOTMART_CHECKOUT_URL) {
+              console.error('❌ [CheckoutRedirectWrapper] VITE_HOTMART_CHECKOUT_URL não configurada! Redirecionamento cancelado.');
+              return;
+            }
             // ✅ CORREÇÃO: Detectar locale da rota atual para usar no redirect_url
             const localeMatch = location.pathname.match(/^\/(pt|en|es)/);
             const locale = localeMatch ? localeMatch[1] : 'pt';

@@ -45,24 +45,14 @@ export function useOrderPublic(magicToken: string | null) {
       setLoading(true);
       setError(null);
 
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://pszyhjshppvrzhkrgmrz.supabase.co';
-      const projectRef = supabaseUrl.replace('https://', '').replace('.supabase.co', '');
-      const functionUrl = `https://${projectRef}.functions.supabase.co/get-order-by-token`;
-
-      const response = await fetch(functionUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ magic_token: magicToken }),
+      const { data: result, error: fnError } = await supabase.functions.invoke('get-order-by-token', {
+        body: { magic_token: magicToken },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Erro desconhecido' }));
-        throw new Error(errorData.error || 'Erro ao buscar pedido');
+      if (fnError) {
+        throw new Error(fnError.message || 'Erro ao buscar pedido');
       }
 
-      const result = await response.json();
       setData(result);
     } catch (err: any) {
       console.error('Erro ao buscar pedido:', err);

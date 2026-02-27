@@ -117,7 +117,8 @@ export function useSalesData(period: '7d' | '30d' | '90d' | 'month' | 'all', sel
           startDate.setDate(startDate.getDate() - 6);
           break;
         case '30d':
-          startDate = new Date(2024, 10, 3);
+          startDate = new Date(now);
+          startDate.setDate(startDate.getDate() - 29);
           break;
         case '90d':
           startDate = new Date(now);
@@ -553,7 +554,7 @@ export function useSalesDataOptimized(
       
       const { year, month, day } = getBrasiliaDate();
       const todayStart = new Date(Date.UTC(year, month - 1, day, 3, 0, 0, 0));
-      const todayEnd = new Date(Date.UTC(year, month - 1, day, 26, 59, 59, 999));
+      const todayEnd = new Date(Date.UTC(year, month - 1, day + 1, 2, 59, 59, 999));
       
       let todayData: Record<string, any> = {};
       

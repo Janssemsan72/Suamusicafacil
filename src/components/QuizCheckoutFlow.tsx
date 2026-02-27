@@ -236,9 +236,6 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
           customer_name: formState.customerName || null,
         },
       };
-      // #region agent log
-      fetch('http://127.0.0.1:7248/ingest/60dc581b-3e59-43ad-b4ac-15455495ba58', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '110b4e' }, body: JSON.stringify({ sessionId: '110b4e', runId: 'orders-save', hypothesisId: 'H1-H2', location: 'QuizCheckoutFlow.tsx:create-checkout-step1', message: 'Before create-checkout (step1->2)', data: { session_id: sessionId, customer_email: email, has_quiz: !!quizPayload?.about_who }, timestamp: Date.now() }) }).catch(() => { });
-      // #endregion
       const { data: checkoutResult, error: checkoutError } = await supabase.functions.invoke("create-checkout", {
         body: {
           session_id: sessionId,
@@ -267,9 +264,6 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
         lastResponseQuizIdFromCheckoutRef.current = responseQuizId;
         setQuizId(responseQuizId);
       }
-      // #region agent log — conferir: front_sets_quiz_id_from_response: true
-      fetch('http://127.0.0.1:7248/ingest/60dc581b-3e59-43ad-b4ac-15455495ba58', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '110b4e' }, body: JSON.stringify({ sessionId: '110b4e', hypothesisId: 'H1', location: 'QuizCheckoutFlow.tsx:after-create-checkout', message: 'Step1->2: response quiz_id vs order', data: { order_id: orderId, response_quiz_id: responseQuizId, front_sets_quiz_id_from_response: !!responseQuizId }, timestamp: Date.now() }) }).catch(() => { });
-      // #endregion
       setPendingOrderId(orderId);
       setLyricsTitle("");
       setLyricsText("");
@@ -431,10 +425,6 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
     setErrorMessage(null);
 
     try {
-      // #region agent log — conferir: quizId deve ser igual ao response_quiz_id do after-create-checkout
-      const response_quiz_id = lastResponseQuizIdFromCheckoutRef.current;
-      fetch('http://127.0.0.1:7248/ingest/60dc581b-3e59-43ad-b4ac-15455495ba58', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '110b4e' }, body: JSON.stringify({ sessionId: '110b4e', hypothesisId: 'H2', location: 'QuizCheckoutFlow.tsx:handleGoToPayment', message: 'Before save lyrics to DB', data: { quizId: quizId ?? null, response_quiz_id: response_quiz_id ?? null, quizId_equals_response_quiz_id: quizId != null && response_quiz_id != null && quizId === response_quiz_id, has_lyrics: !!lyricsText?.trim() }, timestamp: Date.now() }) }).catch(() => { });
-      // #endregion
       if (quizId) {
         const { supabase } = await import("@/integrations/supabase/client");
         // ✅ FIX: Buscar answers atuais do banco em vez de localStorage
@@ -529,6 +519,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
       try {
         let orderId = pendingOrderId;
         if (!orderId) {
+          console.warn('[QuizCheckoutFlow] pendingOrderId ausente no step 3 - criando fallback');
           const { supabase } = await import("@/integrations/supabase/client");
           const messageText = (formState.message && formState.message.trim()) || (lyricsText.trim().split("\n")[0] || "Música personalizada");
           const aboutWho = (formState.aboutWho && formState.aboutWho.trim()) || "Cliente";
@@ -551,9 +542,6 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
               customer_name: formState.customerName || null,
             },
           };
-          // #region agent log
-          fetch('http://127.0.0.1:7248/ingest/60dc581b-3e59-43ad-b4ac-15455495ba58', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '110b4e' }, body: JSON.stringify({ sessionId: '110b4e', runId: 'orders-save', hypothesisId: 'H1-H2', location: 'QuizCheckoutFlow.tsx:create-checkout-step3', message: 'Before create-checkout (step3 redirect)', data: { session_id: sessionId, customer_email: email, reason: 'no_pending_order_id' }, timestamp: Date.now() }) }).catch(() => { });
-          // #endregion
           const { data: checkoutResult, error: checkoutError } = await supabase.functions.invoke("create-checkout", {
             body: {
               session_id: sessionId,

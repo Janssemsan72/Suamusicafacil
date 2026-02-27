@@ -75,7 +75,10 @@ export async function invokeEdgeFunction<T = any>(
         ? setTimeout(() => controller.abort(), timeout)
         : null;
 
-      const finalSignal = signal || controller.signal;
+      const finalSignal = signal ?? controller.signal;
+      if (signal && timeoutId) {
+        clearTimeout(timeoutId);
+      }
 
       // Log da tentativa
       if (attempt > 0) {

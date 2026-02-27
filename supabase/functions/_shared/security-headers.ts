@@ -9,14 +9,18 @@ export const securityHeaders = {
 
 // ✅ SEGURANÇA: CORS restritivo para produção
 export const ALLOWED_ORIGINS = [
+  'https://suamusicafacil.com.br',
+  'https://www.suamusicafacil.com.br',
   'https://musiclovely.com',
   'https://www.musiclovely.com',
-  'http://localhost:8084', // Manter para desenvolvimento
-  'http://localhost:5173', // Manter para desenvolvimento
-  'http://localhost:8089', // Adicionado para desenvolvimento
+  'http://localhost:8084',
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:8089',
   'http://127.0.0.1:8084',
   'http://127.0.0.1:5173',
-  'http://127.0.0.1:8089' // Adicionado para desenvolvimento
+  'http://127.0.0.1:5174',
+  'http://127.0.0.1:8089',
 ];
 
 export const getCorsHeaders = (origin: string | null) => {

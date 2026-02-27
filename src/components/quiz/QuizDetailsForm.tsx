@@ -48,7 +48,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <label className={QUIZ_LABEL_CLASS}>
             Seu Nome <span className="text-red-500">*</span>

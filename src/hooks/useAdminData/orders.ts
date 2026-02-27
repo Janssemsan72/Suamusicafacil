@@ -90,9 +90,10 @@ export function useOrders(filters?: {
             let allData: any[] = [];
             let offset = 0;
             const pageSizeInternal = 1000;
+            const maxRecords = 50000;
             let hasMore = true;
 
-            while (hasMore) {
+            while (hasMore && allData.length < maxRecords) {
               const { data, error } = await baseQuery.range(offset, offset + pageSizeInternal - 1);
 
               if (error) {
@@ -250,9 +251,9 @@ export function useOrdersStats(filters?: {
         pending = await countOrdersPaginated({ ...baseFilters, status: 'pending' });
       } catch (error) {
         console.error('Erro ao contar pedidos:', error);
-        total = await countOrdersPaginated(baseFilters);
-        paid = await countOrdersPaginated({ ...baseFilters, status: 'paid' });
-        pending = await countOrdersPaginated({ ...baseFilters, status: 'pending' });
+        total = 0;
+        paid = 0;
+        pending = 0;
       }
 
       let totalPaid = 0;

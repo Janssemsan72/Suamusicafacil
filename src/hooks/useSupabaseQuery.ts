@@ -142,7 +142,7 @@ export function useSupabaseQuery<T = any>(
     } catch (err: any) {
       if (!isMountedRef.current) return;
 
-      const duration = Date.now() - Date.now();
+      const duration = Date.now() - startTime;
       
       // Log error metrics
       logger.error('Query failed after retries', err, {

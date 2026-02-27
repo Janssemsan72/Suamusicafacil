@@ -37,7 +37,7 @@ export function QuizPaymentStep({ paymentProgress, onEditQuiz }: QuizPaymentStep
         </div>
         {paymentProgress >= 100 && (
           <p className="mt-3 text-sm text-purple-700">
-            sua letra ficou incrivel, pague agora para receber sua musica em 20 minutos
+            Sua letra ficou incrível, pague agora para receber sua música em 20 minutos
           </p>
         )}
       </div>

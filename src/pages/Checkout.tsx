@@ -334,7 +334,12 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
         .then(({ data: orderData, error }) => {
           if (!error && orderData && orderData.status === 'pending' && orderData.customer_email && orderData.customer_whatsapp) {
             // TODO: Substituir pela URL real do produto na Hotmart
-            const HOTMART_PAYMENT_URL = import.meta.env.VITE_HOTMART_CHECKOUT_URL || 'https://pay.hotmart.com/SEU_CODIGO_PRODUTO';
+            const HOTMART_PAYMENT_URL = import.meta.env.VITE_HOTMART_CHECKOUT_URL;
+            if (!HOTMART_PAYMENT_URL) {
+              console.error('❌ [Checkout] VITE_HOTMART_CHECKOUT_URL não configurada!');
+              setLoading(false);
+              return;
+            }
             
             // ✅ CORREÇÃO: Normalizar WhatsApp e garantir prefixo 55
             let normalizedWhatsapp = orderData.customer_whatsapp.replace(/\D/g, '');

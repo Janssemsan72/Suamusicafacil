@@ -52,7 +52,10 @@ export default function SongDownload() {
     
     try {
       // Fazer fetch da Edge Function do Supabase
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://pszyhjshppvrzhkrgmrz.supabase.co';
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      if (!supabaseUrl) {
+        throw new Error('Configuração do Supabase não encontrada');
+      }
       const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
       const projectRef = supabaseUrl.replace('https://', '').replace('.supabase.co', '');
       const functionUrl = `https://${projectRef}.functions.supabase.co/download-song`;
@@ -196,8 +199,10 @@ export default function SongDownload() {
     let blobUrl: string | null = null;
     
     try {
-      // ✅ CORREÇÃO: Fazer fetch direto da Edge Function para obter blob
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://pszyhjshppvrzhkrgmrz.supabase.co';
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      if (!supabaseUrl) {
+        throw new Error('Configuração do Supabase não encontrada');
+      }
       const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
       const projectRef = supabaseUrl.replace('https://', '').replace('.supabase.co', '');
       const functionUrl = `https://${projectRef}.functions.supabase.co/download-song`;
@@ -285,7 +290,7 @@ export default function SongDownload() {
   };
 
   const handleShare = async () => {
-    const shareUrl = `${window.location.origin}/song/${id}?email=${email || song?.orders?.customer_email}`;
+    const shareUrl = `${window.location.origin}/song/${id}`;
     
     if (navigator.share) {
       try {

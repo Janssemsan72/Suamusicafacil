@@ -79,41 +79,23 @@ export default function HotmartReturn() {
         console.log('📊 [HotmartReturn] UTMs preservados:', utms);
         navigateWithUtms(successPath);
       };
-      // Usar múltiplos requestAnimationFrame para simular delay
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                  processApproval();
-                });
-              });
-            });
-          });
-        });
-      });
+      setTimeout(() => processApproval(), 500);
     } else if (statusParam === 'pending') {
       setStatus('pending');
       // Verificar status do pedido periodicamente
       checkOrderStatus(orderIdParam);
     } else if (statusParam === 'cancelled' || statusParam === 'failed') {
       setStatus('failed');
-      // Redirecionar para checkout com erro usando requestAnimationFrame
-      const startCountdown = () => {
-        const countdown = () => {
-          setCountdown(prev => {
-            if (prev <= 1) {
-              navigateWithUtms('/pt/checkout?error=payment_failed');
-              return 0;
-            }
-            requestAnimationFrame(countdown);
-            return prev - 1;
-          });
-        };
-        requestAnimationFrame(countdown);
-      };
-      startCountdown();
+      const countdownInterval = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            clearInterval(countdownInterval);
+            navigateWithUtms('/pt/checkout?error=payment_failed');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
     } else {
       console.warn('⚠️ [HotmartReturn] Status desconhecido:', statusParam);
       setStatus('failed');
@@ -158,12 +140,7 @@ export default function HotmartReturn() {
       if (isPaid) {
         setStatus('approved');
         console.log('✅ [HotmartReturn] Pedido está pago (status ou hotmart_payment_status), redirecionando...');
-        // Usar requestAnimationFrame para evitar CSP
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            navigateWithUtms('/payment-success');
-          });
-        });
+        navigateWithUtms('/payment-success');
         return;
       } else if (order.status === 'cancelled' || order.status === 'failed') {
         setStatus('failed');
@@ -216,11 +193,7 @@ export default function HotmartReturn() {
             console.log('📋 [HotmartReturn] Resultado da verificação final:', verifyData);
             if (verifyData?.order_status === 'paid') {
               setStatus('approved');
-              requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                  navigateWithUtms('/payment-success');
-                });
-              });
+              navigateWithUtms('/payment-success');
             } else {
               // Mesmo após verificação, ainda está pending
               console.warn('⚠️ [HotmartReturn] Pedido ainda está pendente após todas as tentativas');

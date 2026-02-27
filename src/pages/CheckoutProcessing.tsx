@@ -33,20 +33,57 @@ export default function CheckoutProcessing() {
   const [timeoutReached, setTimeoutReached] = useState(false);
 
   useEffect(() => {
-    // Se não tem dados, redirecionar
     if (!email || !planId || !quizData || !transactionId) {
       toast.error(t('checkoutProcessing.incompleteData'));
       navigate('/checkout');
       return;
     }
 
-    // Timeout de 30 segundos usando requestAnimationFrame
+    let cancelled = false;
+
+    const processSteps = async () => {
+      try {
+        // Step 1: Quiz
+        updateStep(0, 'processing');
+        setCurrentStep(0);
+        await new Promise(resolve => setTimeout(resolve, 800));
+        if (cancelled) return;
+        updateStep(0, 'completed');
+
+        // Step 2: Order
+        updateStep(1, 'processing');
+        setCurrentStep(1);
+        await new Promise(resolve => setTimeout(resolve, 1200));
+        if (cancelled) return;
+        updateStep(1, 'completed');
+
+        // Step 3: Payment
+        updateStep(2, 'processing');
+        setCurrentStep(2);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        if (cancelled) return;
+        updateStep(2, 'completed');
+        setCurrentStep(3);
+      } catch (err) {
+        if (!cancelled) {
+          setError(t('checkoutProcessing.error'));
+        }
+      }
+    };
+
+    processSteps();
+
     const timeout = window.setTimeout(() => {
-      setTimeoutReached(true);
-      setError(t('checkoutProcessing.error'));
+      if (!cancelled) {
+        setTimeoutReached(true);
+        setError(t('checkoutProcessing.error'));
+      }
     }, 30000);
 
-    return () => clearTimeout(timeout);
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
   }, [email, planId, quizData, transactionId, navigate, t]);
 
   const updateStep = (index: number, status: ProcessingStep['status'], message?: string) => {

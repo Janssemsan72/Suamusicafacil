@@ -134,7 +134,9 @@ export const AppRoutes = () => {
     } />
     <Route path="/admin/hotmart-sync" element={
       <Suspense fallback={<AdminRouteFallback />}>
-        <AdminHotmartSync />
+        <ProtectedAdminRoute requiredPermission="orders">
+          <AdminHotmartSync />
+        </ProtectedAdminRoute>
       </Suspense>
     } />
     
@@ -149,11 +151,6 @@ export const AppRoutes = () => {
       </Suspense>
     } />
     
-    <Route path="*" element={
-      <Suspense fallback={<AdminRouteFallback />}>
-        <NotFound />
-      </Suspense>
-    } />
     </Routes>
   );
 };

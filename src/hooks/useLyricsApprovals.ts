@@ -610,13 +610,14 @@ export function useLyricsApprovals(options: UseLyricsApprovalsOptions = {}) {
           throw new Error('Cliente Supabase não está configurado. Recarregue a página.');
         }
 
-        // Obter sessão (opcional - algumas Edge Functions não requerem autenticação)
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          logger.warn('Erro ao obter sessão (continuando sem auth):', sessionError);
+        }
         const authToken = session?.access_token;
 
         logger.debug('Chamando Edge Function admin-approve-lyrics', { approvalId, hasToken: !!authToken });
 
-        // Chamar edge function que aprova e inicia geração de áudio - passar headers apenas se houver token
         const { data, error } = await supabase.functions.invoke('admin-approve-lyrics', {
           body: { approval_id: approvalId },
           headers: authToken ? {
@@ -672,13 +673,14 @@ export function useLyricsApprovals(options: UseLyricsApprovalsOptions = {}) {
           throw new Error('Cliente Supabase não está configurado. Recarregue a página.');
         }
 
-        // Obter sessão (opcional - algumas Edge Functions não requerem autenticação)
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          logger.warn('Erro ao obter sessão (continuando sem auth):', sessionError);
+        }
         const authToken = session?.access_token;
 
         logger.debug('Chamando Edge Function admin-reject-lyrics', { approvalId, hasToken: !!authToken });
 
-        // Chamar edge function que rejeita e atualiza job - passar headers apenas se houver token
         const { data, error } = await supabase.functions.invoke('admin-reject-lyrics', {
           body: { approval_id: approvalId, reason: reason },
           headers: authToken ? {
@@ -730,8 +732,10 @@ export function useLyricsApprovals(options: UseLyricsApprovalsOptions = {}) {
           throw new Error('Cliente Supabase não está configurado. Recarregue a página.');
         }
 
-        // Obter sessão (opcional - algumas Edge Functions não requerem autenticação)
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          logger.warn('Erro ao obter sessão (continuando sem auth):', sessionError);
+        }
         const authToken = session?.access_token;
 
         // ✅ DIAGNÓSTICO: Verificar URL do Supabase antes de chamar Edge Function (apenas em dev)
@@ -850,8 +854,10 @@ export function useLyricsApprovals(options: UseLyricsApprovalsOptions = {}) {
           throw new Error('Cliente Supabase não está configurado. Recarregue a página.');
         }
 
-        // Obter sessão (opcional - algumas Edge Functions não requerem autenticação)
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          logger.warn('Erro ao obter sessão (continuando sem auth):', sessionError);
+        }
         const authToken = session?.access_token;
 
         logger.debug('Chamando Edge Function admin-unapprove-lyrics', { approvalId, hasToken: !!authToken });
@@ -907,8 +913,10 @@ export function useLyricsApprovals(options: UseLyricsApprovalsOptions = {}) {
           throw new Error('Cliente Supabase não está configurado. Recarregue a página.');
         }
 
-        // Obter sessão (opcional - algumas Edge Functions não requerem autenticação)
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          logger.warn('Erro ao obter sessão (continuando sem auth):', sessionError);
+        }
         const authToken = session?.access_token;
 
         logger.debug('Chamando Edge Function delete-lyrics-approval', { approvalId, hasToken: !!authToken });
