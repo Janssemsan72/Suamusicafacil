@@ -78,6 +78,7 @@ serve(async (req) => {
       plan,
       amount_cents,
       transaction_id,
+      tracking_params,
       provider: bodyProvider
     } = body;
     // Gateway em uso é Cakto; aceitar provider do body ou default 'cakto'
@@ -161,6 +162,7 @@ serve(async (req) => {
       p_ip_address: ipAddress,
       p_user_agent: userAgent,
       p_customer_name: customer_name || quiz?.answers?.customer_name || null,
+      p_tracking_params: tracking_params || null,
     });
 
     if (rpcError || !result || !result.success) {

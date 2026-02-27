@@ -194,10 +194,16 @@ serve(async (req) => {
     caktoParams.set('order_id', order.id);
     caktoParams.set('email', order.customer_email);
     if (normalizedWhatsapp) {
-      caktoParams.set('phone', normalizedWhatsapp); // ✅ CORREÇÃO: Usar 'phone' ao invés de 'whatsapp'
+      caktoParams.set('phone', normalizedWhatsapp);
     }
     caktoParams.set('language', locale);
     caktoParams.set('redirect_url', redirectUrl);
+
+    if (order.tracking_params && typeof order.tracking_params === 'object') {
+      for (const [key, value] of Object.entries(order.tracking_params)) {
+        if (value) caktoParams.set(key, String(value));
+      }
+    }
     
     const caktoUrl = `https://pay.cakto.com.br/oqkhgvm_618383?${caktoParams.toString()}`;
     

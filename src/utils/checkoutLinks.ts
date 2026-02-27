@@ -13,6 +13,33 @@ export function getSavedTrackingParams(): Record<string, string> {
   }
 }
 
+/** Busca tracking params do pedido no banco (fallback cross-device quando localStorage está vazio) */
+export async function getTrackingParamsFromOrder(orderId: string): Promise<Record<string, string>> {
+  try {
+    const { data } = await supabase
+      .from('orders')
+      .select('tracking_params')
+      .eq('id', orderId)
+      .single();
+    if (data?.tracking_params && typeof data.tracking_params === 'object') {
+      return data.tracking_params as Record<string, string>;
+    }
+    return {};
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Retorna tracking params mesclando localStorage (prioridade) com DB (fallback).
+ * Use quando tiver acesso ao order_id e precisar de garantia cross-device.
+ */
+export async function getTrackingParamsWithFallback(orderId?: string): Promise<Record<string, string>> {
+  const localParams = getSavedTrackingParams();
+  if (Object.keys(localParams).length > 0 || !orderId) return localParams;
+  return getTrackingParamsFromOrder(orderId);
+}
+
 /**
  * Gera URL da Cakto para pagamento (redirecionamento direto).
  * Após o pagamento, o webhook da Cakto marca o pedido como pago e dispara: letra → Suno (sunoapi.org) → email ao cliente.

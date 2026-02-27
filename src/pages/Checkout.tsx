@@ -151,7 +151,8 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
       if (!hotmartUrl || hotmartUrl.trim() === '') {
         // Gerar nova URL da Hotmart
         logger.debug('redirectToHotmart: Gerando nova URL da Hotmart...');
-        const safeUtms = utmsParam || allTrackingParams || {};
+        const dbParams = (orderData.tracking_params && typeof orderData.tracking_params === 'object') ? orderData.tracking_params as Record<string, string> : {};
+        const safeUtms = { ...dbParams, ...(utmsParam || allTrackingParams || {}) };
         hotmartUrl = generateHotmartUrl(
           orderData.id,
           orderData.customer_email,
@@ -175,7 +176,8 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
           logger.debug('redirectToHotmart: URL da Hotmart salva com sucesso');
         }
       } else {
-        const trackingParams = utmsParam || allTrackingParams || {};
+        const dbParams = (orderData.tracking_params && typeof orderData.tracking_params === 'object') ? orderData.tracking_params as Record<string, string> : {};
+        const trackingParams = { ...dbParams, ...(utmsParam || allTrackingParams || {}) };
         if (Object.keys(trackingParams).length > 0) {
           try {
             const url = new URL(hotmartUrl);
@@ -365,11 +367,16 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
             const redirectUrl = `${origin}/pt/payment-success`; // Hotmart configura redirecionamento na plataforma, mas podemos tentar passar 'url'
             
             const hotmartParams = new URLSearchParams();
-            hotmartParams.set('xcod', orderData.id); // External Code para rastreamento
+            hotmartParams.set('xcod', orderData.id);
             hotmartParams.set('email', orderData.customer_email);
-            hotmartParams.set('name', orderData.customer_name || ''); // Se tiver nome
+            hotmartParams.set('name', orderData.customer_name || '');
             hotmartParams.set('phone_number', normalizedWhatsapp);
-            // hotmartParams.set('checkoutMode', '10'); // Exemplo de modo de checkout
+
+            if (orderData.tracking_params && typeof orderData.tracking_params === 'object') {
+              Object.entries(orderData.tracking_params as Record<string, string>).forEach(([key, value]) => {
+                if (value) hotmartParams.set(key, value);
+              });
+            }
             
             const hotmartUrl = `${HOTMART_PAYMENT_URL}?${hotmartParams.toString()}`;
             logger.debug('Redirecionando IMEDIATAMENTE para Hotmart', { hotmartUrl: hotmartUrl.substring(0, 100) });
@@ -1933,7 +1940,8 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
             plan: selectedPlan,
             amount_cents: amountCents,
             provider: 'hotmart',
-            transaction_id: transactionId
+            transaction_id: transactionId,
+            tracking_params: allTrackingParams
           }
         });
 
@@ -2066,14 +2074,15 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
           user_id: null,
           plan: selectedPlan as 'standard' | 'express',
           amount_cents: amountCents,
-          total_cents: amountCents, // ✅ ADICIONADO: Resolve erro de constraint NOT NULL
+          total_cents: amountCents,
           status: 'pending' as const,
           provider: 'hotmart',
           payment_provider: 'hotmart',
           customer_email: normalizedEmail,
           customer_whatsapp: normalizedWhatsApp as string,
-          transaction_id: transactionId
-        } as Database['public']['Tables']['orders']['Insert'] & { customer_whatsapp: string; total_cents: number };
+          transaction_id: transactionId,
+          tracking_params: Object.keys(allTrackingParams).length > 0 ? allTrackingParams : null,
+        } as Database['public']['Tables']['orders']['Insert'] & { customer_whatsapp: string; total_cents: number; tracking_params: Record<string, string> | null };
 
         const { data: orderData, error: orderError } = await supabase
           .from('orders')

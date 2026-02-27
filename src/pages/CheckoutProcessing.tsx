@@ -1,7 +1,8 @@
 // FASE 2: Página de Status Intermediária do Checkout
 
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useUtmParams } from '@/hooks/useUtmParams';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -17,7 +18,7 @@ interface ProcessingStep {
 }
 
 export default function CheckoutProcessing() {
-  const navigate = useNavigate();
+  const { navigateWithUtms } = useUtmParams();
   const location = useLocation();
   const { t } = useTranslation();
   const { email, planId, quizData, transactionId } = location.state || {};
@@ -35,7 +36,7 @@ export default function CheckoutProcessing() {
   useEffect(() => {
     if (!email || !planId || !quizData || !transactionId) {
       toast.error(t('checkoutProcessing.incompleteData'));
-      navigate('/checkout');
+      navigateWithUtms('/checkout');
       return;
     }
 
@@ -84,7 +85,7 @@ export default function CheckoutProcessing() {
       cancelled = true;
       clearTimeout(timeout);
     };
-  }, [email, planId, quizData, transactionId, navigate, t]);
+  }, [email, planId, quizData, transactionId, navigateWithUtms, t]);
 
   const updateStep = (index: number, status: ProcessingStep['status'], message?: string) => {
     setSteps(prev => {
@@ -101,7 +102,7 @@ export default function CheckoutProcessing() {
   const progress = ((currentStep + 1) / steps.length) * 100;
 
   const handleCancel = () => {
-    navigate('/checkout');
+    navigateWithUtms('/checkout');
   };
 
   const handleRetry = () => {

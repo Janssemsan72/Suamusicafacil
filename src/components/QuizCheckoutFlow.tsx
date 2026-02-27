@@ -249,6 +249,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
           amount_cents: 3700,
           transaction_id: crypto.randomUUID(),
           provider: "cakto",
+          tracking_params: getSavedTrackingParams(),
         },
       });
       if (checkoutError || !checkoutResult?.success) {

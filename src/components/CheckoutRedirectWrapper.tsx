@@ -94,13 +94,15 @@ export default function CheckoutRedirectWrapper({ children }: { children: React.
             const hotmartParams = new URLSearchParams();
             hotmartParams.set('order_id', orderData.id);
             hotmartParams.set('email', orderData.customer_email);
-            // ✅ Hotmart pode usar 'phone' ou outro campo, ajustando para compatibilidade
             hotmartParams.set('phone', normalizedWhatsapp);
             hotmartParams.set('language', locale);
             hotmartParams.set('redirect_url', redirectUrl);
-            
-            // ⚠️ CRÍTICO: NÃO adicionar parâmetros do checkout interno (restore, quiz_id, token)
-            // A URL da Hotmart deve conter APENAS os parâmetros necessários para pagamento
+
+            if (orderData.tracking_params && typeof orderData.tracking_params === 'object') {
+              Object.entries(orderData.tracking_params as Record<string, string>).forEach(([key, value]) => {
+                if (value) hotmartParams.set(key, value);
+              });
+            }
             
             const hotmartUrl = `${HOTMART_PAYMENT_URL}?${hotmartParams.toString()}`;
             if (isDev) {
