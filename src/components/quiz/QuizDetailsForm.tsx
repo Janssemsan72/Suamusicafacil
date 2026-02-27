@@ -1,6 +1,7 @@
 /**
  * Formulario de detalhes (Step 1) do fluxo Quiz -> Checkout.
  */
+import { useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,6 +33,14 @@ type QuizDetailsFormProps = {
 export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: QuizDetailsFormProps) {
   const update = (key: keyof QuizFormState, value: string) =>
     onFormChange({ [key]: value });
+
+  const textareaWrapperRef = useRef<HTMLDivElement>(null);
+
+  const handleTextareaFocus = useCallback(() => {
+    setTimeout(() => {
+      textareaWrapperRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 350);
+  }, []);
 
   return (
     <div className="space-y-5 text-base font-sans text-black">
@@ -171,13 +180,14 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
         </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2" ref={textareaWrapperRef}>
         <label className={QUIZ_LABEL_CLASS}>
           Sua História/Mensagem ou Letra <span className="text-red-500">*</span>
         </label>
         <Textarea
           value={formState.message}
           onChange={(e) => update("message", e.target.value)}
+          onFocus={handleTextareaFocus}
           placeholder="Conte-nos sobre seu relacionamento, memórias especiais ou o que você gostaria que a música transmitisse..."
           className={`min-h-[140px] ${QUIZ_FIELD_CLASS}`}
           required
