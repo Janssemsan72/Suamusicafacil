@@ -3,6 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 /** URL da página de pagamento Cakto — redirecionamento ao clicar em "Ir para pagamento" */
 export const CAKTO_PAYMENT_BASE_URL = import.meta.env.VITE_CAKTO_CHECKOUT_URL || 'https://pay.cakto.com.br/37k66ko_784248';
 
+/** Parâmetros de rastreamento aceitos pela Cakto (demais são ignorados pelo checkout) */
+export const CAKTO_ACCEPTED_PARAMS = ['src', 'sck', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+
 /** Recupera todos os tracking params (sck, utm_*, gclid, etc.) salvos pelo useUtmParams */
 export function getSavedTrackingParams(): Record<string, string> {
   try {
@@ -63,7 +66,9 @@ export function generateCaktoUrl(
   }
   if (utms) {
     Object.entries(utms).forEach(([key, value]) => {
-      if (value) params.set(key, value);
+      if (value && CAKTO_ACCEPTED_PARAMS.includes(key)) {
+        params.set(key, value);
+      }
     });
   }
   return `${CAKTO_PAYMENT_BASE_URL}?${params.toString()}`;

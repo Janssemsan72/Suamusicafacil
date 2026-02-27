@@ -8,7 +8,7 @@ const TRACKING_PARAMS = [
   'fbclid', 'fb_action_ids', 'fb_action_types',
   'msclkid',
   'hsa_acc', 'hsa_cam', 'hsa_grp', 'hsa_ad', 'hsa_src', 'hsa_tgt', 'hsa_kw', 'hsa_mt', 'hsa_net', 'hsa_ver',
-  'ref', 'source', 'sck', 'xcod', 'network',
+  'ref', 'src', 'source', 'sck', 'xcod', 'network',
   '_gac',
 ];
 
