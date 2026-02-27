@@ -7,6 +7,7 @@ import { BrowserRouter, useLocation } from "react-router-dom";
 import { LocaleProvider } from "@/contexts/LocaleContext";
 import { devLog } from "@/utils/devLogger";
 import { scheduleNonCriticalRender } from "@/utils/scheduleNonCriticalRender";
+import { gtmVirtualPageview } from "@/utils/gtmTracking";
 import { AppRoutes } from "@/routes/AppRoutes";
 import { PublicErrorBoundary } from "@/components/PublicErrorBoundary";
 import ScrollRestoration from "@/components/ScrollRestoration";
@@ -44,9 +45,16 @@ const App = () => {
 };
 
 const AppContent = () => {
-  // Site é 100% espanhol - sem lógica de loading de locale
   const location = useLocation();
   const [shouldRenderNonCritical, setShouldRenderNonCritical] = useState(false);
+
+  // GTM: enviar virtual pageview a cada mudança de rota (SPA)
+  useEffect(() => {
+    gtmVirtualPageview(
+      location.pathname + location.search,
+      document.title,
+    );
+  }, [location.pathname, location.search]);
   
   // ✅ OTIMIZAÇÃO: Defer devLog.debug para não bloquear renderização inicial
   useEffect(() => {
