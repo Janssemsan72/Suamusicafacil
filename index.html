@@ -165,14 +165,18 @@
   <body style="background-color: #faf5ff;">
     <script>
       // Suprimir erros de extensões do navegador (rodam antes do app)
-      window.addEventListener('unhandledrejection',function(e){
-        var m=String(e&&e.reason&&e.reason.message||e&&e.reason||'');
-        if(m.indexOf('Could not establish connection')!==-1||m.indexOf('Receiving end does not exist')!==-1||m.indexOf('message channel closed')!==-1||m.indexOf('Extension context invalidated')!==-1){e.preventDefault();e.stopImmediatePropagation();}
-      },true);
-      window.addEventListener('error',function(e){
-        var m=String(e&&e.message||'');var s=String(e&&e.filename||'');
-        if(m.indexOf('Could not establish connection')!==-1||m.indexOf('Receiving end does not exist')!==-1||m.indexOf('message channel closed')!==-1||s.indexOf('refresh.js')!==-1){e.preventDefault();e.stopImmediatePropagation();return true;}
-      },true);
+      (function(){
+        var extPatterns=['Could not establish connection','Receiving end does not exist','message channel closed','Extension context invalidated','asynchronous response by returning true','The message port closed'];
+        function isExtErr(s){for(var i=0;i<extPatterns.length;i++){if(s.indexOf(extPatterns[i])!==-1)return true;}return false;}
+        window.addEventListener('unhandledrejection',function(e){
+          var r=e&&e.reason;var m=String(r&&r.message||r||'');
+          if(isExtErr(m)){e.preventDefault();e.stopImmediatePropagation();}
+        },true);
+        window.addEventListener('error',function(e){
+          var m=String(e&&e.message||'');var s=String(e&&e.filename||'');
+          if(isExtErr(m)||s.indexOf('refresh.js')!==-1||s.indexOf('extensions/')!==-1||s.indexOf('chrome-extension')!==-1){e.preventDefault();e.stopImmediatePropagation();return true;}
+        },true);
+      })();
     </script>
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TT7R92K7"

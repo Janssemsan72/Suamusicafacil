@@ -12,7 +12,7 @@ function getWhatsAppUrl() {
   const text = orderId
     ? `Olá, quero acompanhar meu pedido ${orderId}!`
     : 'Olá, quero acompanhar meu pedido!';
-  return `https://wa.me/5585920054357?text=${encodeURIComponent(text)}`;
+  return `https://wa.me/558592005977?text=${encodeURIComponent(text)}`;
 }
 
 const BRAND = {

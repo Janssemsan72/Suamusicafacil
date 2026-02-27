@@ -91,21 +91,27 @@ export function setupErrorSuppression() {
     (window as any).__originalConsole = original;
   }
 
-  // Handler para promises rejeitadas (fetch failures, etc)
+  const extensionErrorPatterns = [
+    'Could not establish connection',
+    'Receiving end does not exist',
+    'Extension context invalidated',
+    'message channel closed',
+    'asynchronous response by returning true',
+    'The message port closed',
+  ];
+
+  function isExtensionError(msg: string): boolean {
+    return extensionErrorPatterns.some(p => msg.includes(p));
+  }
+
   const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
     const reason = event.reason;
     const message = String(reason?.message ?? reason ?? '');
     const stack = String(reason?.stack ?? '');
-    // Suprimir rejeições de HMR ping (client:, waitForSuccessfulPing, ping)
     const isHmrPingRejection =
       (message.includes('ERR_CONNECTION_REFUSED') || message.includes('Failed to fetch')) &&
       (stack.includes('@vite/client') || stack.includes('client:') || stack.includes('waitForSuccessfulPing') || stack.includes('ping'));
-    // Suprimir erros de extensões do navegador
-    const isExtensionError =
-      message.includes('Could not establish connection') ||
-      message.includes('Receiving end does not exist') ||
-      message.includes('Extension context invalidated');
-    if (isHmrPingRejection || isExtensionError) {
+    if (isHmrPingRejection || isExtensionError(message)) {
       event.preventDefault();
       event.stopPropagation();
     }
@@ -129,16 +135,15 @@ export function setupErrorSuppression() {
     (window as any).WebSocket.prototype = OriginalWebSocket.prototype;
   }
 
-  // Handler para erros de rede (fetch, XMLHttpRequest, etc)
   const handleError = (event: ErrorEvent) => {
     const errorMessage = event.message || String(event.error || '');
     const errorSource = event.filename || '';
     
-    // Suprimir erros de extensões do navegador
     if (
-      errorMessage.includes('Could not establish connection') ||
-      errorMessage.includes('Receiving end does not exist') ||
-      errorMessage.includes('Extension context invalidated')
+      isExtensionError(errorMessage) ||
+      errorSource.includes('refresh.js') ||
+      errorSource.includes('extensions/') ||
+      errorSource.includes('chrome-extension')
     ) {
       event.preventDefault();
       event.stopPropagation();

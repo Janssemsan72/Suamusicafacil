@@ -43,8 +43,8 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
   }, []);
 
   return (
-    <div className="space-y-5 text-base font-sans text-black">
-      <div className="space-y-2">
+    <div className="space-y-4 text-lg font-sans text-black">
+      <div className="space-y-1">
         <label className={QUIZ_LABEL_CLASS}>
           Seu Email <span className="text-red-500">*</span>
         </label>
@@ -57,8 +57,8 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="space-y-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-1">
           <label className={QUIZ_LABEL_CLASS}>
             Seu Nome <span className="text-red-500">*</span>
           </label>
@@ -70,7 +70,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
             required
           />
         </div>
-        <div className="space-y-2">
+        <div className="space-y-1">
           <label className={QUIZ_LABEL_CLASS}>
             Seu Telefone <span className="text-red-500">*</span>
           </label>
@@ -87,7 +87,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
         </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-1">
         <label className={QUIZ_LABEL_CLASS}>
           Nome da pessoa que vai ganhar a musica <span className="text-red-500">*</span>
         </label>
@@ -99,7 +99,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-1">
         <label className={QUIZ_LABEL_CLASS}>
           Seu Relacionamento <span className="text-red-500">*</span>
         </label>
@@ -118,7 +118,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
         </select>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-1">
         <label className={QUIZ_LABEL_CLASS}>
           Ocasião <span className="text-red-500">*</span>
         </label>
@@ -137,7 +137,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
         </select>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-1">
         <label className={QUIZ_LABEL_CLASS}>
           Estilo Musical <span className="text-red-500">*</span>
         </label>
@@ -156,31 +156,33 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
         </select>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-1">
         <label className={QUIZ_LABEL_CLASS}>Voz que vai cantar</label>
-        <div className="flex gap-6 text-gray-700">
-          <label className="inline-flex items-center gap-2">
+        <div className="flex gap-6 text-lg text-gray-700">
+          <label className="inline-flex items-center gap-2 cursor-pointer">
             <input
               type="radio"
               name="vocalGender"
               checked={formState.vocalGender === "m"}
               onChange={() => update("vocalGender", "m")}
+              className="w-5 h-5 accent-purple-600"
             />
             Masculina
           </label>
-          <label className="inline-flex items-center gap-2">
+          <label className="inline-flex items-center gap-2 cursor-pointer">
             <input
               type="radio"
               name="vocalGender"
               checked={formState.vocalGender === "f"}
               onChange={() => update("vocalGender", "f")}
+              className="w-5 h-5 accent-purple-600"
             />
             Feminina
           </label>
         </div>
       </div>
 
-      <div className="space-y-2" ref={textareaWrapperRef}>
+      <div className="space-y-1" ref={textareaWrapperRef}>
         <label className={QUIZ_LABEL_CLASS}>
           Sua História/Mensagem ou Letra <span className="text-red-500">*</span>
         </label>
@@ -193,7 +195,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
           required
           maxLength={MESSAGE_MAX_LENGTH}
         />
-        <p className="text-xs text-muted-foreground text-right">
+        <p className="text-sm text-muted-foreground text-right">
           {formState.message.length}/{MESSAGE_MAX_LENGTH} caracteres
         </p>
       </div>
@@ -201,7 +203,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
       <Button
         onClick={onNext}
         disabled={isSaving}
-        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full py-3 text-base"
+        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full py-3.5 text-lg font-semibold"
       >
         {isSaving ? "Continuando..." : "Continuar"}
       </Button>
