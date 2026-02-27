@@ -184,13 +184,13 @@ export async function ensureCheckoutLinks(orderId: string): Promise<{
     let hotmartUrl = order.hotmart_payment_url;
     
     if (!hotmartUrl && order.customer_email && order.customer_whatsapp) {
-      // ✅ CORREÇÃO: generateHotmartUrl já normaliza o WhatsApp (adiciona prefixo 55)
-      // Passar WhatsApp original, a função vai normalizar
+      const trackingParams = getSavedTrackingParams();
       hotmartUrl = generateHotmartUrl(
         orderId,
         order.customer_email,
         order.customer_whatsapp,
-        language
+        language,
+        trackingParams
       );
       
       // Salvar URL da Hotmart no pedido

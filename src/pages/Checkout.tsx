@@ -60,7 +60,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
   const navigate = useNavigate();
   const { t, currentLanguage: contextLanguage } = useTranslation();
   // Preservar UTMs através do funil
-  const { navigateWithUtms, getUtmQueryString, utms } = useUtmParams();
+  const { navigateWithUtms, getUtmQueryString, utms, allTrackingParams } = useUtmParams();
   
   // ✅ REMOVIDO: toastShownRef, hasProcessedRef, isRedirectingRef serão obtidos do hook useCheckoutState
 
@@ -113,9 +113,9 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
     if (normalizedWhatsapp && normalizedWhatsapp.trim() !== '') {
       params.set('phone', normalizedWhatsapp); // Cakto costuma usar 'phone'
     }
-    const safeUtms = utms || {};
-    Object.entries(safeUtms).forEach(([key, value]) => {
-      if (value && ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].includes(key)) {
+    const safeParams = utms || {};
+    Object.entries(safeParams).forEach(([key, value]) => {
+      if (value) {
         params.set(key, value as string);
       }
     });
@@ -151,7 +151,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
       if (!hotmartUrl || hotmartUrl.trim() === '') {
         // Gerar nova URL da Hotmart
         logger.debug('redirectToHotmart: Gerando nova URL da Hotmart...');
-        const safeUtms = utmsParam || utms || {};
+        const safeUtms = utmsParam || allTrackingParams || {};
         hotmartUrl = generateHotmartUrl(
           orderData.id,
           orderData.customer_email,
@@ -175,7 +175,17 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
           logger.debug('redirectToHotmart: URL da Hotmart salva com sucesso');
         }
       } else {
-        logger.debug('redirectToHotmart: Usando URL da Hotmart salva');
+        const trackingParams = utmsParam || allTrackingParams || {};
+        if (Object.keys(trackingParams).length > 0) {
+          try {
+            const url = new URL(hotmartUrl);
+            Object.entries(trackingParams).forEach(([key, value]) => {
+              if (value) url.searchParams.set(key, value as string);
+            });
+            hotmartUrl = url.toString();
+          } catch { /* URL inválida, usar como está */ }
+        }
+        logger.debug('redirectToHotmart: Usando URL da Hotmart salva (com tracking params atualizados)');
       }
       
       logger.debug('redirectToHotmart: Redirecionando para Hotmart', {
@@ -465,7 +475,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
           
           if (orderData && orderData.status === 'pending' && orderData.customer_email && orderData.customer_whatsapp) {
             logger.debug('Pedido encontrado, redirecionando para Hotmart...');
-            const redirectSuccess = await redirectToHotmart(orderData, utms || {}, 'pt');
+            const redirectSuccess = await redirectToHotmart(orderData, allTrackingParams, 'pt');
             if (redirectSuccess) {
               return; // Redirecionamento bem-sucedido, sair da função
             }
@@ -562,7 +572,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
               // Continuar com fluxo normal se não conseguir buscar pedido
             } else if (orderData.status === 'pending' && orderData.customer_email && orderData.customer_whatsapp) {
               logger.debug('Pedido encontrado, redirecionando para Hotmart...');
-              const redirectSuccess = await redirectToHotmart(orderData, utms || {}, 'pt');
+              const redirectSuccess = await redirectToHotmart(orderData, allTrackingParams, 'pt');
               if (redirectSuccess) {
                 return; // Redirecionamento bem-sucedido, sair da função
               }
@@ -680,7 +690,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
               });
               
               // SEMPRE tentar redirecionar se auto=true e pedido tem dados, independente da rota
-              const redirectSuccess = await redirectToHotmart(orderData, utms || {}, 'pt');
+              const redirectSuccess = await redirectToHotmart(orderData, allTrackingParams, 'pt');
               
               if (redirectSuccess) {
                 logger.debug('Redirecionamento para Cakto iniciado com sucesso');
@@ -791,7 +801,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
               logger.debug('Quiz encontrado e pedido válido, redirecionando para Hotmart...');
               const redirectSuccess = await redirectToHotmart(
                 orderData, 
-                utms || {}, 
+                allTrackingParams, 
                 quizData.language || 'pt'
               );
               
@@ -853,7 +863,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
             
             if (orderData && orderData.status === 'pending' && orderData.customer_email && orderData.customer_whatsapp) {
               logger.debug('Pedido encontrado, redirecionando para Hotmart...');
-              const redirectSuccess = await redirectToHotmart(orderData, utms || {}, 'pt');
+              const redirectSuccess = await redirectToHotmart(orderData, allTrackingParams, 'pt');
               if (redirectSuccess) {
                 return; // Redirecionamento bem-sucedido, sair da função
               }
@@ -972,7 +982,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
               // Se auto=true, sempre tentar redirecionar
               if (auto === 'true') {
                 logger.debug('auto=true detectado, redirecionando para Cakto...');
-                const redirectSuccess = await redirectToHotmart(orderData, utms || {}, 'pt');
+                const redirectSuccess = await redirectToHotmart(orderData, allTrackingParams, 'pt');
                 
                 if (redirectSuccess) {
                   logger.debug('Redirecionamento para Cakto iniciado com sucesso');
@@ -1063,7 +1073,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
               
               if (orderData && orderData.status === 'pending' && orderData.customer_email && orderData.customer_whatsapp) {
                 console.log('✅ [Checkout] Pedido encontrado no fallback, redirecionando para Hotmart...');
-                const redirectSuccess = await redirectToHotmart(orderData, utms || {}, 'pt');
+                const redirectSuccess = await redirectToHotmart(orderData, allTrackingParams, 'pt');
                 
                 if (redirectSuccess) {
                   console.log('✅ [Checkout] Redirecionamento para Hotmart iniciado com sucesso após erro');
@@ -2128,7 +2138,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
           email,
           normalizedWhatsApp,
           currentLanguage,
-          utms || {}
+          allTrackingParams
         );
         console.log('✅ [Hotmart] URL gerada com sucesso:', {
           orderId: order.id,
@@ -2257,7 +2267,7 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
             email,
             normalizedWhatsApp,
             currentLanguage,
-            utms || {}
+            allTrackingParams
           );
           
           if (hotmartUrl && hotmartUrl.startsWith('http')) {
