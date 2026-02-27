@@ -163,6 +163,17 @@
   </head>
 
   <body style="background-color: #faf5ff;">
+    <script>
+      // Suprimir erros de extensões do navegador (rodam antes do app)
+      window.addEventListener('unhandledrejection',function(e){
+        var m=String(e&&e.reason&&e.reason.message||e&&e.reason||'');
+        if(m.indexOf('Could not establish connection')!==-1||m.indexOf('Receiving end does not exist')!==-1||m.indexOf('message channel closed')!==-1||m.indexOf('Extension context invalidated')!==-1){e.preventDefault();e.stopImmediatePropagation();}
+      },true);
+      window.addEventListener('error',function(e){
+        var m=String(e&&e.message||'');var s=String(e&&e.filename||'');
+        if(m.indexOf('Could not establish connection')!==-1||m.indexOf('Receiving end does not exist')!==-1||m.indexOf('message channel closed')!==-1||s.indexOf('refresh.js')!==-1){e.preventDefault();e.stopImmediatePropagation();return true;}
+      },true);
+    </script>
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TT7R92K7"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
