@@ -15,6 +15,7 @@ type QuizLyricsStepProps = {
   lyricsText: string;
   isGeneratingLyrics: boolean;
   hasRejectedOnce: boolean;
+  paymentUrl?: string;
   onTitleChange: (value: string) => void;
   onTextChange: (value: string) => void;
   onReject: () => void;
@@ -27,6 +28,7 @@ export function QuizLyricsStep({
   lyricsText,
   isGeneratingLyrics,
   hasRejectedOnce,
+  paymentUrl,
   onTitleChange,
   onTextChange,
   onReject,
@@ -201,14 +203,28 @@ export function QuizLyricsStep({
         <Button variant="ghost" onClick={onBack}>
           Voltar
         </Button>
-        <Button
-          id="gtm-go-to-payment"
-          onClick={onNext}
-          disabled={!lyricsText.trim()}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full px-6"
-        >
-          Ir para pagamento
-        </Button>
+        {paymentUrl && lyricsText.trim() ? (
+          <Button
+            asChild
+            className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full px-6"
+          >
+            <a
+              href={paymentUrl}
+              id="gtm-go-to-payment"
+              className="gtm-link"
+              onClick={() => onNext()}
+            >
+              Ir para pagamento
+            </a>
+          </Button>
+        ) : (
+          <Button
+            disabled
+            className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full px-6 opacity-50"
+          >
+            Ir para pagamento
+          </Button>
+        )}
       </div>
     </div>
   );

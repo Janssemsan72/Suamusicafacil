@@ -29,7 +29,7 @@ import {
   QuizLyricsStep,
   type QuizFormState,
 } from "@/components/quiz";
-import { Loader2 } from "@/lib/icons";
+
 type QuizCheckoutFlowProps = {
   mode?: "modal" | "page";
   onClose?: () => void;
@@ -45,11 +45,8 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
   const [lyricsTitle, setLyricsTitle] = useState("");
   const [lyricsText, setLyricsText] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [paymentProgress, setPaymentProgress] = useState(0);
   const [hasRejectedOnce, setHasRejectedOnce] = useState(false);
-  const [redirectError, setRedirectError] = useState<string | null>(null);
   const [pendingOrderId, setPendingOrderId] = useState<string | null>(null);
-  const redirectStartedRef = useRef(false);
   const autosaveTimeoutRef = useRef<number | null>(null);
   const lastAutosaveRef = useRef<{ title: string; text: string } | null>(null);
   /** Guarda o quiz_id retornado pelo create-checkout para conferência no log de handleGoToPayment (quizId === response_quiz_id). */
@@ -69,6 +66,12 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
     vocalGender: "",
     message: "",
   });
+
+  const paymentUrl = useMemo(() => {
+    if (!pendingOrderId || !formState.email?.trim() || !formState.whatsapp?.trim()) return "";
+    const trackingParams = getSavedTrackingParams();
+    return generateCaktoUrl(pendingOrderId, formState.email.trim(), formState.whatsapp.trim(), "pt", trackingParams);
+  }, [pendingOrderId, formState.email, formState.whatsapp]);
 
   const persistCheckoutDraft = useCallback((quizData: ValidationQuizData) => {
     try {
@@ -415,52 +418,22 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
     await handleGenerateLyrics();
   }, [hasRejectedOnce, handleGenerateLyrics]);
 
-  const handleGoToPayment = useCallback(async () => {
-    if (!lyricsText.trim()) {
-      setErrorMessage("Revise sua letra antes de ir para o pagamento.");
-      return;
-    }
-    setErrorMessage(null);
-
-    try {
-      if (quizId) {
-        const { supabase } = await import("@/integrations/supabase/client");
-        // ✅ FIX: Buscar answers atuais do banco em vez de localStorage
-        let existingAnswers: Record<string, any> = {};
-        try {
-          const { data: dbQuiz } = await supabase
-            .from("quizzes")
-            .select("answers")
-            .eq("id", quizId)
-            .maybeSingle();
-          existingAnswers = (dbQuiz?.answers && typeof dbQuiz.answers === "object") ? dbQuiz.answers : {};
-        } catch { /* fallback to empty */ }
-        const updatedAnswers = {
-          ...existingAnswers,
-          approved_lyrics: lyricsText.trim(),
-          approved_lyrics_title: lyricsTitle.trim() || "Sua música personalizada",
-          approved_lyrics_at: new Date().toISOString(),
-        };
-        await supabase
-          .from("quizzes")
-          .update({ answers: updatedAnswers })
-          .eq("id", quizId);
-
-        const currentQuiz = loadQuizFromStorage();
-        if (currentQuiz) {
-          await saveQuizToStorage({
-            ...currentQuiz,
-            answers: updatedAnswers,
-          });
-        }
-      }
-
-      setLyricsApproved(true);
-      setStep(3);
-    } catch (error) {
-      console.warn("⚠️ [QuizCheckoutFlow] Falha ao salvar letra:", error);
-      setErrorMessage("Não foi possível salvar a letra. Tente novamente.");
-    }
+  const handleGoToPayment = useCallback(() => {
+    if (!quizId) return;
+    import("@/integrations/supabase/client").then(({ supabase }) => {
+      supabase.from("quizzes").select("answers").eq("id", quizId).maybeSingle()
+        .then(({ data: dbQuiz }) => {
+          const existing = (dbQuiz?.answers && typeof dbQuiz.answers === "object") ? dbQuiz.answers : {};
+          supabase.from("quizzes").update({
+            answers: {
+              ...existing,
+              approved_lyrics: lyricsText.trim(),
+              approved_lyrics_title: lyricsTitle.trim() || "Sua música personalizada",
+              approved_lyrics_at: new Date().toISOString(),
+            },
+          }).eq("id", quizId);
+        });
+    });
   }, [lyricsText, lyricsTitle, quizId]);
 
   useEffect(() => {
@@ -498,91 +471,6 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
       }
     };
   }, [isGeneratingLyrics, lyricsText, lyricsTitle, saveLyricsDraft, step]);
-
-  // Passo 3: redirecionar para a Cakto (usa pedido já criado no passo 1 ou cria agora como fallback)
-  useEffect(() => {
-    if (step !== 3 || redirectStartedRef.current) return;
-    redirectStartedRef.current = true;
-    setRedirectError(null);
-
-    const runRedirect = async () => {
-      const email = formState.email?.trim();
-      const whatsapp = formState.whatsapp?.trim();
-      if (!email || !whatsapp) {
-        setRedirectError("E-mail e WhatsApp são obrigatórios.");
-        redirectStartedRef.current = false;
-        return;
-      }
-
-      try {
-        let orderId = pendingOrderId;
-        if (!orderId) {
-          console.warn('[QuizCheckoutFlow] pendingOrderId ausente no step 3 - criando fallback');
-          const { supabase } = await import("@/integrations/supabase/client");
-          const messageText = (formState.message && formState.message.trim()) || (lyricsText.trim().split("\n")[0] || "Música personalizada");
-          const aboutWho = (formState.aboutWho && formState.aboutWho.trim()) || "Cliente";
-          const style = (formState.style && formState.style.trim()) || "pop";
-          const quizPayload = {
-            about_who: aboutWho,
-            relationship: formState.relationship || formState.customRelationship || "",
-            occasion: formState.occasion || "",
-            style,
-            language: "pt",
-            vocal_gender: formState.vocalGender || null,
-            message: messageText,
-            qualities: null,
-            memories: null,
-            key_moments: null,
-            desired_tone: null,
-            answers: {
-              approved_lyrics: lyricsText.trim(),
-              approved_lyrics_title: lyricsTitle.trim() || "Sua música personalizada",
-              customer_name: formState.customerName || null,
-            },
-          };
-          const { data: checkoutResult, error: checkoutError } = await supabase.functions.invoke("create-checkout", {
-            body: {
-              session_id: sessionId,
-              quiz: quizPayload,
-              customer_email: email,
-              customer_whatsapp: whatsapp,
-              customer_name: formState.customerName?.trim() || null,
-              plan: "express",
-              amount_cents: 3700,
-              transaction_id: crypto.randomUUID(),
-              provider: "cakto",
-            },
-          });
-          if (checkoutError || !checkoutResult?.success) {
-            const serverMsg = checkoutResult?.error;
-            const sdkMsg = checkoutError?.message;
-            const isGenericSdk = sdkMsg?.includes('non-2xx') || sdkMsg?.includes('status code');
-            const msg = serverMsg || (isGenericSdk ? 'Não foi possível criar o pedido. Verifique os dados e tente novamente.' : sdkMsg) || 'Erro ao preparar pagamento.';
-            setRedirectError(msg);
-            redirectStartedRef.current = false;
-            return;
-          }
-          orderId = checkoutResult.order_id;
-        }
-        if (!orderId) {
-          setRedirectError("Pedido não foi criado. Tente novamente.");
-          redirectStartedRef.current = false;
-          return;
-        }
-        const trackingParams = getSavedTrackingParams();
-        const caktoUrl = generateCaktoUrl(orderId, email, whatsapp, "pt", trackingParams);
-        window.location.replace(caktoUrl);
-      } catch (err) {
-        const raw = err instanceof Error ? err.message : "Erro ao redirecionar. Tente novamente.";
-        const isGenericSdk = raw?.includes('non-2xx') || raw?.includes('status code');
-        const msg = isGenericSdk ? 'Não foi possível criar o pedido. Verifique os dados e tente novamente.' : raw;
-        setRedirectError(msg);
-        redirectStartedRef.current = false;
-      }
-    };
-
-    runRedirect();
-  }, [step, pendingOrderId, formState.email, formState.whatsapp, formState.aboutWho, formState.relationship, formState.customRelationship, formState.occasion, formState.style, formState.vocalGender, formState.message, formState.customerName, lyricsText, lyricsTitle, sessionId]);
 
   // Persistir step + letra + orderId para restaurar ao retornar à página
   useEffect(() => {
@@ -635,8 +523,8 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
         (stepState.lyricsTitle && stepState.lyricsTitle.trim()) ||
         (typeof answers?.approved_lyrics_title === "string" ? answers.approved_lyrics_title : "");
 
-      if (storedLyrics || stepState.step === 3) {
-        setStep(stepState.step);
+      if (storedLyrics || stepState.step >= 2) {
+        setStep(Math.min(stepState.step, 2));
         setQuizId(stepState.quizId ?? localQuiz.id ?? null);
         setLyricsTitle(storedTitle || stepState.lyricsTitle);
         setLyricsText(storedLyrics || stepState.lyricsText);
@@ -730,6 +618,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
             lyricsText={lyricsText}
             isGeneratingLyrics={isGeneratingLyrics}
             hasRejectedOnce={hasRejectedOnce}
+            paymentUrl={paymentUrl}
             onTitleChange={setLyricsTitle}
             onTextChange={setLyricsText}
             onReject={handleRejectLyrics}
@@ -741,27 +630,6 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
           />
         )}
 
-        {step === 3 && (
-          <div className="rounded-2xl border border-purple-100 bg-purple-50/40 p-8 flex flex-col items-center justify-center gap-4 min-h-[200px]">
-            {redirectError ? (
-              <>
-                <p className="text-sm text-red-600 text-center">{redirectError}</p>
-                <button
-                  type="button"
-                  onClick={() => { setRedirectError(null); redirectStartedRef.current = false; setStep(2); }}
-                  className="text-sm font-medium text-purple-600 hover:text-purple-700"
-                >
-                  Voltar e tentar novamente
-                </button>
-              </>
-            ) : (
-              <>
-                <Loader2 className="h-12 w-12 animate-spin text-purple-600" aria-hidden />
-                <p className="text-sm font-medium text-purple-700">Redirecionando para o pagamento...</p>
-              </>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
