@@ -1,8 +1,9 @@
+import { safeTrackCheckout } from './pixelTracking';
+
 /**
  * Listener global (capture phase) que detecta cliques em elementos
- * marcados com data-cta="checkout" e dispara dataLayer.push automaticamente.
- *
- * Funciona tanto para <a href> nativos quanto para <button> com redirect async.
+ * marcados com data-cta="checkout" e dispara dataLayer.push (GTM)
+ * e fbq InitiateCheckout (Meta Pixel) automaticamente.
  */
 export function initCheckoutClickListener(): void {
   document.addEventListener(
@@ -21,6 +22,8 @@ export function initCheckoutClickListener(): void {
         cta_id: ctaId,
         click_url: href,
       });
+
+      safeTrackCheckout({ content_name: ctaId, value: 37.00, currency: 'BRL' });
     },
     true,
   );

@@ -18,6 +18,7 @@ import {
   clearQuizStepState,
 } from "@/utils/quizSync";
 import { generateCaktoUrl, getSavedTrackingParams } from "@/utils/checkoutLinks";
+import { safeTrackLead } from "@/utils/pixelTracking";
 import {
   normalizeStyle,
   parseAnswers,
@@ -269,6 +270,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
         setQuizId(responseQuizId);
       }
       setPendingOrderId(orderId);
+      safeTrackLead({ content_name: 'quiz_step1', content_category: formState.style });
       setLyricsTitle("");
       setLyricsText("");
       setLyricsApproved(false);

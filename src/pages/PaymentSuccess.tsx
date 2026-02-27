@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2, Mail, MessageCircle } from '@/lib/icons';
 import { clearQuizSessionId, clearQuizStepState } from '@/utils/quizSync';
 import { scheduleNonCriticalRender } from '@/utils/scheduleNonCriticalRender';
+import { safeTrackPurchase } from '@/utils/pixelTracking';
 import Logo from '@/components/Logo';
 
 function getWhatsAppUrl() {
@@ -34,6 +35,7 @@ export default function PaymentSuccess() {
   useEffect(() => {
     clearQuizSessionId();
     clearQuizStepState();
+    safeTrackPurchase({ value: 37.00, currency: 'BRL', content_name: 'musica_personalizada' });
   }, []);
 
   useEffect(() => {
