@@ -69,7 +69,7 @@ async function processInsertQueue(): Promise<void> {
       // Circuit fechado - resetar
       circuitOpen = false;
       consecutiveFailures = 0;
-      console.log('[QuizInsert] Circuit breaker fechado - tentando novamente');
+      if (import.meta.env.DEV) console.log('[QuizInsert] Circuit breaker fechado');
     }
   }
 
@@ -158,13 +158,11 @@ async function performInsert(
         attempts++;
         const attemptStartTime = Date.now();
         
-        console.log(`[QuizInsert] Tentativa ${attempts}/${(retryOptions.maxRetries || 5) + 1} de inserir quiz`, {
-          timestamp: new Date().toISOString(),
-          customer_email: quizPayload.customer_email,
-          transaction_id: quizPayload.transaction_id,
-          activeInserts,
-          queueLength: insertQueue.length,
-        });
+        if (import.meta.env.DEV) {
+          console.log(`[QuizInsert] Tentativa ${attempts}/${(retryOptions.maxRetries || 5) + 1}`, {
+            customer_email: quizPayload.customer_email,
+          });
+        }
 
         // ✅ UPSERT: Usar upsert se tiver session_id para garantir idempotência
         // ✅ CORREÇÃO: Verificar se quiz já está associado a pedido antes de fazer UPSERT
@@ -190,7 +188,7 @@ async function performInsert(
             if (existingOrder) {
               // Quiz já está associado a um pedido - criar novo quiz em vez de atualizar
               // ✅ CORREÇÃO: Não usar session_id para novo quiz (evitar conflito de constraint unique)
-              console.log(`[QuizInsert] Quiz com session_id ${quizPayload.session_id} já está associado a pedido ${existingOrder.id}, criando novo quiz sem session_id`);
+              if (import.meta.env.DEV) console.log(`[QuizInsert] Quiz com session_id já associado a pedido, criando novo`);
               const newQuizPayload = { ...quizPayload, session_id: undefined };
               query = query.insert(newQuizPayload);
             } else {
@@ -276,16 +274,9 @@ async function performInsert(
           throw missingDataError;
         }
 
-        console.log(`[QuizInsert] Tentativa ${attempts} bem-sucedida`, {
-          quiz_id: data.id,
-          duration_ms: attemptDuration,
-        });
-
-        // ✅ CIRCUIT BREAKER: Resetar contador de falhas em caso de sucesso
         if (consecutiveFailures > 0) {
           consecutiveFailures = 0;
           circuitOpen = false;
-          console.log('[QuizInsert] Circuit breaker resetado após sucesso');
         }
 
         return data;
@@ -295,11 +286,9 @@ async function performInsert(
 
     const totalTime = Date.now() - startTime;
     
-    console.log(`[QuizInsert] Quiz inserido com sucesso após ${attempts} tentativa(s)`, {
-      quiz_id: result.id,
-      total_time_ms: totalTime,
-      attempts,
-    });
+    if (import.meta.env.DEV) {
+      console.log(`[QuizInsert] Quiz inserido com sucesso após ${attempts} tentativa(s)`);
+    }
 
     return {
       success: true,
@@ -371,10 +360,7 @@ export async function enqueueQuizToServer(quizPayload: QuizPayload, error?: any)
       if (insertError) {
         // Se é erro de duplicado (session_id já existe), considerar sucesso
         if (insertError.code === '23505' || insertError.message?.includes('duplicate')) {
-          console.log('✅ [quizInsert] Quiz já existe na fila (duplicado), considerando sucesso:', {
-            session_id: quizPayload.session_id,
-            attempt
-          });
+          if (import.meta.env.DEV) console.log('[quizInsert] Quiz já existe na fila (duplicado)');
           return true;
         }
         
@@ -390,12 +376,7 @@ export async function enqueueQuizToServer(quizPayload: QuizPayload, error?: any)
         return false;
       }
 
-      console.log('✅ [quizInsert] Quiz adicionado à fila do servidor:', {
-        queue_id: data?.id,
-        session_id: quizPayload.session_id,
-        customer_email: quizPayload.customer_email,
-        attempt
-      });
+      if (import.meta.env.DEV) console.log('[quizInsert] Quiz adicionado à fila do servidor');
 
       return true;
     } catch (err: any) {
@@ -456,11 +437,7 @@ export async function insertQuizWithRetry(
         options,
       });
       
-      console.log(`[QuizInsert] Quiz adicionado à fila (${insertQueue.length} na fila, ${activeInserts} ativos)`, {
-        customer_email: quizPayload.customer_email,
-        circuitOpen,
-        circuitOpenUntil: circuitOpen ? new Date(circuitOpenUntil).toISOString() : null,
-      });
+      if (import.meta.env.DEV) console.log(`[QuizInsert] Quiz na fila (${insertQueue.length} pendentes)`);
       
       // Processar fila
       processInsertQueue().catch(error => {

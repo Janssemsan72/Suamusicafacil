@@ -127,7 +127,7 @@ const Index = memo(() => {
     // Carregar o modal e o fluxo do quiz antecipadamente
     QuizCheckoutModal.prefetch?.();
     HowItWorks.prefetch?.();
-    console.log("Prefetching critical components...");
+    if (import.meta.env.DEV) console.log("Prefetching critical components...");
   }, []);
 
   return (

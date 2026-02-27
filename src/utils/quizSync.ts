@@ -139,12 +139,9 @@ export async function saveQuizToStorage(
   const saveTimestamp = new Date().toISOString();
   const hour = new Date().getHours();
   
-  console.log(`💾 [quizSync] Tentando salvar quiz às ${saveTimestamp} (hora: ${hour}h)`, {
-    quizSize: quizJson.length,
-    hasLocalStorage,
-    hasSessionStorage,
-    retries
-  });
+  if (import.meta.env.DEV) {
+    console.log(`[quizSync] Salvando quiz (${quizJson.length} bytes)`);
+  }
 
   // Se nenhum storage está disponível, usar memória como fallback
   if (!hasLocalStorage && !hasSessionStorage) {
@@ -214,13 +211,9 @@ export async function saveQuizToStorage(
           throw new Error('Quiz salvo está incompleto');
         }
         
-        // ✅ PROTEÇÃO ADICIONAL: Log de sucesso com timestamp
-        console.log(`✅ [quizSync] Quiz salvo com sucesso no localStorage (tentativa ${attempt}/${retries})`, {
-          timestamp: saveTimestamp,
-          hour,
-          quizSize: quizJson.length,
-          savedSize: saved.length
-        });
+        if (import.meta.env.DEV) {
+          console.log(`[quizSync] Quiz salvo (tentativa ${attempt}/${retries})`);
+        }
       }
 
       // Salvar também no sessionStorage como backup
