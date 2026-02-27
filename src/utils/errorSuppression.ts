@@ -100,16 +100,50 @@ export function setupErrorSuppression() {
     const isHmrPingRejection =
       (message.includes('ERR_CONNECTION_REFUSED') || message.includes('Failed to fetch')) &&
       (stack.includes('@vite/client') || stack.includes('client:') || stack.includes('waitForSuccessfulPing') || stack.includes('ping'));
-    if (isHmrPingRejection) {
+    // Suprimir erros de extensões do navegador
+    const isExtensionError =
+      message.includes('Could not establish connection') ||
+      message.includes('Receiving end does not exist') ||
+      message.includes('Extension context invalidated');
+    if (isHmrPingRejection || isExtensionError) {
       event.preventDefault();
       event.stopPropagation();
     }
   };
   
+  // Suprimir erros de WebSocket para localhost (extensões do navegador / HMR)
+  if (typeof WebSocket !== 'undefined') {
+    const OriginalWebSocket = WebSocket;
+    (window as any).WebSocket = function(url: string, protocols?: string | string[]) {
+      const ws = new OriginalWebSocket(url, protocols);
+      const parsedUrl = String(url || '');
+      const isLocalWs = parsedUrl.includes('localhost') || parsedUrl.includes('127.0.0.1');
+      if (isLocalWs) {
+        ws.addEventListener('error', (e) => {
+          e.stopImmediatePropagation?.();
+        });
+      }
+      return ws;
+    } as any;
+    Object.assign((window as any).WebSocket, OriginalWebSocket);
+    (window as any).WebSocket.prototype = OriginalWebSocket.prototype;
+  }
+
   // Handler para erros de rede (fetch, XMLHttpRequest, etc)
   const handleError = (event: ErrorEvent) => {
     const errorMessage = event.message || String(event.error || '');
     const errorSource = event.filename || '';
+    
+    // Suprimir erros de extensões do navegador
+    if (
+      errorMessage.includes('Could not establish connection') ||
+      errorMessage.includes('Receiving end does not exist') ||
+      errorMessage.includes('Extension context invalidated')
+    ) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
     
     // Suprimir ERR_CONNECTION_REFUSED em pings do HMR (servidor dev parado)
     if (
