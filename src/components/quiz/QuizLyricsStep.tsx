@@ -111,57 +111,55 @@ export function QuizLyricsStep({
       {showLoadingState ? (
         <>
           {/* Mobile: loading com provas sociais (2 depoimentos por vez) */}
-          <div className="md:hidden h-[420px] flex flex-col items-center py-4">
+          <div className="md:hidden flex flex-col items-center py-4">
             <div className="flex flex-col items-center space-y-2 flex-shrink-0">
               <Loader2 className="h-10 w-10 animate-spin text-purple-600" />
               <p className="text-sm font-medium text-gray-700">Criando sua letra personalizada...</p>
             </div>
             {displayedTestimonials.length > 0 && (
-              <div className="w-full max-w-2xl flex-1 min-h-0 flex flex-col mt-3">
+              <div className="w-full max-w-2xl flex flex-col mt-3">
                 <p className="text-sm text-gray-500 text-center mb-2 flex-shrink-0">
                   Veja o que nossos clientes estão dizendo:
                 </p>
-                <div className="relative h-[240px] overflow-hidden rounded-lg flex-shrink-0">
-                  <div className="space-y-3 pb-2">
-                    {displayedTestimonials.slice(0, 2).map((testimonial) => (
-                      <div
-                        key={testimonial.uniqueKey}
-                        className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 animate-slide-in-up flex-shrink-0"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="w-12 h-12 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
-                            <Image
-                              src={testimonial.avatar_url || `https://i.pravatar.cc/48?u=${testimonial.id}`}
-                              alt=""
-                              className="w-full h-full object-cover"
-                              width={48}
-                              height={48}
-                            />
+                <div className="space-y-3">
+                  {displayedTestimonials.slice(0, 2).map((testimonial) => (
+                    <div
+                      key={testimonial.uniqueKey}
+                      className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 animate-slide-in-up"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="w-12 h-12 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
+                          <Image
+                            src={testimonial.avatar_url || `https://i.pravatar.cc/48?u=${testimonial.id}`}
+                            alt=""
+                            className="w-full h-full object-cover"
+                            width={48}
+                            height={48}
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1 mb-2">
+                            {Array.from({ length: testimonial.rating || 5 }).map((_, i) => (
+                              <Star key={i} className="w-3 h-3 text-yellow-400 fill-yellow-400" aria-hidden="true" />
+                            ))}
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-1 mb-2">
-                              {Array.from({ length: testimonial.rating || 5 }).map((_, i) => (
-                                <Star key={i} className="w-3 h-3 text-yellow-400 fill-yellow-400" aria-hidden="true" />
-                              ))}
-                            </div>
-                            <p className="text-sm text-gray-700 italic mb-2" style={{
-                              display: '-webkit-box',
-                              WebkitLineClamp: 4,
-                              WebkitBoxOrient: 'vertical',
-                              overflow: 'hidden'
-                            }}>
-                              {testimonial.content}
-                            </p>
-                            <div className="flex items-center gap-2">
-                              <p className="font-semibold text-gray-900 text-sm">{testimonial.name}</p>
-                              <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" aria-hidden="true" />
-                              <span className="text-xs text-gray-500">Verificado</span>
-                            </div>
+                          <p className="text-sm text-gray-700 italic mb-2" style={{
+                            display: '-webkit-box',
+                            WebkitLineClamp: 4,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden'
+                          }}>
+                            {testimonial.content}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold text-gray-900 text-sm">{testimonial.name}</p>
+                            <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" aria-hidden="true" />
+                            <span className="text-xs text-gray-500">Verificado</span>
                           </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
