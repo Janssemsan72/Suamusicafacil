@@ -64,7 +64,7 @@ export default function About() {
     {
       icon: Clock,
       title: "Entrega Rápida",
-      description: "Entregamos sua música personalizada em até 24 horas, sem comprometer a qualidade."
+      description: "Entregamos sua música personalizada em até 6 horas, sem comprometer a qualidade."
     }
   ];
 
@@ -204,7 +204,7 @@ export default function About() {
                     <div>
                       <h3 className="font-semibold">Entrega Rápida</h3>
                       <p className="text-sm text-muted-foreground">
-                        Receba sua música personalizada em até 24 horas.
+                        Receba sua música personalizada em até 6 horas.
                       </p>
                     </div>
                   </div>

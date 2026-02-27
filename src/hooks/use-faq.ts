@@ -23,8 +23,8 @@ export const defaultFaqItems: FAQItem[] = [
   },
   {
     id: '3',
-    question: 'Posso receber minha música em 24 horas?',
-    answer: 'Sim! Temos a opção de entrega prioritária em 24 horas por um valor adicional. Basta selecionar essa opção após preencher o formulário da sua música.',
+    question: 'Posso receber minha música em 6 horas?',
+    answer: 'Sim! Temos a opção de entrega super rápida em até 6 horas. Basta selecionar essa opção após preencher o formulário da sua música.',
     is_active: true
   },
   {
