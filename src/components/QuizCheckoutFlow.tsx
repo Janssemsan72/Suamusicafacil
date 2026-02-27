@@ -17,7 +17,7 @@ import {
   saveQuizStepState,
   clearQuizStepState,
 } from "@/utils/quizSync";
-import { generateCaktoUrl } from "@/utils/checkoutLinks";
+import { generateCaktoUrl, getSavedTrackingParams } from "@/utils/checkoutLinks";
 import {
   normalizeStyle,
   parseAnswers,
@@ -30,6 +30,12 @@ import {
   type QuizFormState,
 } from "@/components/quiz";
 import { Loader2 } from "@/lib/icons";
+import {
+  gtmQuizDetailsSubmit,
+  gtmLyricsGenerated,
+  gtmInitiatePayment,
+  gtmVirtualPageview,
+} from "@/utils/gtmTracking";
 
 type QuizCheckoutFlowProps = {
   mode?: "modal" | "page";
@@ -269,6 +275,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
       setLyricsText("");
       setLyricsApproved(false);
       setHasRejectedOnce(false);
+      gtmQuizDetailsSubmit({ style: formState.style, occasion: formState.occasion });
       setStep(2);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erro ao criar pedido. Tente novamente.";
@@ -323,6 +330,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
       setLyricsTitle(limitedTitle);
       setLyricsText(limitedText);
       setLyricsApproved(false);
+      gtmLyricsGenerated();
 
       // Salvar letra gerada no quiz imediatamente (rascunho antes da aprovação)
       if (currentQuizId) {
@@ -457,6 +465,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
         }
       }
 
+      gtmInitiatePayment({ quiz_id: quizId, order_id: pendingOrderId });
       setLyricsApproved(true);
       setStep(3);
     } catch (error) {
@@ -571,7 +580,8 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
           redirectStartedRef.current = false;
           return;
         }
-        const caktoUrl = generateCaktoUrl(orderId, email, whatsapp, "pt");
+        const trackingParams = getSavedTrackingParams();
+        const caktoUrl = generateCaktoUrl(orderId, email, whatsapp, "pt", trackingParams);
         window.location.replace(caktoUrl);
       } catch (err) {
         const raw = err instanceof Error ? err.message : "Erro ao redirecionar. Tente novamente.";

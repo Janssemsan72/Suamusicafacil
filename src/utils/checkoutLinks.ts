@@ -3,6 +3,16 @@ import { supabase } from "@/integrations/supabase/client";
 /** URL da página de pagamento Cakto — redirecionamento ao clicar em "Ir para pagamento" */
 export const CAKTO_PAYMENT_BASE_URL = import.meta.env.VITE_CAKTO_CHECKOUT_URL || 'https://pay.cakto.com.br/37k66ko_784248';
 
+/** Recupera todos os tracking params (sck, utm_*, gclid, etc.) salvos pelo useUtmParams */
+export function getSavedTrackingParams(): Record<string, string> {
+  try {
+    const raw = localStorage.getItem('musiclovely_tracking_params');
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
 /**
  * Gera URL da Cakto para pagamento (redirecionamento direto).
  * Após o pagamento, o webhook da Cakto marca o pedido como pago e dispara: letra → Suno (sunoapi.org) → email ao cliente.
