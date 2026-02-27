@@ -2,6 +2,7 @@ import "./index.css";
 import { scheduleNonCriticalRender, scheduleOnFirstInteraction } from "./utils/scheduleNonCriticalRender";
 import { initializeReact } from "./utils/initializeReact";
 import { setupQuizBeaconSave } from "./utils/quizBeaconSave";
+import { initCheckoutClickListener } from "./utils/gtmCheckoutListener";
 
 // ✅ Declarar tipos para propriedades globais do window
 declare global {
@@ -76,6 +77,7 @@ if (typeof window !== 'undefined') {
 
 if (typeof window !== "undefined") {
   setupQuizBeaconSave();
+  initCheckoutClickListener();
 
   // ✅ CORREÇÃO: Remover Service Worker na Landing Page para evitar cache stale/offline
   if ('serviceWorker' in navigator && !window.location.pathname.startsWith('/admin')) {

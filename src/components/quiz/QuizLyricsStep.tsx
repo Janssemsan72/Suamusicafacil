@@ -207,21 +207,10 @@ export function QuizLyricsStep({
           <a
             href={paymentUrl}
             id="gtm-go-to-payment"
+            data-cta="checkout"
+            data-cta-id="cta-quiz-payment"
             className={`gtm-link ${buttonVariants({ variant: "default", size: "default" })} rounded-full px-6`}
-            onClick={(e) => {
-              e.preventDefault();
-              onNext();
-              const w = window as any;
-              w.dataLayer = w.dataLayer || [];
-              w.dataLayer.push({
-                event: 'begin_checkout',
-                click_url: paymentUrl,
-                click_id: 'gtm-go-to-payment',
-              });
-              setTimeout(() => {
-                window.location.href = paymentUrl;
-              }, 300);
-            }}
+            onClick={() => onNext()}
           >
             Ir para pagamento
           </a>

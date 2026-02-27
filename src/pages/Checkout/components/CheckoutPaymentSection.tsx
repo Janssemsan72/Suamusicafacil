@@ -75,6 +75,8 @@ export const CheckoutPaymentSection = React.memo(({
           disabled={processing}
           className={buttonClassName}
           size="lg"
+          data-cta="checkout"
+          data-cta-id="cta-checkout-section-mobile"
         >
           {buttonContent()}
         </Button>
@@ -98,6 +100,8 @@ export const CheckoutPaymentSection = React.memo(({
         disabled={processing}
         className={buttonClassName}
         size="lg"
+        data-cta="checkout"
+        data-cta-id="cta-checkout-section-desktop"
       >
         {buttonContent()}
       </Button>

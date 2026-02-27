@@ -199,6 +199,8 @@ export const CheckoutPaymentSummary = React.memo(({
         disabled={processing}
         className="w-full h-14 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold text-base shadow-lg hover:shadow-xl transition-all"
         size="lg"
+        data-cta="checkout"
+        data-cta-id="cta-checkout-summary"
       >
         {processing ? (
           <>
