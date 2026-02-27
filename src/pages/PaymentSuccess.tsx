@@ -190,6 +190,8 @@ export default function PaymentSuccess() {
           >
             <a
               href={whatsappUrl}
+              id="gtm-whatsapp-success"
+              className="gtm-link"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => { hasRedirected.current = true; }}

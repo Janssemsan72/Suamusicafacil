@@ -47,7 +47,8 @@ const Footer = React.memo(function Footer() {
               <li>
                 <a 
                   href="mailto:hello@suamusicafacil.com"
-                  className="text-brown-dark-300 hover:text-terracotta-800 text-sm transition-colors"
+                  id="gtm-email-footer"
+                  className="text-brown-dark-300 hover:text-terracotta-800 text-sm transition-colors gtm-link"
                 >
                   hello@suamusicafacil.com
                 </a>

@@ -201,6 +201,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
       </div>
 
       <Button
+        id="gtm-quiz-continue"
         onClick={onNext}
         disabled={isSaving}
         className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full py-3.5 text-lg font-semibold"

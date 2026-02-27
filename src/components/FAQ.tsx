@@ -63,7 +63,8 @@ export default function FAQ({ faqs: propFaqs }: FAQProps) {
           </p>
           <a 
             href="mailto:suporte@suamusicafacil.com" 
-            className="inline-flex items-center gap-2 text-terracotta-700 hover:text-terracotta-800 font-medium transition-colors"
+            id="gtm-email-suporte-faq"
+            className="inline-flex items-center gap-2 text-terracotta-700 hover:text-terracotta-800 font-medium transition-colors gtm-link"
           >
             <Mail className="w-4 h-4" aria-hidden="true" />
             <span>suporte@suamusicafacil.com</span>

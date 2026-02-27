@@ -211,7 +211,8 @@ export default function HowItWorks() {
                 </Link>
                 <a 
                   href="/#pricing" 
-                  className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 border border-primary text-primary rounded-xl sm:rounded-2xl hover:bg-primary/10 transition-colors text-base sm:text-lg font-semibold"
+                  id="gtm-ver-precos"
+                  className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 border border-primary text-primary rounded-xl sm:rounded-2xl hover:bg-primary/10 transition-colors text-base sm:text-lg font-semibold gtm-link"
                 >
                   Ver Preços
                 </a>

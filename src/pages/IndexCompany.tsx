@@ -295,7 +295,8 @@ export default function IndexCompany() {
                   <h3 className="text-xl font-bold mb-2">E-mail Oficial</h3>
                   <a 
                     href="mailto:contato@suamusicafacil.com" 
-                    className="text-primary hover:underline text-lg font-semibold transition-colors"
+                    id="gtm-email-contato"
+                    className="text-primary hover:underline text-lg font-semibold transition-colors gtm-link"
                   >
                     contato@suamusicafacil.com
                   </a>
@@ -310,9 +311,10 @@ export default function IndexCompany() {
                   <h3 className="text-xl font-bold mb-2">WhatsApp de Atendimento</h3>
                   <a 
                     href={whatsappUrl}
+                    id="gtm-whatsapp-contato"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary hover:underline text-lg font-semibold flex items-center justify-center gap-2 transition-colors"
+                    className="text-primary hover:underline text-lg font-semibold flex items-center justify-center gap-2 transition-colors gtm-link"
                   >
                     <Phone className="h-5 w-5" />
                     85 9151-6996
@@ -362,7 +364,8 @@ export default function IndexCompany() {
                       <h3 className="text-xl font-bold mb-2">Telefone</h3>
                       <a 
                         href="tel:+558588209823" 
-                        className="text-primary hover:underline transition-colors"
+                        id="gtm-telefone-contato"
+                        className="text-primary hover:underline transition-colors gtm-link"
                       >
                         (85) 8820-9823
                       </a>
@@ -379,7 +382,8 @@ export default function IndexCompany() {
                       <h3 className="text-xl font-bold mb-2">E-mail</h3>
                       <a 
                         href="mailto:contato@suamusicafacil.com" 
-                        className="text-primary hover:underline transition-colors"
+                        id="gtm-email-localizacao"
+                        className="text-primary hover:underline transition-colors gtm-link"
                       >
                         contato@suamusicafacil.com
                       </a>
