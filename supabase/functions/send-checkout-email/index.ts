@@ -199,12 +199,9 @@ serve(async (req) => {
     caktoParams.set('language', locale);
     caktoParams.set('redirect_url', redirectUrl);
 
-    const CAKTO_ACCEPTED = ['src', 'sck', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
     if (order.tracking_params && typeof order.tracking_params === 'object') {
       for (const [key, value] of Object.entries(order.tracking_params)) {
-        if (value && CAKTO_ACCEPTED.includes(key)) {
-          caktoParams.set(key, String(value));
-        }
+        if (value) caktoParams.set(key, String(value));
       }
     }
     
