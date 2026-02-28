@@ -108,13 +108,17 @@ export function useUtmParams() {
     return utms;
   }, [allTrackingParams]);
 
-  // Salvar parâmetros mesclados no localStorage sempre que mudarem
+  // Salvar parâmetros mesclados no localStorage e push ao dataLayer (GTM)
   useEffect(() => {
     if (isAdminRoute) {
       return;
     }
     if (Object.keys(allTrackingParams).length > 0) {
       localStorage.setItem('musiclovely_tracking_params', JSON.stringify(allTrackingParams));
+
+      const w = window as unknown as { dataLayer?: Record<string, unknown>[] };
+      w.dataLayer = w.dataLayer || [];
+      w.dataLayer.push({ ...allTrackingParams, event: 'tracking_params_ready' });
     }
   }, [allTrackingParams, isAdminRoute]);
 
