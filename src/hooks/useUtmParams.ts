@@ -31,19 +31,27 @@ export function useUtmParams() {
       return {};
     }
     const params: Record<string, string> = {};
+
+    // Fallback: window.location.search para parâmetros que o React Router pode omitir
+    const rawParams = new URLSearchParams(window.location.search);
+
     TRACKING_PARAMS.forEach(param => {
-      const value = searchParams.get(param);
+      const value = searchParams.get(param) || rawParams.get(param);
       if (value) {
         params[param] = value;
       }
     });
     
-    // Também capturar parâmetros _gac_* (Google Analytics Campaign com formato _gac_GA_MEASUREMENT_ID__CAMPAIGN_ID__TIMESTAMP)
-    searchParams.forEach((value, key) => {
-      if (key.startsWith('_gac_') && !params[key]) {
-        params[key] = value;
-      }
-    });
+    // Também capturar parâmetros _gac_*
+    const mergeGac = (sp: URLSearchParams) => {
+      sp.forEach((value, key) => {
+        if (key.startsWith('_gac_') && !params[key]) {
+          params[key] = value;
+        }
+      });
+    };
+    mergeGac(searchParams);
+    mergeGac(rawParams);
     
     return params;
   }, [isAdminRoute, searchParams]);
