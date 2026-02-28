@@ -7,7 +7,8 @@ export const CAKTO_PAYMENT_BASE_URL = import.meta.env.VITE_CAKTO_CHECKOUT_URL ||
 /** Recupera todos os tracking params (sck, utm_*, gclid, etc.) salvos pelo useUtmParams */
 export function getSavedTrackingParams(): Record<string, string> {
   try {
-    const raw = localStorage.getItem('musiclovely_tracking_params');
+    const raw = localStorage.getItem('suamusicafacil_tracking_params')
+      || localStorage.getItem('musiclovely_tracking_params');
     return raw ? JSON.parse(raw) : {};
   } catch {
     return {};

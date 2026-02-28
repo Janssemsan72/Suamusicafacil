@@ -7,7 +7,7 @@
 
 import type { CacheEntry, CacheStrategy } from './types';
 
-const DB_NAME = 'musiclovely_admin_cache';
+const DB_NAME = 'suamusicafacil_admin_cache';
 const DB_VERSION = 1;
 const STORE_NAME = 'cache_entries';
 

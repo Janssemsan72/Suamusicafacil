@@ -73,7 +73,7 @@ export function useUtmParams() {
       return;
     }
     if (Object.keys(currentTrackingParams).length > 0) {
-      localStorage.setItem('musiclovely_tracking_params', JSON.stringify(currentTrackingParams));
+      localStorage.setItem('suamusicafacil_tracking_params', JSON.stringify(currentTrackingParams));
     }
   }, [currentTrackingParams, isAdminRoute]);
 
@@ -83,7 +83,8 @@ export function useUtmParams() {
       return {};
     }
     try {
-      const saved = localStorage.getItem('musiclovely_tracking_params');
+      const saved = localStorage.getItem('suamusicafacil_tracking_params')
+        || localStorage.getItem('musiclovely_tracking_params');
       return saved ? JSON.parse(saved) : {};
     } catch {
       return {};
@@ -108,13 +109,18 @@ export function useUtmParams() {
     return utms;
   }, [allTrackingParams]);
 
-  // Salvar parâmetros mesclados no localStorage sempre que mudarem
+  // Salvar parâmetros mesclados no localStorage e individualmente no sessionStorage
   useEffect(() => {
     if (isAdminRoute) {
       return;
     }
     if (Object.keys(allTrackingParams).length > 0) {
-      localStorage.setItem('musiclovely_tracking_params', JSON.stringify(allTrackingParams));
+      localStorage.setItem('suamusicafacil_tracking_params', JSON.stringify(allTrackingParams));
+      Object.entries(allTrackingParams).forEach(([key, value]) => {
+        if (value) {
+          try { sessionStorage.setItem(key, value as string); } catch {}
+        }
+      });
     }
   }, [allTrackingParams, isAdminRoute]);
 
@@ -254,8 +260,9 @@ export function useUtmParams() {
    * Limpar parâmetros de tracking salvos (útil para testes ou reset)
    */
   const clearUtms = () => {
+    localStorage.removeItem('suamusicafacil_tracking_params');
     localStorage.removeItem('musiclovely_tracking_params');
-    localStorage.removeItem('musiclovely_utms'); // Manter compatibilidade
+    localStorage.removeItem('musiclovely_utms');
   };
 
   return {

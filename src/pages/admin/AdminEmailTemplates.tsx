@@ -58,8 +58,8 @@ export default function AdminEmailTemplates() {
           subject: 'Pagamento Confirmado - Sua Música Está Sendo Criada!',
           html_content: '<html><body><h1>Pedido Confirmado!</h1><p>Olá {{customer_name}}...</p></body></html>',
           variables: ['customer_name', 'recipient_name', 'order_id'],
-          from_name: 'Music Lovely',
-          from_email: 'no-reply@musiclovely.com',
+          from_name: 'Sua Música Fácil',
+          from_email: 'no-reply@suamusicafacil.com.br',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         },
@@ -70,8 +70,8 @@ export default function AdminEmailTemplates() {
           subject: 'Sua Música Está Pronta para Download!',
           html_content: '<html><body><h1>Sua Música Está Pronta!</h1><p>Olá {{customer_name}}...</p></body></html>',
           variables: ['customer_name', 'song_title', 'download_url'],
-          from_name: 'Music Lovely',
-          from_email: 'no-reply@musiclovely.com',
+          from_name: 'Sua Música Fácil',
+          from_email: 'no-reply@suamusicafacil.com.br',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }

@@ -95,7 +95,7 @@ function createSupabaseClient(): any {
       // ✅ CORREÇÃO: Garantir que Edge Functions sempre usam URL remota
       global: {
         headers: {
-          'X-Client-Info': 'musiclovely-web',
+          'X-Client-Info': 'suamusicafacil-web',
         },
       },
       // ✅ CORREÇÃO ERRO 401 REALTIME: Desabilitar Realtime automático para evitar conexões não autenticadas
