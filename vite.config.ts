@@ -126,8 +126,7 @@ export default defineConfig(({ command, mode }) => {
     build: {
       target: "es2022",
       cssCodeSplit: true,
-      // ✅ OTIMIZAÇÃO: modulePreload habilitado para download paralelo de chunks críticos (React, etc.)
-      modulePreload: true,
+      modulePreload: { polyfill: false },
       sourcemap: false,
       minify: isBuild ? 'esbuild' : false,
       chunkSizeWarningLimit: 600,
@@ -174,10 +173,7 @@ export default defineConfig(({ command, mode }) => {
               return 'supabase-client';
             }
 
-            if (
-              normalizedId.includes('vite/preload-helper') ||
-              normalizedId.includes('vite/modulepreload-polyfill')
-            ) {
+            if (normalizedId.includes('vite/preload-helper')) {
               return 'vendor';
             }
 
@@ -349,8 +345,7 @@ export default defineConfig(({ command, mode }) => {
         '@radix-ui/react-tabs',
         '@radix-ui/react-toast',
         '@radix-ui/react-toggle',
-        '@radix-ui/react-toggle-group',
-        'buffer'
+        '@radix-ui/react-toggle-group'
       ],
       // ✅ OTIMIZAÇÃO: Excluir react-dom.development em produção e Stripe
       exclude: [

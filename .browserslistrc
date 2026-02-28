@@ -1,0 +1,8 @@
+# Browsers modernos que suportam ES2022+, modulepreload e features Baseline
+# Ref: https://web.dev/articles/baseline-and-polyfills
+last 2 Chrome versions
+last 2 Firefox versions
+last 2 Safari versions
+last 2 Edge versions
+not dead
+not op_mini all

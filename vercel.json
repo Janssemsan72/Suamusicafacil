@@ -1,6 +1,37 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=(), interest-cohort=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://connect.facebook.net https://*.facebook.net https://api.suamusicafacil.com.br https://t.contentsquare.net https://*.contentsquare.net https://*.similarweb.com https://cdn.similarweb.com; style-src 'self' 'unsafe-inline' https://www.gstatic.com https://*.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' https://*.supabase.co blob: data:; font-src 'self' data: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://connect.facebook.net https://*.facebook.net https://*.facebook.com https://api.suamusicafacil.com.br https://*.similarweb.com https://cdn.similarweb.com https://*.contentsquare.net https://t.contentsquare.net; frame-src 'self' blob: data: https://connect.facebook.net https://*.facebook.net https://api.suamusicafacil.com.br https://safeframe.googlesyndication.com https://*.similarweb.com https://*.contentsquare.net; worker-src 'self' blob: https://*.contentsquare.net; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     { "source": "/download/:id/:token", "destination": "/download.html" },
     { "source": "/admin", "destination": "/admin.html" },
