@@ -2,8 +2,7 @@ import { safeTrackCheckout } from './pixelTracking';
 
 /**
  * Listener global (capture phase) que detecta cliques em elementos
- * marcados com data-cta="checkout" e dispara dataLayer.push (GTM)
- * e fbq InitiateCheckout (Meta Pixel) automaticamente.
+ * marcados com data-cta="checkout" e dispara fbq InitiateCheckout (Meta Pixel).
  */
 export function initCheckoutClickListener(): void {
   document.addEventListener(
@@ -13,16 +12,6 @@ export function initCheckoutClickListener(): void {
       if (!target) return;
 
       const ctaId = target.getAttribute('data-cta-id') || '';
-      const href = target.getAttribute('href') || '';
-
-      const w = window as unknown as { dataLayer: Record<string, unknown>[] };
-      w.dataLayer = w.dataLayer || [];
-      w.dataLayer.push({
-        event: 'begin_checkout',
-        cta_id: ctaId,
-        click_url: href,
-      });
-
       safeTrackCheckout({ content_name: ctaId, value: 37.00, currency: 'BRL' });
     },
     true,

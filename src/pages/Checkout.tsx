@@ -198,11 +198,6 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
         urlPreview: hotmartUrl.substring(0, 100) + '...'
       });
 
-      // Sinalizar GTM antes do redirect
-      const w1 = window as any;
-      w1.dataLayer = w1.dataLayer || [];
-      w1.dataLayer.push({ event: 'begin_checkout', cta_id: 'cta-checkout-restore', click_url: hotmartUrl });
-
       // Redirecionar
       setTimeout(() => {
         logger.debug('redirectToHotmart: Executando redirecionamento agora');
@@ -380,9 +375,6 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
             
             const hotmartUrl = `${HOTMART_PAYMENT_URL}?${hotmartParams.toString()}`;
             logger.debug('Redirecionando IMEDIATAMENTE para Hotmart', { hotmartUrl: hotmartUrl.substring(0, 100) });
-            const w2 = window as any;
-            w2.dataLayer = w2.dataLayer || [];
-            w2.dataLayer.push({ event: 'begin_checkout', cta_id: 'cta-checkout-whatsapp', click_url: hotmartUrl });
             // ⚠️ CRÍTICO: Usar window.location.replace para evitar que o React Router intercepte
             window.location.replace(hotmartUrl);
           } else {
@@ -2216,11 +2208,6 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
       // ✅ IMPORTANTE: NÃO resetar processing aqui - manter loading até redirecionamento
       // ✅ Redirecionamento INSTANTÂNEO - o mais rápido possível
       
-      // Sinalizar GTM antes do redirect
-      const w3 = window as any;
-      w3.dataLayer = w3.dataLayer || [];
-      w3.dataLayer.push({ event: 'begin_checkout', cta_id: 'cta-checkout-payment', click_url: hotmartUrl });
-
       // Forçar redirecionamento - múltiplas tentativas
       // Método 1: window.location.replace (preferido)
       try {
@@ -2281,9 +2268,6 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
           
           if (hotmartUrl && hotmartUrl.startsWith('http')) {
             console.log('🚀 [Hotmart] Redirecionando apesar do erro...', { hotmartUrl: hotmartUrl.substring(0, 100) });
-            const w4 = window as any;
-            w4.dataLayer = w4.dataLayer || [];
-            w4.dataLayer.push({ event: 'begin_checkout', cta_id: 'cta-checkout-fallback', click_url: hotmartUrl });
             // ✅ Não resetar processing - manter "Processando..." até redirecionar
             window.location.replace(hotmartUrl);
             return; // Não mostrar erro se redirecionou
