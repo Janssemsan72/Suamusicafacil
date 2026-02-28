@@ -125,6 +125,14 @@ export function useUtmParams() {
           } catch {}
         }
       });
+      const sck = allTrackingParams.sck;
+      if (sck) {
+        try {
+          sessionStorage.setItem('index', sck);
+          localStorage.setItem('index', sck);
+          document.cookie = `index=${encodeURIComponent(sck)};path=/;max-age=2592000;samesite=lax`;
+        } catch {}
+      }
     }
   }, [allTrackingParams, isAdminRoute]);
 
