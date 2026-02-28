@@ -153,11 +153,11 @@
     <!-- Isso geralmente é causado por extensões do Chrome (ex: Grammarly, LanguageTool, etc.) -->
     <!-- Para testes precisos, execute o Lighthouse em modo anônimo ou desabilite extensões -->
     <!-- O tactiq.io não faz parte do código da aplicação e não pode ser otimizado diretamente -->
+    <!-- Tracking params → dataLayer + sessionStorage + cookies (ANTES do GTM) -->
+    <script>(function(){var k=['sck','src','utm_source','utm_medium','utm_campaign','utm_term','utm_content','fbclid','gclid','gad_source','msclkid','xcod','ref','source','network'];var p=new URLSearchParams(window.location.search);var d={};var h=false;for(var i=0;i<k.length;i++){var v=p.get(k[i]);if(v){d[k[i]]=v;h=true;try{sessionStorage.setItem(k[i],v);localStorage.setItem(k[i],v);document.cookie=k[i]+'='+encodeURIComponent(v)+';path=/;max-age=2592000;samesite=lax';}catch(e){}}}if(h){window.dataLayer=window.dataLayer||[];window.dataLayer.push(d);}})();</script>
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src="https://api.suamusicafacil.com.br/7iquiabegfd.js?"+i;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','9xu=DQJaIjYsREAuKD0oNFVbUxJbVUtTRw0bWRUSBA8UGhwHBwEEAQgFWwcJCksAEw%3D%3D');</script>
     <!-- End Google Tag Manager -->
-    <!-- Tracking params → dataLayer + sessionStorage (roda 1x antes do React) -->
-    <script>(function(){var k=['sck','src','utm_source','utm_medium','utm_campaign','utm_term','utm_content','fbclid','gclid','gad_source','msclkid','xcod','ref','source','network'];var p=new URLSearchParams(window.location.search);var d={};var h=false;for(var i=0;i<k.length;i++){var v=p.get(k[i]);if(v){d[k[i]]=v;h=true;try{sessionStorage.setItem(k[i],v);}catch(e){}}}if(h){window.dataLayer=window.dataLayer||[];window.dataLayer.push(d);}})();</script>
     <!-- Meta Pixel -->
     <script>
     !function(f,b,e,v,n,t,s)

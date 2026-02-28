@@ -109,7 +109,7 @@ export function useUtmParams() {
     return utms;
   }, [allTrackingParams]);
 
-  // Salvar parâmetros mesclados no localStorage e individualmente no sessionStorage
+  // Salvar params: JSON no localStorage + individuais em sessionStorage/localStorage/cookies (para GTM)
   useEffect(() => {
     if (isAdminRoute) {
       return;
@@ -118,7 +118,11 @@ export function useUtmParams() {
       localStorage.setItem('suamusicafacil_tracking_params', JSON.stringify(allTrackingParams));
       Object.entries(allTrackingParams).forEach(([key, value]) => {
         if (value) {
-          try { sessionStorage.setItem(key, value as string); } catch {}
+          try {
+            sessionStorage.setItem(key, value as string);
+            localStorage.setItem(key, value as string);
+            document.cookie = `${key}=${encodeURIComponent(value as string)};path=/;max-age=2592000;samesite=lax`;
+          } catch {}
         }
       });
     }
