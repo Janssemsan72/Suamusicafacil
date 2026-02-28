@@ -115,13 +115,14 @@ export function useUtmParams() {
       return;
     }
     if (Object.keys(allTrackingParams).length > 0) {
+      const cookieDomain = '.suamusicafacil.com.br';
       localStorage.setItem('suamusicafacil_tracking_params', JSON.stringify(allTrackingParams));
       Object.entries(allTrackingParams).forEach(([key, value]) => {
         if (value) {
           try {
             sessionStorage.setItem(key, value as string);
             localStorage.setItem(key, value as string);
-            document.cookie = `${key}=${encodeURIComponent(value as string)};path=/;max-age=2592000;samesite=lax`;
+            document.cookie = `${key}=${encodeURIComponent(value as string)};path=/;max-age=2592000;domain=${cookieDomain}`;
           } catch {}
         }
       });
@@ -130,7 +131,7 @@ export function useUtmParams() {
         try {
           sessionStorage.setItem('index', sck);
           localStorage.setItem('index', sck);
-          document.cookie = `index=${encodeURIComponent(sck)};path=/;max-age=2592000;samesite=lax`;
+          document.cookie = `index=${encodeURIComponent(sck)};path=/;max-age=34560000;domain=${cookieDomain}`;
         } catch {}
       }
     }
