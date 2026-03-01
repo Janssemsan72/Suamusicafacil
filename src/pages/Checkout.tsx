@@ -21,7 +21,7 @@ import { logger } from '@/utils/logger';
 import { sanitizeEmail } from '@/utils/sanitize';
 import { insertQuizWithRetry, type QuizPayload } from '@/utils/quizInsert';
 import { enqueueQuizToServer } from '@/utils/quizInsert';
-// ✅ REMOVIDO: generateHotmartUrl import - função local com mesmo nome existe no componente (linha 169)
+import { storeHashedUserData, trackBeginCheckout, trackRedirectToPayment } from '@/utils/gtmTracking';
 
 // ✅ OTIMIZAÇÃO: Usar URLs estáticas em vez de imports (evita incluir no bundle)
 const laNaEscolaAudio = '/audio/la_na_escola-2.mp3';
@@ -113,9 +113,10 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
     if (normalizedWhatsapp && normalizedWhatsapp.trim() !== '') {
       params.set('phone', normalizedWhatsapp); // Cakto costuma usar 'phone'
     }
+    const allowedUtms = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'src', 'sck'];
     const safeParams = utms || {};
     Object.entries(safeParams).forEach(([key, value]) => {
-      if (value) {
+      if (value && allowedUtms.includes(key)) {
         params.set(key, value as string);
       }
     });
@@ -2198,6 +2199,14 @@ export default function Checkout({ embedded = false, onEditQuiz }: CheckoutProps
         }).catch(() => {});
       }, 0);
       
+      // GTM: push begin_checkout + redirect_to_payment (não-bloqueante)
+      try {
+        storeHashedUserData(email, whatsapp);
+        const price = plan?.price ? plan.price / 100 : 37;
+        trackBeginCheckout(order.id, price, 'BRL');
+        trackRedirectToPayment({ orderId: order.id, checkoutUrl: hotmartUrl, value: price, currency: 'BRL' });
+      } catch {}
+
       // ✅ REDIRECIONAMENTO IMEDIATO - SEM DELAYS
       console.log('🚀 [Hotmart] ========== INICIANDO REDIRECIONAMENTO ==========');
       console.log('🚀 [Hotmart] Order ID:', order.id);
