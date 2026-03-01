@@ -63,9 +63,10 @@ export function generateCaktoUrl(
   if (normalizedWhatsapp && normalizedWhatsapp.trim() !== '') {
     params.set('phone', normalizedWhatsapp);
   }
+  const allowedUtms = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'src', 'sck'];
   if (utms) {
     Object.entries(utms).forEach(([key, value]) => {
-      if (value) params.set(key, value);
+      if (value && allowedUtms.includes(key)) params.set(key, value);
     });
   }
   return `${CAKTO_PAYMENT_BASE_URL}?${params.toString()}`;

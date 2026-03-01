@@ -17,8 +17,9 @@ import {
   saveQuizStepState,
   clearQuizStepState,
 } from "@/utils/quizSync";
-import { generateCaktoUrl, getSavedTrackingParams } from "@/utils/checkoutLinks";
+import { generateCaktoUrl, getSavedTrackingParams, CAKTO_PAYMENT_BASE_URL } from "@/utils/checkoutLinks";
 import { safeTrackLead } from "@/utils/pixelTracking";
+import { storeHashedUserData, trackBeginCheckout, trackRedirectToPayment } from "@/utils/gtmTracking";
 import {
   normalizeStyle,
   parseAnswers,
@@ -425,7 +426,9 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
   }, [hasRejectedOnce, handleGenerateLyrics]);
 
   const handleGoToPayment = useCallback(() => {
-    if (!quizId) return;
+    if (!quizId || !paymentUrl) return;
+
+    // Salvar lyrics aprovadas (fire-and-forget)
     import("@/integrations/supabase/client").then(({ supabase }) => {
       supabase.from("quizzes").select("answers").eq("id", quizId).maybeSingle()
         .then(({ data: dbQuiz }) => {
@@ -440,7 +443,19 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
           }).eq("id", quizId);
         });
     });
-  }, [lyricsText, lyricsTitle, quizId]);
+
+    // GTM: push begin_checkout + redirect_to_payment
+    try {
+      if (formState.email && formState.whatsapp) {
+        storeHashedUserData(formState.email, formState.whatsapp);
+      }
+      trackBeginCheckout(pendingOrderId || '', 37, 'BRL');
+      trackRedirectToPayment({ orderId: pendingOrderId || '', checkoutUrl: paymentUrl, value: 37, currency: 'BRL' });
+    } catch {}
+
+    // Redirecionar via JS (paymentUrl tem os params, href do <a> é só a base)
+    window.location.href = paymentUrl;
+  }, [lyricsText, lyricsTitle, quizId, paymentUrl, pendingOrderId, formState.email, formState.whatsapp]);
 
   useEffect(() => {
     if (step !== 2) return;
@@ -633,7 +648,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
             lyricsText={lyricsText}
             isGeneratingLyrics={isGeneratingLyrics}
             hasRejectedOnce={hasRejectedOnce}
-            paymentUrl={paymentUrl}
+            paymentUrl={paymentUrl ? CAKTO_PAYMENT_BASE_URL : undefined}
             onTitleChange={setLyricsTitle}
             onTextChange={setLyricsText}
             onReject={handleRejectLyrics}

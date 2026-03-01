@@ -209,8 +209,12 @@ export function QuizLyricsStep({
             id="gtm-go-to-payment"
             data-cta="checkout"
             data-cta-id="cta-quiz-payment"
+            rel="nofollow noopener"
             className={`gtm-link ${buttonVariants({ variant: "default", size: "default" })} rounded-full px-6`}
-            onClick={() => onNext()}
+            onClick={(e) => {
+              e.preventDefault();
+              onNext();
+            }}
           >
             Ir para pagamento
           </a>
