@@ -17,7 +17,7 @@ export const defaultTextTestimonials: Testimonial[] = [
   {
     id: 't1',
     name: 'Wendy B.',
-    content: '"Oh, louvado seja Deus! Isso é absolutamente impressionante. Não consigo acreditar... Será difícil guardar o segredo até domingo. Vamos ouvi-la a caminho da igreja! Que Deus abençoe este trabalho que vocês estão fazendo."',
+    content: '"Oh, praise the Lord! This is absolutely stunning. I can\'t believe it... It\'s going to be so hard to keep this a secret until Sunday. We\'re going to listen to it on the way to church! God bless the work you\'re doing."',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=1',
@@ -26,7 +26,7 @@ export const defaultTextTestimonials: Testimonial[] = [
   {
     id: 't2',
     name: 'Maria S.',
-    content: '"Uma música incrível! Eu amei, e meu marido chorou muito. Postei nas redes e enviei para toda a família para que pudessem cantar louvando a Deus. Obrigada por todo o seu trabalho, que Deus abençoe a todos vocês!"',
+    content: '"An incredible song! I loved it, and my husband cried so much. I posted it on social media and sent it to the whole family. Thank you for all your work, God bless you all!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=2',
@@ -34,8 +34,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't3',
-    name: 'Ana Paula R.',
-    content: '"Fiquei emocionada ao ouvir a música! Ficou exatamente como eu queria. Minha mãe adorou e todos da família ficaram impressionados com a qualidade. Recomendo de olhos fechados!"',
+    name: 'Sarah R.',
+    content: '"I was moved to tears when I heard the song! It came out exactly how I wanted. My mom loved it and everyone in the family was impressed with the quality. I recommend it wholeheartedly!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=3',
@@ -43,8 +43,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't4',
-    name: 'Carlos M.',
-    content: '"Surpreendente! A música superou todas as minhas expectativas. A letra é linda e a produção está impecável. Valeu cada centavo investido. Já estou pensando em fazer outra!"',
+    name: 'Charles M.',
+    content: '"Amazing! The song exceeded all my expectations. The lyrics are beautiful and the production is flawless. Worth every penny. I\'m already thinking about ordering another one!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=4',
@@ -52,8 +52,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't5',
-    name: 'Juliana F.',
-    content: '"Não tenho palavras para descrever o quanto amei! A música ficou perfeita e emocionou todos que ouviram. O atendimento foi excelente e o resultado superou qualquer expectativa."',
+    name: 'Julie F.',
+    content: '"I have no words to describe how much I loved it! The song came out perfect and moved everyone who heard it. The service was excellent and the result exceeded every expectation."',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=5',
@@ -61,8 +61,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't6',
-    name: 'Roberto L.',
-    content: '"Profissionalismo e qualidade em cada detalhe! A música ficou exatamente como eu imaginava. Minha esposa ficou encantada e todos os convidados elogiaram muito. Obrigado!"',
+    name: 'Robert L.',
+    content: '"Professionalism and quality in every detail! The song was exactly what I imagined. My wife was delighted and all the guests complimented it. Thank you!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=6',
@@ -70,8 +70,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't7',
-    name: 'Fernanda C.',
-    content: '"Simplesmente perfeito! A letra capturou exatamente o que eu queria expressar. A qualidade do áudio é incrível e a entrega foi super rápida. Estou muito satisfeita!"',
+    name: 'Emily C.',
+    content: '"Simply perfect! The lyrics captured exactly what I wanted to express. The audio quality is incredible and the delivery was super fast. I\'m very satisfied!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=7',
@@ -79,8 +79,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't8',
-    name: 'Pedro H.',
-    content: '"Melhor presente que já dei! A música emocionou minha namorada e todos que ouviram. O processo foi simples e o resultado foi além do esperado. Recomendo muito!"',
+    name: 'Peter H.',
+    content: '"Best gift I\'ve ever given! The song moved my girlfriend and everyone who heard it. The process was simple and the result exceeded expectations. Highly recommend!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=8',
@@ -88,8 +88,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't9',
-    name: 'Luciana T.',
-    content: '"Incrível! A música ficou linda e tocou o coração de todos. A equipe foi muito atenciosa e entenderam perfeitamente o que eu queria. Ficou exatamente como sonhei!"',
+    name: 'Lucy T.',
+    content: '"Incredible! The song was beautiful and touched everyone\'s heart. The team was very attentive and understood perfectly what I wanted. It came out exactly as I dreamed!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=9',
@@ -97,8 +97,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't10',
-    name: 'Marcos A.',
-    content: '"Surpreendente! A qualidade é profissional e a letra é emocionante. Minha mãe chorou de emoção ao ouvir. Valeu muito a pena e já recomendei para vários amigos!"',
+    name: 'Mark A.',
+    content: '"Stunning! The quality is professional and the lyrics are moving. My mom cried happy tears when she heard it. Totally worth it and I\'ve already recommended it to friends!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=10',
@@ -107,7 +107,7 @@ export const defaultTextTestimonials: Testimonial[] = [
   {
     id: 't11',
     name: 'Patricia N.',
-    content: '"Amei cada segundo da música! Ficou perfeita e emocionou toda a família. O atendimento foi excelente e a entrega superou o prazo. Já estou planejando fazer outra!"',
+    content: '"I loved every second of the song! It was perfect and moved the whole family. The service was excellent and the delivery was ahead of schedule. Already planning another one!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=11',
@@ -115,8 +115,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't12',
-    name: 'Ricardo S.',
-    content: '"Profissionalismo de primeira! A música ficou exatamente como eu queria. Minha esposa ficou encantada e todos elogiaram muito. O investimento valeu cada centavo!"',
+    name: 'Richard S.',
+    content: '"First-class professionalism! The song came out exactly as I wanted. My wife was charmed and everyone complimented it. The investment was worth every cent!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=12',
@@ -124,8 +124,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't13',
-    name: 'Camila D.',
-    content: '"Não tenho palavras! A música é linda e emocionante. Todos que ouviram ficaram impressionados. O processo foi simples e o resultado superou qualquer expectativa!"',
+    name: 'Camilla D.',
+    content: '"I have no words! The song is beautiful and moving. Everyone who heard it was impressed. The process was simple and the result exceeded every expectation!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=13',
@@ -133,8 +133,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't14',
-    name: 'Bruno K.',
-    content: '"Simplesmente incrível! A qualidade é profissional e a letra é emocionante. Minha namorada ficou muito feliz e todos elogiaram. Recomendo de olhos fechados!"',
+    name: 'Brian K.',
+    content: '"Simply incredible! The quality is professional and the lyrics are touching. My girlfriend was thrilled and everyone complimented it. I recommend it without hesitation!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=14',
@@ -143,7 +143,7 @@ export const defaultTextTestimonials: Testimonial[] = [
   {
     id: 't15',
     name: 'Amanda G.',
-    content: '"Perfeito em todos os detalhes! A música ficou linda e tocou o coração de todos. A equipe foi muito atenciosa e entenderam perfeitamente o que eu queria expressar."',
+    content: '"Perfect in every detail! The song was beautiful and touched everyone\'s heart. The team was very attentive and perfectly understood what I wanted to express."',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=15',
@@ -151,8 +151,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't16',
-    name: 'Thiago P.',
-    content: '"Melhor investimento que fiz! A música superou todas as expectativas e emocionou minha mãe. A qualidade é profissional e a entrega foi rápida. Muito obrigado!"',
+    name: 'Thomas P.',
+    content: '"Best investment I\'ve made! The song exceeded all expectations and moved my mom to tears. The quality is professional and the delivery was fast. Thank you so much!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=16',
@@ -160,8 +160,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't17',
-    name: 'Renata V.',
-    content: '"Amei demais! A música ficou exatamente como eu imaginava. Todos que ouviram ficaram emocionados e elogiaram muito. O atendimento foi excelente do início ao fim!"',
+    name: 'Rachel V.',
+    content: '"I absolutely loved it! The song came out exactly as I imagined. Everyone who heard it was moved and complimented it. The service was excellent from start to finish!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=17',
@@ -169,8 +169,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't18',
-    name: 'Felipe J.',
-    content: '"Surpreendente! A qualidade é incrível e a letra é emocionante. Minha esposa ficou encantada e todos os convidados elogiaram. Valeu muito a pena!"',
+    name: 'Philip J.',
+    content: '"Astounding! The quality is incredible and the lyrics are so moving. My wife was delighted and all the guests loved it. Absolutely worth it!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=18',
@@ -178,8 +178,8 @@ export const defaultTextTestimonials: Testimonial[] = [
   },
   {
     id: 't19',
-    name: 'Isabela M.',
-    content: '"Perfeito! A música ficou linda e emocionou toda a família. O processo foi simples e o resultado superou qualquer expectativa. Já estou pensando em fazer outra!"',
+    name: 'Isabella M.',
+    content: '"Perfect! The song was beautiful and moved the whole family. The process was simple and the result exceeded every expectation. Already thinking about ordering another one!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=19',
@@ -188,7 +188,7 @@ export const defaultTextTestimonials: Testimonial[] = [
   {
     id: 't20',
     name: 'Gabriel O.',
-    content: '"Incrível! A música ficou exatamente como eu queria. A qualidade é profissional e a letra é emocionante. Minha namorada ficou muito feliz. Recomendo muito!"',
+    content: '"Incredible! The song came out exactly how I wanted. The quality is professional and the lyrics are touching. My girlfriend was so happy. Highly recommend!"',
     rating: 5,
     type: 'text',
     avatar_url: 'https://i.pravatar.cc/150?img=20',
@@ -197,11 +197,11 @@ export const defaultTextTestimonials: Testimonial[] = [
 ];
 
 export const defaultVideoTestimonials: Testimonial[] = [
-  { id: 'v1', song_title: 'Deus me deu a ti', type: 'video', thumbnail: 'https://picsum.photos/seed/suamusicafacil-v1/600/800', is_active: true, name: 'Cliente' },
-  { id: 'v2', song_title: 'Três apertos e...', type: 'video', thumbnail: 'https://picsum.photos/seed/suamusicafacil-v2/600/800', is_active: true, name: 'Cliente' },
-  { id: 'v3', song_title: 'Meu coração é teu', type: 'video', thumbnail: 'https://picsum.photos/seed/suamusicafacil-v3/600/800', is_active: true, name: 'Cliente' },
-  { id: 'v4', song_title: 'O amor de mamãe...', type: 'video', thumbnail: 'https://picsum.photos/seed/suamusicafacil-v4/600/800', is_active: true, name: 'Cliente' },
-  { id: 'v5', song_title: 'Corações Escolhidos', type: 'video', thumbnail: 'https://picsum.photos/seed/suamusicafacil-v5/600/800', is_active: true, name: 'Cliente' },
+  { id: 'v1', song_title: 'God Gave Me You', type: 'video', thumbnail: 'https://picsum.photos/seed/songsurprise-v1/600/800', is_active: true, name: 'Customer' },
+  { id: 'v2', song_title: 'Three Squeezes...', type: 'video', thumbnail: 'https://picsum.photos/seed/songsurprise-v2/600/800', is_active: true, name: 'Customer' },
+  { id: 'v3', song_title: 'My Heart Is Yours', type: 'video', thumbnail: 'https://picsum.photos/seed/songsurprise-v3/600/800', is_active: true, name: 'Customer' },
+  { id: 'v4', song_title: "A Mother's Love...", type: 'video', thumbnail: 'https://picsum.photos/seed/songsurprise-v4/600/800', is_active: true, name: 'Customer' },
+  { id: 'v5', song_title: 'Chosen Hearts', type: 'video', thumbnail: 'https://picsum.photos/seed/songsurprise-v5/600/800', is_active: true, name: 'Customer' },
 ];
 
 /**

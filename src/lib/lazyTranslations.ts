@@ -14,8 +14,6 @@ class LazyTranslationManager implements LazyTranslationLoader {
   private loadedLocales = new Set<Locale>();
   private bundledTranslations: Record<Locale, Record<string, any>> = {
     pt,
-    en,
-    es,
   };
 
   /**

@@ -11,44 +11,44 @@ export interface FAQItem {
 export const defaultFaqItems: FAQItem[] = [
   {
     id: '1',
-    question: 'O que torna essas músicas especiais?',
-    answer: 'Cada música é criada exclusivamente para você, com letras personalizadas baseadas na sua história e sentimentos. Nossa IA compõe melodias únicas que tocam o coração.',
+    question: 'What makes these songs special?',
+    answer: 'Each song is created exclusively for you, with personalized lyrics based on your story and feelings. We compose unique melodies that touch the heart.',
     is_active: true
   },
   {
     id: '2',
-    question: 'Quanto tempo demora para receber a música?',
-    answer: 'O prazo padrão é de até 7 dias úteis. Também oferecemos a opção de entrega expressa para quem precisa de mais agilidade.',
+    question: 'How long does it take to receive my song?',
+    answer: 'Standard delivery is within 48 hours. We also offer express delivery options for those who need it sooner.',
     is_active: true
   },
   {
     id: '3',
-    question: 'Posso receber minha música em 6 horas?',
-    answer: 'Sim! Temos a opção de entrega super rápida em até 6 horas. Basta selecionar essa opção após preencher o formulário da sua música.',
+    question: 'Can I get my song even faster?',
+    answer: 'Yes! We have express delivery options available. Just select that option after filling out the questionnaire for your song.',
     is_active: true
   },
   {
     id: '4',
-    question: 'Sobre quais temas posso pedir uma música?',
-    answer: 'Você pode criar músicas sobre qualquer tema: amor, gratidão, aniversários, casamentos, homenagens, amizade, superação e muito mais. Se existe uma história, nós a transformamos em música.',
+    question: 'What topics can I request a song about?',
+    answer: 'You can create songs about any topic: love, gratitude, birthdays, weddings, tributes, friendship, milestones and much more. If there\'s a story, we turn it into music.',
     is_active: true
   },
   {
     id: '5',
-    question: 'Como funciona o processo de criação?',
-    answer: 'É simples: você responde a um questionário sobre a pessoa e a ocasião, nossa tecnologia gera a letra personalizada e nossos produtores finalizam a composição e melodia.',
+    question: 'How does the creation process work?',
+    answer: 'It\'s simple: you answer a questionnaire about the person and the occasion, our technology generates the personalized lyrics, and our producers finalize the composition and melody.',
     is_active: true
   },
   {
     id: '6',
-    question: 'Como vou receber a música finalizada?',
-    answer: 'Você receberá um link exclusivo por e-mail e WhatsApp para ouvir e baixar sua música em alta qualidade, pronta para compartilhar ou presentear.',
+    question: 'How will I receive the finished song?',
+    answer: 'You\'ll receive an exclusive link via email to listen and download your song in high quality, ready to share or give as a gift.',
     is_active: true
   },
   {
     id: '7',
-    question: 'Eu terei os direitos da música?',
-    answer: 'Sim! A música é sua para uso pessoal: em eventos, redes sociais, vídeos ou momentos especiais. É um presente único e eterno.',
+    question: 'Will I own the rights to the song?',
+    answer: 'Yes! The song is yours for personal use: at events, on social media, in videos, or for special moments. It\'s a unique and timeless gift.',
     is_active: true
   }
 ];

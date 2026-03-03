@@ -1,8 +1,8 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Locale } from '@/lib/detectLocale';
-import { detectLocaleSimple, getCookieLocale, getCountryByIP, getStoredLocale, saveLocalePreference } from '@/lib/detectLocale';
-import lazyTranslations from '@/lib/lazyTranslations';
+import { getCookieLocale, getStoredLocale } from '@/lib/detectLocale';
 import { getCurrentLocale } from '@/lib/i18nRoutes';
+import pt from '@/i18n/locales/pt.json';
 interface LocaleContextType {
   locale: Locale;
   isLoading: boolean;
@@ -60,7 +60,7 @@ export const LocaleProvider = ({ children }: { children: ReactNode }) => {
     if (cookieLocale === 'pt') return cookieLocale;
     return 'pt';
   });
-  const [translations, setTranslations] = useState<Record<string, any>>({});
+  const [translations, setTranslations] = useState<Record<string, any>>(pt);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isLocaleForced, setIsLocaleForced] = useState<boolean>(false);
