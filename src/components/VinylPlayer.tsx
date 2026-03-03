@@ -5,7 +5,7 @@ import AudioProgressBar from "./AudioProgressBar";
 import { audioLog, devLog } from "@/utils/devLogger";
 
 export default function VinylPlayer() {
-  // Site é 100% espanhol - sem dependências de locale/translations
+  // English-only site - no locale/translation dependencies needed
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
   const [time, setTime] = useState({ current: 0, duration: 0 });
@@ -17,8 +17,8 @@ export default function VinylPlayer() {
     audioUrl: string;
     coverUrl: string | null;
   }>({
-    title: 'CrieSuaMusica',
-    artist: 'Carregando...',
+    title: 'Sample Song',
+    artist: 'Loading...',
     audioUrl: '',
     coverUrl: null
   });
@@ -35,8 +35,8 @@ export default function VinylPlayer() {
       // não buscar track no banco em dev; usar fallback direto.
       if (import.meta.env.DEV) {
         return {
-          title: 'Minha Vida',
-          artist: 'CrieSuaMusica',
+          title: 'Sample Song',
+          artist: 'The Song Surprise',
           audioUrl: localFallbackAudioUrlRef.current,
           coverUrl: null
         };
@@ -76,27 +76,27 @@ export default function VinylPlayer() {
       const row = data as unknown as ExampleTrackRow | null;
 
       if (row && !error && isValidPath(row.audio_path)) {
-        audioLog(`🎵 [VinylPlayer] Música encontrada no banco: ${row.title}`);
+        audioLog(`🎵 [VinylPlayer] Track found in DB: ${row.title}`);
         return {
-          title: row.title ?? 'CrieSuaMusica',
-          artist: row.artist ?? 'CrieSuaMusica',
+          title: row.title ?? 'Sample Song',
+          artist: row.artist ?? 'The Song Surprise',
           audioUrl: getPublicUrl(row.audio_path),
           coverUrl: isValidPath(row.cover_path) ? getPublicUrl(row.cover_path) : null,
         };
       } else {
-        audioLog(`🎵 [VinylPlayer] Nenhuma música encontrada no banco, usando fallback`);
+        audioLog(`🎵 [VinylPlayer] No track found in DB, using fallback`);
         
         return {
-          title: 'Minha Vida',
-          artist: 'CrieSuaMusica',
+          title: 'Sample Song',
+          artist: 'The Song Surprise',
           audioUrl: localFallbackAudioUrlRef.current,
           coverUrl: null
         };
       }
     } catch (error: unknown) {
       return {
-        title: 'Minha Vida',
-        artist: 'CrieSuaMusica',
+        title: 'Sample Song',
+        artist: 'The Song Surprise',
         audioUrl: localFallbackAudioUrlRef.current,
         coverUrl: null
       };
@@ -113,10 +113,10 @@ export default function VinylPlayer() {
         setTrack(initialTrack);
       } else {
         // Se não encontrou, usar fallback direto
-        audioLog(`🎵 [VinylPlayer] Nenhuma música retornada, usando fallback direto`);
+        audioLog(`🎵 [VinylPlayer] No track returned, using direct fallback`);
         setTrack({
-          title: 'Minha Vida',
-          artist: 'CrieSuaMusica',
+          title: 'Sample Song',
+          artist: 'The Song Surprise',
           audioUrl: localFallbackAudioUrlRef.current,
           coverUrl: null
         });
@@ -229,8 +229,8 @@ export default function VinylPlayer() {
         setIsBuffering(false);
         setTrack((prev) => ({
           ...prev,
-          title: prev.title || 'Minha Vida',
-          artist: prev.artist || 'CrieSuaMusica',
+          title: prev.title || 'Sample Song',
+          artist: prev.artist || 'The Song Surprise',
           audioUrl: localFallbackAudioUrlRef.current,
           coverUrl: prev.coverUrl ?? null,
         }));
