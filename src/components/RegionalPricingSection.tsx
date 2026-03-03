@@ -69,9 +69,9 @@ const getRegionFlag = (country: string) => {
 
 const getRegionName = (region: string) => {
   const names: Record<string, string> = {
-    brasil: 'Brasil',
-    usa: 'Estados Unidos',
-    internacional: 'Internacional',
+    brasil: 'Brazil',
+    usa: 'United States',
+    internacional: 'International',
   };
   return names[region] || region;
 };
@@ -128,7 +128,7 @@ export default function RegionalPricingSection({
             price_cents: 4799,
             currency: 'BRL',
             price_id: 'br_express',
-            features: ['MP3 alta qualidade', 'Capa personalizada', 'Letra completa', 'Entrega em 48h'],
+            features: ['High-quality MP3', 'Custom cover', 'Full lyrics', '48h delivery'],
             is_active: true,
           },
         ]
@@ -151,7 +151,7 @@ export default function RegionalPricingSection({
             price_id: 'us_express_24h',
             features: ['High quality MP3', 'Custom cover', 'Full lyrics', '24h delivery'],
             is_active: true,
-            badge: 'Mais Popular',
+            badge: 'Most Popular',
             featured: true,
           },
         ];

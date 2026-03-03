@@ -21,7 +21,7 @@ const NotFound = () => {
     if (pathname.startsWith('/en')) return '/en';
     if (pathname.startsWith('/es')) return '/es';
     if (pathname.startsWith('/pt')) return '/pt';
-    return '/pt'; // fallback para português
+    return '/'; // fallback to home
   };
 
   const handleGoHome = () => {
@@ -37,24 +37,24 @@ const NotFound = () => {
           </div>
           <CardTitle className="text-4xl font-bold">404</CardTitle>
           <CardDescription className="text-lg">
-            {t('notFound.title') || 'Página não encontrada'}
+            {t('notFound.title') || 'Page not found'}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-center text-muted-foreground">
-            {t('notFound.description') || 'A página que você está procurando não existe ou foi movida.'}
+            {t('notFound.description') || 'The page you are looking for does not exist or has been moved.'}
           </p>
           <div className="flex flex-col gap-2">
             <Button onClick={handleGoHome} className="w-full" size="lg">
               <Home className="mr-2 h-4 w-4" />
-              {t('notFound.backHome') || 'Voltar para Home'}
+              {t('notFound.backHome') || 'Back to Home'}
             </Button>
             <Button 
               onClick={() => window.history.back()} 
               variant="outline" 
               className="w-full"
             >
-              {t('notFound.goBack') || 'Voltar'}
+              {t('notFound.goBack') || 'Go Back'}
             </Button>
           </div>
         </CardContent>

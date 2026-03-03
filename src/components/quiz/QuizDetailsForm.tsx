@@ -67,13 +67,13 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
     <div ref={formRef} className="space-y-4 text-lg font-sans text-black">
       <div className="space-y-1">
         <label className={QUIZ_LABEL_CLASS}>
-          Seu Email <span className="text-red-500">*</span>
+          Your Email <span className="text-red-500">*</span>
         </label>
         <Input
           name="email"
           value={formState.email}
           onChange={(e) => update("email", e.target.value)}
-          placeholder="seuemail@email.com"
+          placeholder="youremail@email.com"
           className={QUIZ_FIELD_CLASS}
           autoComplete="email"
           required
@@ -83,13 +83,13 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="space-y-1">
           <label className={QUIZ_LABEL_CLASS}>
-            Seu Nome <span className="text-red-500">*</span>
+            Your Name <span className="text-red-500">*</span>
           </label>
           <Input
             name="customerName"
             value={formState.customerName}
             onChange={(e) => update("customerName", e.target.value)}
-            placeholder="Seu nome"
+            placeholder="Your name"
             className={QUIZ_FIELD_CLASS}
             autoComplete="name"
             required
@@ -97,13 +97,13 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
         </div>
         <div className="space-y-1">
           <label className={QUIZ_LABEL_CLASS}>
-            Seu Telefone <span className="text-red-500">*</span>
+            Your Phone <span className="text-red-500">*</span>
           </label>
           <Input
             name="whatsapp"
             value={formState.whatsapp}
             onChange={(e) => update("whatsapp", formatPhoneInput(e.target.value))}
-            placeholder="(11) 99999-9999"
+            placeholder="+1 (555) 000-0000"
             className={QUIZ_FIELD_CLASS}
             required
             inputMode="numeric"
@@ -115,7 +115,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
 
       <div className="space-y-1">
         <label className={QUIZ_LABEL_CLASS}>
-          Nome da pessoa que vai ganhar a musica <span className="text-red-500">*</span>
+          Name of the person receiving the song <span className="text-red-500">*</span>
         </label>
         <Input
           name="aboutWho"
@@ -129,7 +129,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
 
       <div className="space-y-1">
         <label className={QUIZ_LABEL_CLASS}>
-          Seu Relacionamento <span className="text-red-500">*</span>
+          Your Relationship <span className="text-red-500">*</span>
         </label>
         <select
           name="relationship"
@@ -138,7 +138,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
           className={QUIZ_FIELD_CLASS}
           required
         >
-          <option value="">Selecione</option>
+          <option value="">Select</option>
           {RELATIONSHIP_OPTIONS.map((option) => (
             <option key={option} value={option}>
               {option}
@@ -149,7 +149,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
 
       <div className="space-y-1">
         <label className={QUIZ_LABEL_CLASS}>
-          Ocasião <span className="text-red-500">*</span>
+          Occasion <span className="text-red-500">*</span>
         </label>
         <select
           name="occasion"
@@ -158,7 +158,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
           className={QUIZ_FIELD_CLASS}
           required
         >
-          <option value="">Selecione</option>
+          <option value="">Select</option>
           {OCCASION_OPTIONS.map((option) => (
             <option key={option} value={option}>
               {option}
@@ -169,7 +169,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
 
       <div className="space-y-1">
         <label className={QUIZ_LABEL_CLASS}>
-          Estilo Musical <span className="text-red-500">*</span>
+          Musical Style <span className="text-red-500">*</span>
         </label>
         <select
           name="style"
@@ -178,7 +178,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
           className={QUIZ_FIELD_CLASS}
           required
         >
-          <option value="">Selecione</option>
+          <option value="">Select</option>
           {STYLE_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -188,7 +188,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
       </div>
 
       <div className="space-y-1">
-        <label className={QUIZ_LABEL_CLASS}>Voz que vai cantar</label>
+        <label className={QUIZ_LABEL_CLASS}>Voice that will sing</label>
         <div className="flex gap-6 text-lg text-gray-700">
           <label className="inline-flex items-center gap-2 cursor-pointer">
             <input
@@ -198,7 +198,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
               onChange={() => update("vocalGender", "m")}
               className="w-5 h-5 accent-purple-600"
             />
-            Masculina
+            Male
           </label>
           <label className="inline-flex items-center gap-2 cursor-pointer">
             <input
@@ -208,27 +208,27 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
               onChange={() => update("vocalGender", "f")}
               className="w-5 h-5 accent-purple-600"
             />
-            Feminina
+            Female
           </label>
         </div>
       </div>
 
       <div className="space-y-1" ref={textareaWrapperRef}>
         <label className={QUIZ_LABEL_CLASS}>
-          Sua História/Mensagem ou Letra <span className="text-red-500">*</span>
+          Your Story/Message or Lyrics <span className="text-red-500">*</span>
         </label>
         <Textarea
           name="message"
           value={formState.message}
           onChange={(e) => update("message", e.target.value)}
           onFocus={handleTextareaFocus}
-          placeholder="Conte-nos sobre seu relacionamento, memórias especiais ou o que você gostaria que a música transmitisse..."
+          placeholder="Tell us about your relationship, special memories, or what you'd like the song to convey..."
           className={`min-h-[140px] ${QUIZ_FIELD_CLASS}`}
           required
           maxLength={MESSAGE_MAX_LENGTH}
         />
         <p className="text-sm text-muted-foreground text-right">
-          {formState.message.length}/{MESSAGE_MAX_LENGTH} caracteres
+          {formState.message.length}/{MESSAGE_MAX_LENGTH} characters
         </p>
       </div>
 
@@ -238,7 +238,7 @@ export function QuizDetailsForm({ formState, onFormChange, onNext, isSaving }: Q
         disabled={isSaving}
         className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full py-3.5 text-lg font-semibold"
       >
-        {isSaving ? "Continuando..." : "Continuar"}
+        {isSaving ? "Continuing..." : "Continue"}
       </Button>
     </div>
   );

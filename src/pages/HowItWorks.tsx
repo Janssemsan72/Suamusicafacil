@@ -24,40 +24,40 @@ export default function HowItWorks() {
   const steps = [
     {
       icon: MessageCircle,
-      title: "1. Conte Sua História",
-      description: "Responda algumas perguntas sobre seu momento especial, a pessoa e as emoções que deseja transmitir.",
-      time: "2 minutos",
-      highlight: "Fácil e rápido",
+      title: "1. Tell Your Story",
+      description: "Answer a few questions about your special moment, the person, and the emotions you want to convey.",
+      time: "2 minutes",
+      highlight: "Easy and quick",
       details: [
-        "Perguntas sobre a ocasião especial",
-        "Informações sobre a pessoa homenageada",
-        "Estilo musical preferido",
-        "Mensagem que deseja transmitir"
+        "Questions about the special occasion",
+        "Information about the person being honored",
+        "Preferred musical style",
+        "Message you want to convey"
       ]
     },
     {
       icon: Users,
-      title: "2. Nossa Equipe Cria Sua Música",
-      description: "Entregamos uma música única, criada com dedicação para transformar sua história em melodia e palavras.",
-      time: "48 horas",
-      highlight: "Músicos profissionais",
+      title: "2. Our Team Creates Your Song",
+      description: "We deliver a unique song, created with dedication to transform your story into melody and words.",
+      time: "48 hours",
+      highlight: "Professional musicians",
       details: [
-        "Composição da melodia personalizada",
-        "Criação da letra única",
-        "Produção com instrumentos reais",
-        "Gravação com vocais profissionais"
+        "Personalized melody composition",
+        "Creation of unique lyrics",
+        "Production with real instruments",
+        "Recording with professional vocals"
       ]
     },
     {
       icon: Music,
-      title: "3. Receba Sua Obra-Prima",
-      description: "Receba sua música personalizada em alta qualidade, pronta para compartilhar com o mundo.",
-      time: "Download instantâneo",
-      highlight: "Qualidade profissional",
+      title: "3. Receive Your Masterpiece",
+      description: "Receive your personalized song in high quality, ready to share with the world.",
+      time: "Instant download",
+      highlight: "Professional quality",
       details: [
-        "Arquivo MP3 de alta qualidade",
-        "Capa personalizada em alta resolução",
-        "Letra completa da música"
+        "High-quality MP3 file",
+        "Personalized cover in high resolution",
+        "Complete song lyrics"
       ]
     }
   ];
@@ -65,33 +65,33 @@ export default function HowItWorks() {
   const features = [
     {
       icon: Clock,
-      title: "Entrega Rápida",
-      description: "Sua música fica pronta em até 48 horas, sem comprometer a qualidade."
+      title: "Fast Delivery",
+      description: "Your song is ready in up to 48 hours, without compromising quality."
     },
     {
       icon: Star,
-      title: "Qualidade Garantida",
-      description: "Cada música é produzida com instrumentos reais e vocais profissionais."
+      title: "Quality Guaranteed",
+      description: "Each song is produced with real instruments and professional vocals."
     },
     {
       icon: Shield,
-      title: "Revisões Incluídas",
-      description: "Se não ficar satisfeito, faremos ajustes sem custo adicional."
+      title: "Revisions Included",
+      description: "If you're not satisfied, we'll make adjustments at no additional cost."
     }
   ];
 
   const faq = [
     {
-      question: "Quanto tempo leva para criar minha música?",
-      answer: "No plano Expresso, sua música fica pronta em até 48 horas. No plano Padrão, entregamos em até 7 dias."
+      question: "How long does it take to create my song?",
+      answer: "With the Express plan, your song is ready in up to 48 hours. With the Standard plan, we deliver in up to 7 days."
     },
     {
-      question: "Quem são os músicos que criam as músicas?",
-      answer: "Nossa equipe é formada por músicos e compositores profissionais com anos de experiência em diversos estilos musicais."
+      question: "Who are the musicians who create the songs?",
+      answer: "Our team is made up of professional musicians and composers with years of experience in various musical styles."
     },
     {
-      question: "O que recebo ao final?",
-      answer: "Você recebe um arquivo MP3 de alta qualidade, capa personalizada em alta resolução e a letra completa da música."
+      question: "What do I receive at the end?",
+      answer: "You receive a high-quality MP3 file, a personalized cover in high resolution, and the complete song lyrics."
     }
   ];
 
@@ -103,11 +103,11 @@ export default function HowItWorks() {
         {/* Hero Section */}
         <div className="text-center mb-8 sm:mb-12">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
-            Como <span className="text-primary">Funciona</span>
+            How It <span className="text-primary">Works</span>
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl sm:max-w-3xl mx-auto leading-relaxed">
-            Criar sua música personalizada é simples e mágico. Em apenas 3 passos, 
-            você terá uma obra-prima única criada por nossa equipe de músicos profissionais.
+            Creating your personalized song is simple and magical. In just 3 steps, 
+            you'll have a unique masterpiece created by our team of professional musicians.
           </p>
         </div>
 
@@ -162,7 +162,7 @@ export default function HowItWorks() {
 
         {/* Features Section */}
         <section className="mb-8 sm:mb-12">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-6 sm:mb-8">Por que Escolher o MusicLovely?</h2>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-6 sm:mb-8">Why Choose The Song Surprise?</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {features.map((feature, index) => (
               <Card key={index} className="text-center shadow-soft hover:shadow-medium transition-all">
@@ -180,7 +180,7 @@ export default function HowItWorks() {
 
         {/* FAQ Section */}
         <section className="mb-8 sm:mb-12">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-6 sm:mb-8">Perguntas Frequentes</h2>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-6 sm:mb-8">Frequently Asked Questions</h2>
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
             {faq.map((item, index) => (
               <Card key={index} className="shadow-soft">
@@ -197,9 +197,9 @@ export default function HowItWorks() {
         <section className="text-center">
           <Card className="max-w-2xl sm:max-w-3xl mx-auto bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
             <CardContent className="p-4 sm:p-6 md:p-8">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4">Pronto para Criar Sua Música?</h2>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4">Ready to Create Your Song?</h2>
               <p className="text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base md:text-lg">
-                Junte-se a mais de 1000 pessoas que já criaram momentos inesquecíveis com nossa equipe de músicos profissionais.
+                Join over 1,000 people who have already created unforgettable moments with our team of professional musicians.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <Link 
@@ -207,14 +207,14 @@ export default function HowItWorks() {
                   className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl sm:rounded-2xl transition-colors text-base sm:text-lg font-semibold"
                 >
                   <Music className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Criar Minha Música Agora
+                  Create My Song Now
                 </Link>
                 <a 
                   href="/#pricing" 
                   id="gtm-ver-precos"
                   className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 border border-primary text-primary rounded-xl sm:rounded-2xl hover:bg-primary/10 transition-colors text-base sm:text-lg font-semibold gtm-link"
                 >
-                  Ver Preços
+                  View Pricing
                 </a>
               </div>
             </CardContent>

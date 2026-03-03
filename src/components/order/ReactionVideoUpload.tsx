@@ -41,14 +41,14 @@ export function ReactionVideoUpload({
     // Validar formato
     const allowedTypes = ['video/mp4', 'video/mov', 'video/quicktime', 'video/avi'];
     if (!allowedTypes.includes(file.type)) {
-      toast.error('Formato não suportado. Use MP4, MOV ou AVI');
+      toast.error('Unsupported format. Use MP4, MOV or AVI');
       return;
     }
 
     // Validar tamanho (500MB)
     const maxSize = 500 * 1024 * 1024;
     if (file.size > maxSize) {
-      toast.error('Vídeo muito grande. Tamanho máximo: 500MB');
+      toast.error('Video too large. Maximum size: 500MB');
       return;
     }
 
@@ -58,12 +58,12 @@ export function ReactionVideoUpload({
 
   const handleUpload = async () => {
     if (!videoFile) {
-      toast.error('Selecione um vídeo primeiro');
+      toast.error('Please select a video first');
       return;
     }
 
     if (!uploaderName || uploaderName.trim() === '') {
-      toast.error('Por favor, informe seu nome');
+      toast.error('Please enter your name');
       return;
     }
 
@@ -90,12 +90,12 @@ export function ReactionVideoUpload({
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Erro desconhecido' }));
-        throw new Error(errorData.error || 'Erro ao fazer upload');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || 'Error uploading');
       }
 
       const result = await response.json();
-      toast.success('Vídeo enviado com sucesso! Aguarde a moderação.');
+      toast.success('Video uploaded successfully! Awaiting moderation.');
       setUploaded(true);
       setVideoFile(null);
       setUploaderName('');
@@ -106,7 +106,7 @@ export function ReactionVideoUpload({
       }
     } catch (error: any) {
       console.error('Erro no upload:', error);
-      toast.error(error.message || 'Erro ao fazer upload do vídeo');
+      toast.error(error.message || 'Error uploading video');
     } finally {
       setUploading(false);
     }
@@ -117,33 +117,33 @@ export function ReactionVideoUpload({
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-orange-900">
           <Video className="h-5 w-5" />
-          <span>Envie seu Vídeo de Reação</span>
+          <span>Send Your Reaction Video</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">
-          Grave um vídeo mostrando sua reação ao ouvir sua música personalizada! 
-          Vídeos selecionados podem receber um gift card especial.
+          Record a video showing your reaction to hearing your personalized song! 
+          Selected videos may receive a special gift card.
         </p>
 
         {uploaded && (
           <div className="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg">
             <CheckCircle className="h-5 w-5 text-green-600" />
             <span className="text-sm text-green-800">
-              Vídeo enviado com sucesso! Aguarde a moderação.
+              Video uploaded successfully! Awaiting moderation.
             </span>
           </div>
         )}
 
         <div>
-          <Label htmlFor="song-select">Música (opcional)</Label>
+          <Label htmlFor="song-select">Song (optional)</Label>
           <select
             id="song-select"
             value={selectedSongId}
             onChange={(e) => setSelectedSongId(e.target.value)}
             className="w-full mt-1 px-3 py-2 border rounded-md"
           >
-            <option value="">Todas as músicas</option>
+            <option value="">All songs</option>
             {songs.map((song) => (
               <option key={song.id} value={song.id}>
                 {song.title}
@@ -153,11 +153,11 @@ export function ReactionVideoUpload({
         </div>
 
         <div>
-          <Label htmlFor="uploader-name">Seu Nome *</Label>
+          <Label htmlFor="uploader-name">Your Name *</Label>
           <Input
             id="uploader-name"
             type="text"
-            placeholder="Seu nome"
+            placeholder="Your name"
             value={uploaderName}
             onChange={(e) => setUploaderName(e.target.value)}
             required
@@ -165,21 +165,21 @@ export function ReactionVideoUpload({
         </div>
 
         <div>
-          <Label htmlFor="video-title">Título do Vídeo (opcional)</Label>
+          <Label htmlFor="video-title">Video Title (optional)</Label>
           <Input
             id="video-title"
             type="text"
-            placeholder="Ex: Minha reação ao ouvir pela primeira vez"
+            placeholder="Ex: My reaction hearing it for the first time"
             value={videoTitle}
             onChange={(e) => setVideoTitle(e.target.value)}
           />
         </div>
 
         <div>
-          <Label htmlFor="description">Descrição (opcional)</Label>
+          <Label htmlFor="description">Description (optional)</Label>
           <Textarea
             id="description"
-            placeholder="Conte um pouco sobre sua experiência..."
+            placeholder="Tell us a bit about your experience..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
@@ -187,7 +187,7 @@ export function ReactionVideoUpload({
         </div>
 
         <div>
-          <Label htmlFor="video-file">Vídeo *</Label>
+          <Label htmlFor="video-file">Video *</Label>
           <Input
             id="video-file"
             ref={fileInputRef}
@@ -197,11 +197,11 @@ export function ReactionVideoUpload({
             className="mt-1"
           />
           <p className="text-xs text-muted-foreground mt-1">
-            Formatos aceitos: MP4, MOV, AVI. Tamanho máximo: 500MB
+            Accepted formats: MP4, MOV, AVI. Maximum size: 500MB
           </p>
           {videoFile && (
             <p className="text-sm text-green-600 mt-1">
-              ✓ Arquivo selecionado: {videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(2)} MB)
+              ✓ File selected: {videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(2)} MB)
             </p>
           )}
         </div>
@@ -214,12 +214,12 @@ export function ReactionVideoUpload({
           {uploading ? (
             <>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Enviando...
+              Uploading...
             </>
           ) : (
             <>
               <Upload className="h-4 w-4 mr-2" />
-              Enviar Vídeo
+              Send Video
             </>
           )}
         </Button>

@@ -33,33 +33,33 @@ const Footer = React.memo(function Footer() {
 
         {/* Description */}
         <p className="text-center text-brown-dark-300 text-sm sm:text-base max-w-2xl mx-auto mb-10">
-          Criamos músicas personalizadas, fundamentadas na fé, para homenagear seus entes queridos e glorificar o amor de Deus através da música.
+          We create personalized songs, rooted in faith, to honor your loved ones and glorify the love of God through music.
         </p>
 
         {/* Links Grid */}
         <div className="flex flex-wrap justify-center gap-8 sm:gap-12 mb-10">
-          {/* Contato */}
+          {/* Contact */}
           <nav className="text-left" aria-labelledby="footer-contact">
             <h3 id="footer-contact" className="font-semibold text-brown-dark-400 mb-4 text-sm sm:text-base">
-              Contato
+              Contact
             </h3>
             <ul className="space-y-2">
               <li>
                 <a 
-                  href="mailto:hello@suamusicafacil.com"
+                  href="mailto:hello@thesongsurprise.com"
                   id="gtm-email-footer"
                   className="text-brown-dark-300 hover:text-terracotta-800 text-sm transition-colors gtm-link"
                 >
-                  hello@suamusicafacil.com
+                  hello@thesongsurprise.com
                 </a>
               </li>
             </ul>
           </nav>
 
-          {/* Úteis */}
+          {/* Useful */}
           <nav className="text-left" aria-labelledby="footer-useful">
             <h3 id="footer-useful" className="font-semibold text-brown-dark-400 mb-4 text-sm sm:text-base">
-              Úteis
+              Useful Links
             </h3>
             <ul className="space-y-2">
               <li>
@@ -68,7 +68,7 @@ const Footer = React.memo(function Footer() {
                   className="text-brown-dark-300 hover:text-terracotta-800 text-sm transition-colors"
                   type="button"
                 >
-                  Termos de Serviço
+                  Terms of Service
                 </button>
               </li>
               <li>
@@ -77,16 +77,16 @@ const Footer = React.memo(function Footer() {
                   className="text-brown-dark-300 hover:text-terracotta-800 text-sm transition-colors"
                   type="button"
                 >
-                  Política de Privacidade
+                  Privacy Policy
                 </button>
               </li>
             </ul>
           </nav>
 
-          {/* Depoimentos */}
+          {/* Testimonials */}
           <nav className="text-left" aria-labelledby="footer-testimonials">
             <h3 id="footer-testimonials" className="font-semibold text-brown-dark-400 mb-4 text-sm sm:text-base">
-              Depoimentos
+              Testimonials
             </h3>
             <ul className="space-y-2">
               <li>
@@ -95,7 +95,7 @@ const Footer = React.memo(function Footer() {
                   className="text-brown-dark-300 hover:text-terracotta-800 text-sm transition-colors"
                   type="button"
                 >
-                  Ver depoimentos
+                  View testimonials
                 </button>
               </li>
             </ul>
@@ -105,7 +105,7 @@ const Footer = React.memo(function Footer() {
         {/* Divider */}
         <div className="border-t border-cream-300 pt-8">
           <p className="text-center text-brown-dark-300 text-xs sm:text-sm">
-            © {new Date().getFullYear()} Sua Música Fácil. Todos os direitos reservados.
+            © {new Date().getFullYear()} The Song Surprise. All rights reserved.
           </p>
         </div>
       </div>

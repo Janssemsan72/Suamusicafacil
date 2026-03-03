@@ -44,82 +44,82 @@ export default function Company() {
   const services = [
     {
       icon: Music,
-      title: 'Criação de músicas personalizadas',
-      description: 'Músicas únicas criadas especialmente para você'
+      title: 'Creation of personalized songs',
+      description: 'Unique songs created especially for you'
     },
     {
       icon: Sparkles,
-      title: 'Produção musical completa',
-      description: 'Produção profissional de alta qualidade'
+      title: 'Full music production',
+      description: 'Professional high-quality production'
     },
     {
       icon: FileText,
-      title: 'Composição com base em histórias reais',
-      description: 'Transformamos suas memórias em letras e melodias'
+      title: 'Composition based on real stories',
+      description: 'We transform your memories into lyrics and melodies'
     },
     {
       icon: ImageIcon,
-      title: 'Arte de capa digital',
-      description: 'Design personalizado para sua música'
+      title: 'Digital cover art',
+      description: 'Custom design for your song'
     },
     {
       icon: Gift,
-      title: 'Versões extras sem custo adicional',
-      description: 'Quando incluídas no plano escolhido'
+      title: 'Extra versions at no additional cost',
+      description: 'When included in the chosen plan'
     }
   ];
 
   const steps = [
     {
       number: '1',
-      title: 'Você conta sua história',
-      description: 'Envia as informações pelo formulário de criação no site.'
+      title: 'You tell your story',
+      description: 'Submit the information through the creation form on the site.'
     },
     {
       number: '2',
-      title: 'Nossa equipe cria sua música',
-      description: 'Composição + letra + melodia + produção.'
+      title: 'Our team creates your song',
+      description: 'Composition + lyrics + melody + production.'
     },
     {
       number: '3',
-      title: 'Entrega em até 48 horas',
-      description: 'Você recebe a música final no e-mail cadastrado.'
+      title: 'Delivery within 48 hours',
+      description: 'You receive the final song at your registered email.'
     }
   ];
 
   const testimonials = [
     {
       name: 'Maria Silva',
-      role: 'Cliente',
-      content: 'Fiquei emocionada ao ouvir a música criada para o aniversário do meu pai. A equipe capturou perfeitamente nossas memórias em forma de melodia. Recomendo de coração!',
+      role: 'Customer',
+      content: 'I was moved when I heard the song created for my father\'s birthday. The team perfectly captured our memories in the form of a melody. I wholeheartedly recommend it!',
       rating: 5,
       avatar: 'https://i.pravatar.cc/150?img=47'
     },
     {
       name: 'João Santos',
-      role: 'Cliente',
-      content: 'Surpreendente! A música para o casamento foi perfeita. Todos os convidados ficaram encantados. Profissionalismo e qualidade excepcionais.',
+      role: 'Customer',
+      content: 'Incredible! The wedding song was perfect. All the guests were enchanted. Exceptional professionalism and quality.',
       rating: 5,
       avatar: 'https://i.pravatar.cc/150?img=33'
     },
     {
       name: 'Ana Costa',
-      role: 'Cliente',
-      content: 'Criei uma homenagem para minha avó e foi a melhor surpresa que já dei. A letra tocou o coração de toda a família. Obrigada Sua Música Fácil!',
+      role: 'Customer',
+      content: 'I created a tribute for my grandmother and it was the best surprise I\'ve ever given. The lyrics touched the heart of the whole family. Thank you The Song Surprise!',
       rating: 5,
       avatar: 'https://i.pravatar.cc/150?img=45'
     }
   ];
 
   const stats = [
-    { number: '20000+', label: 'Músicas Criadas' },
-    { number: '98%', label: 'Satisfação' },
-    { number: '48h', label: 'Entrega Rápida' },
-    { number: '5.0', label: 'Avaliação Média' }
+    { number: '20000+', label: 'Songs Created' },
+    { number: '98%', label: 'Satisfaction' },
+    { number: '48h', label: 'Fast Delivery' },
+    { number: '5.0', label: 'Average Rating' }
   ];
 
   const whatsappNumber = '8591516996';
-  const whatsappMessage = encodeURIComponent('Olá! Gostaria de saber mais sobre o Sua Música Fácil.');
+  const whatsappMessage = encodeURIComponent('Hello! I\'d like to know more about The Song Surprise.');
   const whatsappUrl = `https://wa.me/55${whatsappNumber}?text=${whatsappMessage}`;
 
   useEffect(() => {
@@ -165,13 +165,13 @@ export default function Company() {
           <div className="container mx-auto px-4 max-w-6xl relative z-10">
             <div className="text-center mb-6">
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                Sua Música Fácil – <span className="text-primary">Homenagens que Viram Música</span>
+                The Song Surprise – <span className="text-primary">Tributes That Become Songs</span>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-4">
-                A plataforma que transforma histórias reais em canções personalizadas, criadas com emoção, carinho e produção profissional.
+                The platform that transforms real stories into personalized songs, created with emotion, care, and professional production.
               </p>
               <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Com o Sua Música Fácil, você cria homenagens inesquecíveis para aniversários, casamentos, tributos, celebrações de família, reconciliações e momentos especiais. Nossa equipe transforma suas memórias em melodia, letra e emoção — tudo de forma simples, rápida e acessível.
+                With The Song Surprise, you create unforgettable tributes for birthdays, weddings, memorials, family celebrations, reconciliations, and special moments. Our team transforms your memories into melody, lyrics, and emotion — all in a simple, fast, and accessible way.
               </p>
             </div>
 
@@ -197,10 +197,10 @@ export default function Company() {
             <div className="text-center mb-8 scroll-animate">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <Music className="h-8 w-8 text-primary animate-pulse" />
-                <h2 className="text-3xl md:text-4xl font-bold">O Que Fazemos</h2>
+                <h2 className="text-3xl md:text-4xl font-bold">What We Do</h2>
               </div>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Criamos músicas personalizadas, produzidas com qualidade profissional, baseadas nas histórias enviadas pelos clientes. Cada música é única e feita sob medida, seguindo o estilo musical escolhido.
+                We create personalized songs, produced with professional quality, based on the stories submitted by customers. Each song is unique and tailor-made, following the chosen musical style.
               </p>
             </div>
 
@@ -239,7 +239,7 @@ export default function Company() {
             <div className="text-center mb-8 scroll-animate">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <Heart className="h-8 w-8 text-primary animate-pulse" />
-                <h2 className="text-3xl md:text-4xl font-bold">Como Funciona</h2>
+                <h2 className="text-3xl md:text-4xl font-bold">How It Works</h2>
               </div>
             </div>
 
@@ -270,10 +270,10 @@ export default function Company() {
             <div className="text-center mb-8 scroll-animate">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <Star className="h-8 w-8 text-primary fill-primary animate-pulse" />
-                <h2 className="text-3xl md:text-4xl font-bold">O Que Nossos Clientes Dizem</h2>
+                <h2 className="text-3xl md:text-4xl font-bold">What Our Customers Say</h2>
               </div>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Histórias reais de pessoas que transformaram momentos especiais em música
+                Real stories from people who transformed special moments into music
               </p>
             </div>
 
@@ -321,10 +321,10 @@ export default function Company() {
             <div className="text-center mb-8 scroll-animate">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <Mail className="h-8 w-8 text-primary animate-pulse" />
-                <h2 className="text-3xl md:text-4xl font-bold">Canais Oficiais de Atendimento</h2>
+                <h2 className="text-3xl md:text-4xl font-bold">Official Support Channels</h2>
               </div>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Para informações, dúvidas ou suporte, utilize exclusivamente os canais abaixo:
+                For information, questions, or support, use exclusively the channels below:
               </p>
             </div>
 
@@ -334,13 +334,13 @@ export default function Company() {
                   <div className="w-14 h-14 rounded-full bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center mx-auto mb-3 transition-all duration-300 group-hover:scale-110">
                     <Mail className="h-7 w-7 text-primary group-hover:scale-110 transition-transform duration-300" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">E-mail Oficial</h3>
+                  <h3 className="text-xl font-bold mb-2">Official Email</h3>
                   <a 
-                    href="mailto:contato@suamusicafacil.com" 
+                    href="mailto:contact@thesongsurprise.com" 
                     id="gtm-email-contato"
                     className="text-primary hover:underline text-lg font-semibold transition-colors gtm-link"
                   >
-                    contato@suamusicafacil.com
+                    contact@thesongsurprise.com
                   </a>
                 </CardContent>
               </Card>
@@ -350,7 +350,7 @@ export default function Company() {
                   <div className="w-14 h-14 rounded-full bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center mx-auto mb-3 transition-all duration-300 group-hover:scale-110">
                     <MessageCircle className="h-7 w-7 text-primary group-hover:scale-110 transition-transform duration-300" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">WhatsApp de Atendimento</h3>
+                  <h3 className="text-xl font-bold mb-2">Support WhatsApp</h3>
                   <a 
                     href={whatsappUrl}
                     id="gtm-whatsapp-contato"
@@ -373,7 +373,7 @@ export default function Company() {
             <div className="text-center mb-8 scroll-animate">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <MapPin className="h-8 w-8 text-primary animate-pulse" />
-                <h2 className="text-3xl md:text-4xl font-bold">Localização</h2>
+                <h2 className="text-3xl md:text-4xl font-bold">Location</h2>
               </div>
             </div>
 
@@ -387,7 +387,7 @@ export default function Company() {
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold mb-2">Endereço</h3>
+                      <h3 className="text-xl font-bold mb-2">Address</h3>
                       <p className="text-muted-foreground">
                         R DOUTOR RUI MAIA, Nº 479, SALA 06<br />
                         CENTRO – QUIXADÁ – CE<br />
@@ -403,7 +403,7 @@ export default function Company() {
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold mb-2">Telefone</h3>
+                      <h3 className="text-xl font-bold mb-2">Phone</h3>
                       <a 
                         href="tel:+558588209823" 
                         id="gtm-telefone-contato"
@@ -421,13 +421,13 @@ export default function Company() {
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold mb-2">E-mail</h3>
+                      <h3 className="text-xl font-bold mb-2">Email</h3>
                       <a 
-                        href="mailto:contato@suamusicafacil.com" 
+                        href="mailto:contact@thesongsurprise.com" 
                         id="gtm-email-localizacao"
                         className="text-primary hover:underline transition-colors gtm-link"
                       >
-                        contato@suamusicafacil.com
+                        contact@thesongsurprise.com
                       </a>
                     </div>
                   </div>
@@ -443,24 +443,24 @@ export default function Company() {
             <Card className="scroll-animate bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 shadow-soft hover:shadow-xl transition-all duration-300">
               <CardContent className="p-6 md:p-8">
                 <h2 className="text-2xl md:text-3xl font-bold text-center mb-6">
-                  Compromisso com Segurança e Transparência
+                  Commitment to Security and Transparency
                 </h2>
                 <div className="text-center space-y-4 text-muted-foreground">
                   <p>
-                    <strong className="text-foreground">R DOUTOR RUI MAIA, 479 – SALA 06, CENTRO – QUIXADÁ – CE, 63.900-195, Brasil</strong>
+                    <strong className="text-foreground">R DOUTOR RUI MAIA, 479 – ROOM 06, CENTRO – QUIXADÁ – CE, 63.900-195, Brazil</strong>
                   </p>
                   <p>
-                    <strong className="text-foreground">Telefone:</strong> (85) 8820-9823
+                    <strong className="text-foreground">Phone:</strong> (85) 8820-9823
                   </p>
                   <p>
-                    <strong className="text-foreground">E-mail:</strong> contato@suamusicafacil.com
+                    <strong className="text-foreground">Email:</strong> contact@thesongsurprise.com
                   </p>
                   <div className="pt-4 border-t border-border/50">
                     <p className="text-sm">
-                      <strong className="text-foreground">Razão Social:</strong> JULIANA MARANHAO PAIVA DE SOUSA ME
+                      <strong className="text-foreground">Company Name:</strong> JULIANA MARANHAO PAIVA DE SOUSA ME
                     </p>
                     <p className="text-sm">
-                      © 2025 MARANHÃO DIGITAL | Todos os direitos reservados.
+                      © 2025 MARANHÃO DIGITAL | All rights reserved.
                     </p>
                     <p className="text-sm">
                       CNPJ: 62.917.751/0001-24

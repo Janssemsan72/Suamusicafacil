@@ -26,7 +26,7 @@ export function QuizPaymentStep({ paymentProgress, onEditQuiz }: QuizPaymentStep
     <div className="space-y-4">
       <div className="rounded-2xl border border-purple-100 bg-purple-50/40 p-4">
         <div className="flex items-center justify-between mb-2">
-          <p className="text-sm font-medium text-purple-700">Preparando seu checkout</p>
+          <p className="text-sm font-medium text-purple-700">Preparing your checkout</p>
           <span className="text-xs text-purple-600">{paymentProgress}%</span>
         </div>
         <div className="h-2 bg-purple-100 rounded-full">
@@ -37,7 +37,7 @@ export function QuizPaymentStep({ paymentProgress, onEditQuiz }: QuizPaymentStep
         </div>
         {paymentProgress >= 100 && (
           <p className="mt-3 text-sm text-purple-700">
-            Sua letra ficou incrível, pague agora para receber sua música em 20 minutos
+            Your lyrics turned out amazing, pay now to receive your song in 20 minutes
           </p>
         )}
       </div>

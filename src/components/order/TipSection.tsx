@@ -25,12 +25,12 @@ export function TipSection({ orderId, customerEmail }: TipSectionProps) {
     e.preventDefault();
 
     if (!amount || parseFloat(amount) <= 0) {
-      toast.error('Por favor, informe um valor válido');
+      toast.error('Please enter a valid amount');
       return;
     }
 
     if (!donorName || donorName.trim() === '') {
-      toast.error('Por favor, informe seu nome');
+      toast.error('Please enter your name');
       return;
     }
 
@@ -50,14 +50,14 @@ export function TipSection({ orderId, customerEmail }: TipSectionProps) {
 
       if (error) throw error;
 
-      toast.success('Obrigado pela sua generosidade! Sua gorjeta foi registrada.');
+      toast.success('Thank you for your generosity! Your tip has been registered.');
       setIsOpen(false);
       setAmount('');
       setDonorName('');
       setMessage('');
     } catch (error: any) {
       console.error('Erro ao registrar gorjeta:', error);
-      toast.error('Erro ao registrar gorjeta. Tente novamente.');
+      toast.error('Error registering tip. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -68,27 +68,27 @@ export function TipSection({ orderId, customerEmail }: TipSectionProps) {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-orange-900">
           <Gift className="h-5 w-5" />
-          <span>Deseja dar uma gorjeta?</span>
+          <span>Would you like to leave a tip?</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground mb-4">
-          Se você gostou das suas músicas, considere dar uma gorjeta para apoiar nosso trabalho!
+          If you enjoyed your songs, consider leaving a tip to support our work!
         </p>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white">
               <Heart className="h-4 w-4 mr-2" />
-              Dar Gorjeta
+              Leave a Tip
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Dar Gorjeta</DialogTitle>
+              <DialogTitle>Leave a Tip</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="amount">Valor (R$)</Label>
+                <Label htmlFor="amount">Amount ($)</Label>
                 <Input
                   id="amount"
                   type="number"
@@ -101,21 +101,21 @@ export function TipSection({ orderId, customerEmail }: TipSectionProps) {
                 />
               </div>
               <div>
-                <Label htmlFor="donorName">Seu Nome</Label>
+                <Label htmlFor="donorName">Your Name</Label>
                 <Input
                   id="donorName"
                   type="text"
-                  placeholder="Seu nome"
+                  placeholder="Your name"
                   value={donorName}
                   onChange={(e) => setDonorName(e.target.value)}
                   required
                 />
               </div>
               <div>
-                <Label htmlFor="message">Mensagem (opcional)</Label>
+                <Label htmlFor="message">Message (optional)</Label>
                 <Textarea
                   id="message"
-                  placeholder="Deixe uma mensagem de apoio..."
+                  placeholder="Leave a message of support..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={3}
@@ -128,14 +128,14 @@ export function TipSection({ orderId, customerEmail }: TipSectionProps) {
                   onClick={() => setIsOpen(false)}
                   className="flex-1"
                 >
-                  Cancelar
+                  Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={submitting}
                   className="flex-1 bg-orange-500 hover:bg-orange-600 text-white"
                 >
-                  {submitting ? 'Enviando...' : 'Enviar Gorjeta'}
+                  {submitting ? 'Sending...' : 'Send Tip'}
                 </Button>
               </div>
             </form>

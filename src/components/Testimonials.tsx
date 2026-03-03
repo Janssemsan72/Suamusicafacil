@@ -3,9 +3,11 @@ import { Star, Play, CheckCircle } from "@/lib/icons";
 import useEmblaCarousel from 'embla-carousel-react';
 import { Image } from "@/components/ui/Image";
 import { useTestimonials } from "@/hooks/use-testimonials";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const Testimonials = React.memo(function Testimonials() {
   const { data } = useTestimonials();
+  const { t } = useTranslation();
   const textTestimonials = data?.text || [];
   const videoTestimonials = data?.video || [];
   
@@ -64,8 +66,8 @@ const Testimonials = React.memo(function Testimonials() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title */}
         <h2 id="testimonials-title" className="text-3xl sm:text-4xl md:text-5xl font-serif font-black text-brown-dark-400 text-center mb-8 sm:mb-12 tracking-tight">
-          Por que mais de 3500 clientes amam{" "}
-          <span className="italic">Sua Música Fácil</span>
+          {t('testimonials.heading')}{" "}
+          <span className="italic">The Song Surprise</span>
         </h2>
 
         {/* Carousel */}
@@ -78,7 +80,7 @@ const Testimonials = React.memo(function Testimonials() {
               >
                 {item.type === 'video' ? (
                   // Video Card
-                  <article className="bg-brown-dark-400 rounded-2xl overflow-hidden h-[340px] sm:h-[380px] relative group cursor-pointer" aria-label={`Depoimento em vídeo: ${item.song_title}`}>
+                  <article className="bg-brown-dark-400 rounded-2xl overflow-hidden h-[340px] sm:h-[380px] relative group cursor-pointer" aria-label={`Video testimonial: ${item.song_title}`}>
                     {/* Placeholder image */}
                     <div className="absolute inset-0">
                       {!!item.thumbnail && (
@@ -109,17 +111,17 @@ const Testimonials = React.memo(function Testimonials() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-white font-medium text-sm truncate">{item.song_title}</p>
-                          <p className="text-white/70 text-xs">Música Personalizada</p>
+                          <p className="text-white/70 text-xs">{t('testimonials.personalizedSong')}</p>
                         </div>
                       </div>
                     </div>
                   </article>
                 ) : (
                   // Text Card
-                  <article className="bg-white rounded-2xl p-5 h-[340px] sm:h-[380px] flex flex-col shadow-sm border border-cream-200" aria-label={`Depoimento de ${item.name}`}>
+                  <article className="bg-white rounded-2xl p-5 h-[340px] sm:h-[380px] flex flex-col shadow-sm border border-cream-200" aria-label={`Testimonial from ${item.name}`}>
                     {/* Stars and play button */}
                     <div className="flex items-center justify-between mb-3">
-                      <div className="flex gap-0.5" aria-label={`Avaliação: ${item.rating || 5} de 5 estrelas`}>
+                      <div className="flex gap-0.5" aria-label={`Rating: ${item.rating || 5} out of 5 stars`}>
                         {Array.from({ length: item.rating || 5 }).map((_, i) => (
                           <Star key={i} className="w-4 h-4 text-terracotta-700 fill-terracotta-700" aria-hidden="true" />
                         ))}
@@ -155,7 +157,7 @@ const Testimonials = React.memo(function Testimonials() {
                         <p className="font-semibold text-brown-dark-400 text-sm truncate">{item.name}</p>
                         <p className="text-terracotta-700 text-xs flex items-center gap-1">
                           <CheckCircle className="w-3 h-3" aria-hidden="true" />
-                          <span>Cliente Verificado</span>
+                          <span>{t('testimonials.verifiedCustomer')}</span>
                         </p>
                       </div>
                     </div>
@@ -167,14 +169,14 @@ const Testimonials = React.memo(function Testimonials() {
         </div>
 
         {/* Dots */}
-        <nav className="flex justify-center gap-2 mt-8" aria-label="Navegação dos depoimentos">
+          <nav className="flex justify-center gap-2 mt-8" aria-label="Testimonials navigation">
           {combinedItems.map((_, index) => (
             <button
               key={index}
               onClick={() => scrollTo(index)}
               type="button"
               className="group w-10 h-10 flex items-center justify-center rounded-full"
-              aria-label={`Ir para o depoimento ${index + 1}`}
+              aria-label={`Go to testimonial ${index + 1}`}
               aria-current={index === selectedIndex ? 'true' : 'false'}
             >
               <span

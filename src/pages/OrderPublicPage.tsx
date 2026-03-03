@@ -23,7 +23,7 @@ export default function OrderPublicPage() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-orange-500 mx-auto mb-4" />
-          <p className="text-orange-700">Carregando suas músicas...</p>
+          <p className="text-orange-700">Loading your songs...</p>
         </div>
       </div>
     );
@@ -35,12 +35,12 @@ export default function OrderPublicPage() {
         <Card className="max-w-md w-full mx-4">
           <CardContent className="pt-6 text-center">
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <h2 className="text-xl font-bold mb-2">Erro ao carregar pedido</h2>
+            <h2 className="text-xl font-bold mb-2">Error loading order</h2>
             <p className="text-muted-foreground mb-4">
-              {error || 'Link inválido ou pedido não encontrado'}
+              {error || 'Invalid link or order not found'}
             </p>
             <p className="text-sm text-muted-foreground">
-              Verifique se o link está correto ou entre em contato com o suporte.
+              Please check if the link is correct or contact support.
             </p>
           </CardContent>
         </Card>
@@ -54,7 +54,7 @@ export default function OrderPublicPage() {
         <Card className="max-w-md w-full mx-4">
           <CardContent className="pt-6 text-center">
             <p className="text-muted-foreground">
-              Suas músicas ainda não estão prontas. Aguarde a liberação.
+              Your songs are not ready yet. Please wait for release.
             </p>
           </CardContent>
         </Card>
@@ -80,10 +80,10 @@ export default function OrderPublicPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-orange-900 mb-2">
-            Suas Músicas Estão Prontas! 🎉
+            Your Songs Are Ready! 🎉
           </h1>
           <p className="text-orange-700">
-            Ouça, baixe e compartilhe suas músicas personalizadas
+            Listen, download, and share your personalized songs
           </p>
         </div>
 

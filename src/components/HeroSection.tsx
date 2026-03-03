@@ -88,17 +88,17 @@ const HeroSection = React.memo(function HeroSection({ onOpenQuiz }: HeroSectionP
           {/* Conteúdo Esquerdo */}
           <div className="md:w-1/2 mb-12 md:mb-0 relative z-20 px-6 sm:pl-12 sm:pr-0 w-full flex flex-col items-start">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight text-left text-gray-900 drop-shadow-sm">
-              Transforme Seus <span className="handwritten text-purple-700">Sentimentos</span> em Música
+              Transform Your <span className="handwritten text-purple-700">Feelings</span> into Music
             </h1>
             <p className="text-xl md:text-2xl text-gray-800 font-medium mb-10 text-left max-w-lg">
-              Conte-nos sua história — nós criamos uma música que a captura perfeitamente.
+              Tell us your story — we create a song that captures it perfectly.
             </p>
             <div className="flex justify-center md:justify-start w-full md:w-auto">
               <Button
                 onClick={handleQuizClick}
                 className="bg-purple-700 hover:bg-purple-800 text-white py-4 px-10 rounded-full font-bold text-base sm:text-lg transition duration-300 shadow-lg hover:shadow-xl hover:scale-105 animate-pulse-scale"
               >
-                Crie minha música personalizada agora
+                Create my personalized song now
               </Button>
             </div>
           </div>
@@ -128,14 +128,14 @@ const HeroSection = React.memo(function HeroSection({ onOpenQuiz }: HeroSectionP
                     setShowVideoPlayOverlay(true);
                   }}
                 >
-                  Seu navegador não suporta o elemento de vídeo.
+                  Your browser does not support the video element.
                 </video>
                 {showVideoPlayOverlay && (
                   <button
                     type="button"
                     onClick={() => videoRef.current?.play().then(() => setShowVideoPlayOverlay(false)).catch(() => {})}
                     className="absolute inset-0 flex items-center justify-center bg-black/40 z-[5]"
-                    aria-label="Reproduzir vídeo"
+                    aria-label="Play video"
                   >
                     <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-colors">
                       <Play className="w-8 h-8 text-purple-600 fill-current ml-1" />

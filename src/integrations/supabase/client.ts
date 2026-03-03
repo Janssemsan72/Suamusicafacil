@@ -11,9 +11,10 @@ const SUPABASE_PUBLISHABLE_KEY =
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
   import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Fallback para desenvolvimento local
-const SUPABASE_URL_FALLBACK = 'https://zagkvtxarndluusiluhb.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY_FALLBACK = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphZ2t2dHhhcm5kbHV1c2lsdWhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3NTcwNTUsImV4cCI6MjA3NjMzMzA1NX0.2b4Z6H7dIMn0YNeKS-1Cf54AJt4HVgcLBeOFTs3ceHs';
+// Fallback para desenvolvimento local (projeto: dwhaenbgctrfdsjcqjxq)
+// Preencha VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no .env.local para evitar o uso do fallback
+const SUPABASE_URL_FALLBACK = 'https://dwhaenbgctrfdsjcqjxq.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY_FALLBACK = '';
 
 // ✅ CORREÇÃO LOADING INFINITO: Logs de diagnóstico apenas em desenvolvimento e apenas para erros
 // Verificar se variáveis de ambiente estão definidas

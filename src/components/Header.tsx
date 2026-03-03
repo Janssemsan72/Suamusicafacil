@@ -101,7 +101,7 @@ const Header = React.memo(function Header({ onOpenQuiz }: HeaderProps) {
           onClick={() => handleQuizAction()}
           className="underline font-bold hover:text-purple-100 transition-colors ml-1 focus:outline-none focus:ring-1 focus:ring-white rounded"
         >
-          {monthlyBannerCopy.includes('Free') || monthlyBannerCopy.includes('Grátis') ? 'Aproveite Agora' : 'Clique aqui'}
+          {monthlyBannerCopy.includes('Free') ? 'Claim Now' : 'Click here'}
         </button>
       </div>
 
@@ -121,13 +121,13 @@ const Header = React.memo(function Header({ onOpenQuiz }: HeaderProps) {
                   handleLogoClick(e as any);
                 }
               }}
-              aria-label="Ir para o início"
+              aria-label="Go to home"
             >
               <Logo width={150} height={27} className="h-full max-h-9 sm:max-h-10" align="left" />
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-8" aria-label="Navegação principal">
+            <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
               {NAV_ITEMS.map((item) => (
                 <button
                   key={item.id}
@@ -145,7 +145,7 @@ const Header = React.memo(function Header({ onOpenQuiz }: HeaderProps) {
                 className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-6 py-2.5 font-semibold shadow-md hover:shadow-lg transition-all animate-pulse-scale"
                 onClick={handleQuizAction}
               >
-                Crie minha música
+                Create my song
               </Button>
             </div>
 
@@ -153,7 +153,7 @@ const Header = React.memo(function Header({ onOpenQuiz }: HeaderProps) {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2 text-brown-dark-400 hover:bg-gray-100 rounded-lg transition-colors"
-              aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -163,8 +163,8 @@ const Header = React.memo(function Header({ onOpenQuiz }: HeaderProps) {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-cream-300 animate-in slide-in-from-top-2 duration-200" role="dialog" aria-modal="true" aria-label="Menu móvel">
-            <nav className="px-4 py-4 flex flex-col gap-2" aria-label="Navegação móvel">
+          <div className="md:hidden bg-white border-t border-cream-300 animate-in slide-in-from-top-2 duration-200" role="dialog" aria-modal="true" aria-label="Mobile menu">
+            <nav className="px-4 py-4 flex flex-col gap-2" aria-label="Mobile navigation">
               {NAV_ITEMS.map((item) => (
                 <button
                   key={item.id}
@@ -181,7 +181,7 @@ const Header = React.memo(function Header({ onOpenQuiz }: HeaderProps) {
                   setMobileMenuOpen(false);
                 }}
               >
-                Crie minha música
+                Create my song
               </Button>
             </nav>
           </div>

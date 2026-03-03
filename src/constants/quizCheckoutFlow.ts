@@ -1,28 +1,28 @@
 /**
  * Constantes do QuizCheckoutFlow - extraídas para reutilização e manutenção.
  */
-export const STEP_LABELS = ["Detalhes", "Letra da Música", "Pagamento"] as const;
+export const STEP_LABELS = ["Details", "Song Lyrics", "Payment"] as const;
 
 export const RELATIONSHIP_OPTIONS = [
-  "Esposo",
-  "Esposa",
-  "Filho",
-  "Filha",
-  "Pai",
-  "Mãe",
-  "Irmão",
-  "Amigo",
-  "Eu mesmo",
-  "Outro (Descreva na sua historia)",
+  "Husband",
+  "Wife",
+  "Son",
+  "Daughter",
+  "Father",
+  "Mother",
+  "Sibling",
+  "Friend",
+  "Myself",
+  "Other (Describe in your story)",
 ];
 
 export const OCCASION_OPTIONS = [
-  "Aniversário",
-  "Casamento",
-  "Pedido de casamento",
-  "Noivado",
-  "Agradecimento",
-  "Outro (Descreva na sua historia)",
+  "Birthday",
+  "Wedding",
+  "Marriage Proposal",
+  "Engagement",
+  "Thank You",
+  "Other (Describe in your story)",
 ];
 
 /** Classes CSS reutilizáveis para campos do formulário do quiz */

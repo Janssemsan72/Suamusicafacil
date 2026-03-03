@@ -21,7 +21,7 @@ export function LyricsViewer({ lyrics, songTitle }: LyricsViewerProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <FileText className="h-5 w-5 text-orange-500" />
-            <CardTitle>Letra da Música</CardTitle>
+            <CardTitle>Song Lyrics</CardTitle>
           </div>
           <Button
             variant="ghost"
@@ -32,12 +32,12 @@ export function LyricsViewer({ lyrics, songTitle }: LyricsViewerProps) {
             {isExpanded ? (
               <>
                 <ChevronUp className="h-4 w-4 mr-1" />
-                Ocultar
+                Hide
               </>
             ) : (
               <>
                 <ChevronDown className="h-4 w-4 mr-1" />
-                Ver Letra Completa
+                View Full Lyrics
               </>
             )}
           </Button>

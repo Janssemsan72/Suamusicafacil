@@ -33,12 +33,12 @@ export default function FAQ({ faqs: propFaqs }: FAQProps) {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-sans font-semibold text-brown-dark-400 text-center mb-8 sm:mb-12 tracking-tight" style={{ fontFamily: "'DM Sans', system-ui, sans-serif", fontWeight: 600 }}>
-          Perguntas Frequentes
+          Frequently Asked Questions
         </h2>
 
         {/* Accordion */}
         <div className="bg-white rounded-2xl shadow-md overflow-hidden">
-          <Accordion type="single" collapsible className="w-full" aria-label="Perguntas Frequentes">
+          <Accordion type="single" collapsible className="w-full" aria-label="Frequently Asked Questions">
             {faqs.map((faq, index) => (
               <AccordionItem 
                 key={faq.id} 
@@ -59,15 +59,15 @@ export default function FAQ({ faqs: propFaqs }: FAQProps) {
         {/* Contact Link */}
         <div className="text-center mt-8 sm:mt-10">
           <p className="text-brown-dark-300 text-base mb-2">
-            Ainda tem dúvidas?
+            Still have questions?
           </p>
           <a 
-            href="mailto:suporte@suamusicafacil.com" 
+            href="mailto:support@thesongsurprise.com" 
             id="gtm-email-suporte-faq"
             className="inline-flex items-center gap-2 text-terracotta-700 hover:text-terracotta-800 font-medium transition-colors gtm-link"
           >
             <Mail className="w-4 h-4" aria-hidden="true" />
-            <span>suporte@suamusicafacil.com</span>
+            <span>support@thesongsurprise.com</span>
           </a>
         </div>
       </div>

@@ -13,15 +13,15 @@ interface OccasionCard {
 }
 
 const occasions: OccasionCard[] = [
-  { id: "partner", label: "Para sua Namorada(o)", image: "/images/occasions/partner.webp", imagePosition: "object-[50%_0%]" },
-  { id: "children", label: "Para as Crianças", image: "/images/occasions/children.webp", imagePosition: "object-[10%_30%]" },
-  { id: "loss", label: "Para a Perda", image: "/images/occasions/loss.webp", imagePosition: "object-center" },
-  { id: "parents", label: "Para os Pais", image: "/images/occasions/parents.webp", imagePosition: "object-[10%_30%]" },
-  { id: "yourself", label: "Para Você Mesmo", image: "/images/occasions/yourself.webp", imagePosition: "object-[10%_30%]" },
-  { id: "strength", label: "Para a Força", image: "/images/occasions/strength.webp", imagePosition: "object-center" },
-  { id: "healing", label: "Para a Cura", image: "/images/occasions/healing.webp", imagePosition: "object-center" },
-  { id: "prayers", label: "Para as Orações", image: "/images/occasions/prayers.webp", imagePosition: "object-[10%_30%]" },
-  { id: "breakthroughs", label: "Para os Avanços", image: "/images/occasions/breakthroughs.webp", imagePosition: "object-center" },
+  { id: "partner", label: "For Your Partner", image: "/images/occasions/partner.webp", imagePosition: "object-[50%_0%]" },
+  { id: "children", label: "For the Children", image: "/images/occasions/children.webp", imagePosition: "object-[10%_30%]" },
+  { id: "loss", label: "For Loss", image: "/images/occasions/loss.webp", imagePosition: "object-center" },
+  { id: "parents", label: "For Parents", image: "/images/occasions/parents.webp", imagePosition: "object-[10%_30%]" },
+  { id: "yourself", label: "For Yourself", image: "/images/occasions/yourself.webp", imagePosition: "object-[10%_30%]" },
+  { id: "strength", label: "For Strength", image: "/images/occasions/strength.webp", imagePosition: "object-center" },
+  { id: "healing", label: "For Healing", image: "/images/occasions/healing.webp", imagePosition: "object-center" },
+  { id: "prayers", label: "For Prayers", image: "/images/occasions/prayers.webp", imagePosition: "object-[10%_30%]" },
+  { id: "breakthroughs", label: "For Breakthroughs", image: "/images/occasions/breakthroughs.webp", imagePosition: "object-center" },
 ];
 
 type OccasionsGridProps = {
@@ -53,7 +53,7 @@ const OccasionsGrid = React.memo(function OccasionsGrid({ onOpenQuiz }: Occasion
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif italic font-black text-gray-800 text-center mb-8 sm:mb-12 leading-tight tracking-tight">
-          Presenteie alguém especial com uma música personalizada, ou a você mesmo!
+          Gift someone special a personalized song, or treat yourself!
         </h2>
 
         <div className="grid grid-cols-3 gap-4 sm:gap-5 md:gap-6 mb-10 sm:mb-14" role="list">
@@ -66,7 +66,7 @@ const OccasionsGrid = React.memo(function OccasionsGrid({ onOpenQuiz }: Occasion
                 key={occasion.id}
                 onClick={() => handleOccasionClick(occasion.id)}
                 className={`group relative ${ASPECT_4_3} rounded-xl overflow-hidden bg-neutral-800 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500`}
-                aria-label={`Presente para: ${occasion.label}`}
+                aria-label={`Gift for: ${occasion.label}`}
                 role="listitem"
               >
                 {occasion.image && image400 && image800 && (
@@ -101,7 +101,7 @@ const OccasionsGrid = React.memo(function OccasionsGrid({ onOpenQuiz }: Occasion
             className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-base sm:text-lg px-8 sm:px-10 py-4 sm:py-5 rounded-full shadow-md transition-all font-semibold inline-flex items-center gap-2"
           >
             <Gift className="w-5 h-5" />
-            Crie minha música personalizada agora
+            Create my personalized song now
           </Button>
         </div>
       </div>

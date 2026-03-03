@@ -28,7 +28,7 @@ export default function ApproveLyrics() {
       
       // ✅ CORREÇÃO MOBILE: Adicionar timeout para evitar loading infinito
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Tempo limite excedido. Verifique sua conexão e tente novamente.')), 30000); // 30 segundos
+        setTimeout(() => reject(new Error('Timeout. Please check your connection and try again.')), 30000); // 30 segundos
       });
 
       // Usar edge function para buscar e validar aprovação
@@ -40,19 +40,19 @@ export default function ApproveLyrics() {
 
       if (error) {
         console.error('Error from edge function:', error);
-        throw new Error(error.message || 'Erro ao carregar letra. Tente novamente.');
+        throw new Error(error.message || 'Error loading lyrics. Please try again.');
       }
 
       if (!result) {
-        throw new Error('Resposta vazia do servidor. Tente novamente.');
+        throw new Error('Empty server response. Please try again.');
       }
 
       if (result.error) {
-        throw new Error(result.error || 'Aprovação não encontrada');
+        throw new Error(result.error || 'Approval not found');
       }
 
       if (!result.approval) {
-        throw new Error('Dados da aprovação não encontrados');
+        throw new Error('Approval data not found');
       }
 
       // ✅ CORREÇÃO: Verificar se lyrics existe e tem estrutura correta
@@ -67,7 +67,7 @@ export default function ApproveLyrics() {
         } catch {
           // Se não for JSON válido, usar como texto simples
           lyricsData = {
-            title: 'Música Personalizada',
+            title: 'Personalized Song',
             lyrics: approvalData.lyrics
           };
         }
@@ -77,8 +77,8 @@ export default function ApproveLyrics() {
       } else {
         // Se não tiver lyrics, usar preview como fallback
         lyricsData = {
-          title: approvalData.lyrics_preview?.split(' - ')[0] || 'Música Personalizada',
-          lyrics: approvalData.lyrics_preview || 'Letra não disponível'
+          title: approvalData.lyrics_preview?.split(' - ')[0] || 'Personalized Song',
+          lyrics: approvalData.lyrics_preview || 'Lyrics not available'
         };
       }
 
@@ -94,9 +94,9 @@ export default function ApproveLyrics() {
       console.error('Error loading approval:', error);
       
       // ✅ CORREÇÃO MOBILE: Mensagem de erro mais clara
-      const errorMessage = error.message || 'Erro desconhecido ao carregar letra';
+      const errorMessage = error.message || 'Unknown error loading lyrics';
       
-      toast.error("Erro ao carregar letra", {
+      toast.error("Error loading lyrics", {
         description: errorMessage,
         duration: 5000,
       });
@@ -110,8 +110,8 @@ export default function ApproveLyrics() {
 
   useEffect(() => {
     if (!token) {
-      toast.error("Token inválido", {
-        description: "Link de aprovação inválido ou expirado.",
+      toast.error("Invalid token", {
+        description: "Approval link is invalid or expired.",
       });
       navigate('/');
       return;
@@ -130,15 +130,15 @@ export default function ApproveLyrics() {
 
       if (error) throw error;
 
-      toast.success("✅ Letra aprovada!", {
-        description: "Sua música está sendo produzida. Você receberá um email quando estiver pronta.",
+      toast.success("✅ Lyrics approved!", {
+        description: "Your song is being produced. You'll receive an email when it's ready.",
       });
 
       setTimeout(() => navigate('/'), 2000);
 
     } catch (error: any) {
       console.error('Error approving:', error);
-      toast.error("Erro ao aprovar", {
+      toast.error("Error approving", {
         description: error.message,
       });
     } finally {
@@ -148,8 +148,8 @@ export default function ApproveLyrics() {
 
   const handleReject = async () => {
     if (!rejectionReason.trim()) {
-      toast.error("Motivo necessário", {
-        description: "Por favor, explique o que gostaria de ajustar na letra.",
+      toast.error("Reason required", {
+        description: "Please explain what you'd like to adjust in the lyrics.",
       });
       return;
     }
@@ -166,15 +166,15 @@ export default function ApproveLyrics() {
 
       if (error) throw error;
 
-      toast.success("📝 Feedback enviado!", {
-        description: "Nossa equipe vai ajustar a letra conforme seu pedido. Você receberá uma nova versão em breve.",
+      toast.success("📝 Feedback submitted!", {
+        description: "Our team will adjust the lyrics as requested. You'll receive a new version soon.",
       });
 
       setTimeout(() => navigate('/'), 2000);
 
     } catch (error: any) {
       console.error('Error rejecting:', error);
-      toast.error("Erro ao enviar feedback", {
+      toast.error("Error submitting feedback", {
         description: error.message,
       });
     } finally {
@@ -194,9 +194,9 @@ export default function ApproveLyrics() {
     return (
       <div className="min-h-[100dvh] flex items-center justify-center bg-background px-4">
         <div className="text-center space-y-4">
-          <p className="text-muted-foreground">Não foi possível carregar a letra.</p>
+          <p className="text-muted-foreground">Could not load the lyrics.</p>
           <Button onClick={() => window.location.reload()} variant="outline">
-            Tentar Novamente
+            Try Again
           </Button>
         </div>
       </div>
@@ -208,9 +208,9 @@ export default function ApproveLyrics() {
       <div className="max-w-4xl mx-auto">
         <Card>
           <CardHeader>
-            <CardTitle className="text-3xl">Aprove sua Letra</CardTitle>
+            <CardTitle className="text-3xl">Approve Your Lyrics</CardTitle>
             <CardDescription>
-              Revise a letra criada especialmente para você e decida se deseja aprovar ou solicitar ajustes.
+              Review the lyrics created especially for you and decide whether to approve or request adjustments.
             </CardDescription>
           </CardHeader>
           
@@ -230,9 +230,9 @@ export default function ApproveLyrics() {
             {/* Informações */}
             <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border-l-4 border-yellow-500">
               <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                ⏰ <strong>Você tem até {new Date(approval.expires_at).toLocaleString('pt-BR')} para decidir.</strong>
+                ⏰ <strong>You have until {new Date(approval.expires_at).toLocaleString()} to decide.</strong>
                 <br />
-                Se não responder, continuaremos automaticamente com esta versão.
+                If you don't respond, we'll automatically proceed with this version.
               </p>
             </div>
 
@@ -240,10 +240,10 @@ export default function ApproveLyrics() {
             {showRejectForm ? (
               <div className="space-y-4 border-t pt-6">
                 <div>
-                  <Label htmlFor="rejection">O que você gostaria de ajustar?</Label>
+                  <Label htmlFor="rejection">What would you like to adjust?</Label>
                   <Textarea
                     id="rejection"
-                    placeholder="Descreva as mudanças que gostaria de ver na letra..."
+                    placeholder="Describe the changes you'd like to see in the lyrics..."
                     value={rejectionReason}
                     onChange={(e) => setRejectionReason(e.target.value)}
                     rows={5}
@@ -261,12 +261,12 @@ export default function ApproveLyrics() {
                     {processing ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Enviando...
+                        Sending...
                       </>
                     ) : (
                       <>
                         <XCircle className="w-4 h-4 mr-2" />
-                        Enviar Feedback
+                        Send Feedback
                       </>
                     )}
                   </Button>
@@ -276,7 +276,7 @@ export default function ApproveLyrics() {
                     disabled={processing}
                     variant="outline"
                   >
-                    Cancelar
+                    Cancel
                   </Button>
                 </div>
               </div>
@@ -292,26 +292,26 @@ export default function ApproveLyrics() {
                   {processing ? (
                     <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Processando...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle2 className="w-5 h-5 mr-2" />
-                      ✅ Aprovar e Continuar
-                    </>
-                  )}
-                </Button>
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 className="w-5 h-5 mr-2" />
+                        ✅ Approve and Continue
+                      </>
+                    )}
+                  </Button>
 
-                <Button
-                  onClick={() => setShowRejectForm(true)}
-                  disabled={processing}
-                  variant="outline"
-                  className="flex-1 w-full sm:w-auto"
-                  size="lg"
-                >
-                  <XCircle className="w-5 h-5 mr-2" />
-                  ❌ Solicitar Ajustes
-                </Button>
+                  <Button
+                    onClick={() => setShowRejectForm(true)}
+                    disabled={processing}
+                    variant="outline"
+                    className="flex-1 w-full sm:w-auto"
+                    size="lg"
+                  >
+                    <XCircle className="w-5 h-5 mr-2" />
+                    ❌ Request Adjustments
+                  </Button>
               </div>
             )}
           </CardContent>

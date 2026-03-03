@@ -79,10 +79,10 @@ export default function Privacy() {
             <div className="flex items-start gap-4">
               <AlertTriangle className="h-6 w-6 text-blue-600 mt-1 flex-shrink-0" />
               <div>
-                <h3 className="text-lg font-bold text-blue-900 mb-2">Importante</h3>
+                <h3 className="text-lg font-bold text-blue-900 mb-2">Important</h3>
                 <p className="text-blue-800">
-                  Esta Política de Privacidade descreve como coletamos, usamos e protegemos suas informações pessoais. 
-                  Ao usar nossos serviços, você concorda com as práticas descritas nesta política.
+                  This Privacy Policy describes how we collect, use, and protect your personal information. 
+                  By using our services, you agree to the practices described in this policy.
                 </p>
               </div>
             </div>
@@ -118,15 +118,15 @@ export default function Privacy() {
         <section className="mt-12">
           <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
             <CardContent className="p-8">
-              <h2 className="text-2xl font-bold text-center mb-6 text-green-900">Seus Direitos de Proteção de Dados</h2>
+              <h2 className="text-2xl font-bold text-center mb-6 text-green-900">Your Data Protection Rights</h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <Shield className="h-5 w-5 text-green-600 mt-1 flex-shrink-0" />
                     <div>
-                      <h3 className="font-semibold text-green-900">Acesso aos Dados</h3>
+                      <h3 className="font-semibold text-green-900">Data Access</h3>
                       <p className="text-sm text-green-800">
-                        Você pode solicitar uma cópia dos dados pessoais que temos sobre você.
+                        You can request a copy of the personal data we hold about you.
                       </p>
                     </div>
                   </div>
@@ -135,9 +135,9 @@ export default function Privacy() {
                   <div className="flex items-start gap-3">
                     <Lock className="h-5 w-5 text-green-600 mt-1 flex-shrink-0" />
                     <div>
-                      <h3 className="font-semibold text-green-900">Exclusão de Dados</h3>
+                      <h3 className="font-semibold text-green-900">Data Deletion</h3>
                       <p className="text-sm text-green-800">
-                        Você pode solicitar a exclusão de seus dados pessoais em determinadas circunstâncias.
+                        You can request the deletion of your personal data under certain circumstances.
                       </p>
                     </div>
                   </div>

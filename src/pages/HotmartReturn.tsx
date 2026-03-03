@@ -33,7 +33,7 @@ export default function HotmartReturn() {
 
     if (!orderIdParam) {
       console.error('❌ [HotmartReturn] Order ID não encontrado');
-      toast.error('ID do pedido não encontrado');
+      toast.error('Order ID not found');
       
       // Detectar idioma atual da URL e redirecionar para checkout no idioma correto
       const currentPath = window.location.pathname;
@@ -332,7 +332,7 @@ export default function HotmartReturn() {
           {hasUtms && (
             <div className="mt-4 p-3 bg-muted rounded-lg border">
               <p className="text-xs font-medium text-muted-foreground mb-2">
-                📊 Parâmetros UTM Detectados:
+                📊 UTM Parameters Detected:
               </p>
               <div className="space-y-1">
                 {Object.entries(utms).map(([key, value]) => (

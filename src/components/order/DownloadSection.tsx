@@ -34,7 +34,7 @@ export function DownloadSection({ songs, orderId, magicToken }: DownloadSectionP
   const handleDownload = async (songId: string) => {
     const song = songs.find((s) => s.id === songId);
     if (!song || !song.audio_url) {
-      toast.error('Áudio não disponível para download');
+      toast.error('Audio not available for download');
       return;
     }
 
@@ -59,8 +59,8 @@ export function DownloadSection({ songs, orderId, magicToken }: DownloadSectionP
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Erro desconhecido' }));
-        throw new Error(errorData.error || 'Erro ao fazer download');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || 'Error downloading');
       }
 
       const blob = await response.blob();
@@ -84,10 +84,10 @@ export function DownloadSection({ songs, orderId, magicToken }: DownloadSectionP
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
 
-      toast.success(`Download de "${song.title}" iniciado!`);
+      toast.success(`Download of "${song.title}" started!`);
     } catch (error: any) {
       console.error('Erro no download:', error);
-      toast.error(error.message || 'Erro ao fazer download');
+      toast.error(error.message || 'Error downloading');
     } finally {
       setDownloading((prev) => {
         const newSet = new Set(prev);
@@ -99,7 +99,7 @@ export function DownloadSection({ songs, orderId, magicToken }: DownloadSectionP
 
   const handleDownloadSelected = async () => {
     if (selectedSongs.size === 0) {
-      toast.error('Selecione pelo menos uma música para download');
+      toast.error('Select at least one song to download');
       return;
     }
 
@@ -115,7 +115,7 @@ export function DownloadSection({ songs, orderId, magicToken }: DownloadSectionP
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Download className="h-5 w-5 text-orange-500" />
-          <span>Download das Músicas</span>
+          <span>Download Songs</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -141,11 +141,11 @@ export function DownloadSection({ songs, orderId, magicToken }: DownloadSectionP
                 disabled={!song.audio_url || downloading.has(song.id)}
               >
                 {downloading.has(song.id) ? (
-                  'Baixando...'
+                  'Downloading...'
                 ) : (
                   <>
                     <Download className="h-4 w-4 mr-1" />
-                    Baixar
+                    Download
                   </>
                 )}
               </Button>
@@ -160,7 +160,7 @@ export function DownloadSection({ songs, orderId, magicToken }: DownloadSectionP
             disabled={downloading.size > 0}
           >
             <Download className="h-4 w-4 mr-2" />
-            Baixar {selectedSongs.size} Música{selectedSongs.size > 1 ? 's' : ''} Selecionada{selectedSongs.size > 1 ? 's' : ''}
+            Download {selectedSongs.size} Selected Song{selectedSongs.size > 1 ? 's' : ''}
           </Button>
         )}
       </CardContent>

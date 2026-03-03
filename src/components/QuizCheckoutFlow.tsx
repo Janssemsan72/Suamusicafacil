@@ -116,31 +116,31 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
   const persistQuiz = useCallback(async () => {
     setErrorMessage(null);
     if (!formState.email.trim()) {
-      setErrorMessage("Informe seu e-mail.");
+      setErrorMessage("Please enter your email.");
       return { success: false, quizId: null };
     }
     if (!formState.customerName.trim()) {
-      setErrorMessage("Informe seu nome.");
+      setErrorMessage("Please enter your name.");
       return { success: false, quizId: null };
     }
     if (!formState.whatsapp.trim()) {
-      setErrorMessage("Informe seu WhatsApp.");
+      setErrorMessage("Please enter your WhatsApp.");
       return { success: false, quizId: null };
     }
     if (!formState.aboutWho.trim() || !formState.style.trim()) {
-      setErrorMessage("Preencha para quem é a música e o estilo musical.");
+      setErrorMessage("Please fill in who the song is for and the musical style.");
       return { success: false, quizId: null };
     }
     if (!formState.relationship.trim()) {
-      setErrorMessage("Informe a relação.");
+      setErrorMessage("Please enter the relationship.");
       return { success: false, quizId: null };
     }
     if (!formState.occasion.trim()) {
-      setErrorMessage("Informe a ocasião.");
+      setErrorMessage("Please enter the occasion.");
       return { success: false, quizId: null };
     }
     if (!formState.message.trim()) {
-      setErrorMessage("Conte a sua história ou mensagem.");
+      setErrorMessage("Please share your story or message.");
       return { success: false, quizId: null };
     }
     const quizData = buildQuizData();
@@ -177,11 +177,11 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
       const err = result.error as { code?: string; message?: string } | undefined;
       const errMsg = err?.message?.toLowerCase() || "";
       if (err?.code === "PGRST301" || errMsg.includes("401")) {
-        setErrorMessage("Erro de permissão no banco. Verifique as configurações do Supabase.");
+        setErrorMessage("Database permission error. Check your Supabase configuration.");
       } else if (errMsg.includes("session_id") || errMsg.includes("column")) {
-        setErrorMessage("Schema do banco desatualizado. Execute as migrações no Supabase.");
+        setErrorMessage("Database schema outdated. Run migrations in Supabase.");
       } else {
-        setErrorMessage("Não foi possível salvar seus dados. Tente novamente.");
+        setErrorMessage("Could not save your data. Please try again.");
       }
       if (import.meta.env.DEV && err) {
         console.error("[QuizCheckoutFlow] Erro ao salvar quiz:", err);
@@ -217,7 +217,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
       const email = formState.email?.trim();
       const whatsapp = formState.whatsapp?.trim();
       if (!email || !whatsapp) {
-        setErrorMessage("E-mail e WhatsApp são obrigatórios.");
+        setErrorMessage("Email and WhatsApp are required.");
         return;
       }
       const messageText = (formState.message && formState.message.trim()) || "Música personalizada";
@@ -256,14 +256,14 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
         },
       });
       if (checkoutError || !checkoutResult?.success) {
-        const msg = checkoutResult?.error || checkoutError?.message || "Não foi possível criar o pedido. Tente novamente.";
+        const msg = checkoutResult?.error || checkoutError?.message || "Could not create the order. Please try again.";
         setErrorMessage(msg);
         return;
       }
       const orderId = checkoutResult.order_id;
       const responseQuizId = checkoutResult.quiz_id ?? null;
       if (!orderId) {
-        setErrorMessage("Pedido não foi criado. Tente novamente.");
+        setErrorMessage("Order was not created. Please try again.");
         return;
       }
       if (responseQuizId) {
@@ -278,7 +278,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
       setHasRejectedOnce(false);
       setStep(2);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Erro ao criar pedido. Tente novamente.";
+      const msg = err instanceof Error ? err.message : "Error creating order. Please try again.";
       setErrorMessage(msg);
     } finally {
       setIsSaving(false);
@@ -322,7 +322,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
 
       if (error || !data?.lyrics) {
         // Edge function 500 retorna { error: "mensagem" } no body
-        const msg = data?.error || error?.message || "Falha ao gerar letra";
+        const msg = data?.error || error?.message || "Failed to generate lyrics";
         throw new Error(msg);
       }
 
@@ -362,7 +362,7 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
         } as ValidationQuizData & { id?: string; session_id?: string });
       }
     } catch (error: any) {
-      setErrorMessage(error?.message || "Não foi possível gerar a letra agora.");
+      setErrorMessage(error?.message || "Could not generate the lyrics at this time.");
     } finally {
       setIsGeneratingLyrics(false);
     }
@@ -610,12 +610,12 @@ const QuizCheckoutFlow = ({ mode = "modal", onClose }: QuizCheckoutFlowProps) =>
   return (
     <div className="w-full max-w-3xl mx-auto bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100">
       <div className="px-4 sm:px-6 py-2 sm:py-4 border-b border-gray-100 flex items-center justify-between">
-        <h2 className="text-lg md:text-xl font-semibold text-gray-900">Crie Sua Música Personalizada</h2>
+        <h2 className="text-lg md:text-xl font-semibold text-gray-900">Create Your Personalized Song</h2>
         {mode === "modal" && (
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-700 transition-colors text-xl leading-none"
-            aria-label="Fechar"
+            aria-label="Close"
           >
             ×
           </button>

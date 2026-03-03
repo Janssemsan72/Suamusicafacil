@@ -74,7 +74,7 @@ export default function SongDownload() {
       });
 
       if (!response.ok) {
-        let errorMessage = 'Erro ao fazer download';
+        let errorMessage = 'Error downloading';
         try {
           const errorData = await response.json();
           errorMessage = errorData.error || errorMessage;
@@ -84,12 +84,12 @@ export default function SongDownload() {
         throw new Error(errorMessage);
       }
 
-      // Converter resposta para blob
+      // Convert response to blob
       const blob = await response.blob();
       
-      // Extrair filename do header Content-Disposition ou usar padrão
+      // Extract filename from Content-Disposition header or use default
       const contentDisposition = response.headers.get('Content-Disposition');
-      let filename = `musica-${songId}.mp3`;
+      let filename = `song-${songId}.mp3`;
       if (contentDisposition) {
         const filenameMatch = contentDisposition.match(/filename="?(.+?)"?$/);
         if (filenameMatch) {
@@ -125,7 +125,7 @@ export default function SongDownload() {
       
     } catch (error: any) {
       console.error('Error in auto download:', error);
-      setError(error.message || 'Erro ao fazer download');
+      setError(error.message || 'Error downloading');
       setLoading(false);
       
       // Em caso de erro, carregar página normalmente para mostrar erro
@@ -222,23 +222,22 @@ export default function SongDownload() {
 
       if (!response.ok) {
         // Tentar ler mensagem de erro do JSON
-        let errorMessage = t('songDownload.errors.downloadError') || 'Erro ao fazer download';
+        let errorMessage = t('songDownload.errors.downloadError') || 'Error downloading';
         try {
           const errorData = await response.json();
           errorMessage = errorData.error || errorMessage;
         } catch {
-          // Se não conseguir ler JSON, usar status text
           errorMessage = response.statusText || errorMessage;
         }
         throw new Error(errorMessage);
       }
 
-      // Converter resposta para blob
+      // Convert response to blob
       const blob = await response.blob();
       
-      // Extrair filename do header Content-Disposition ou usar padrão
+      // Extract filename from Content-Disposition header or use default
       const contentDisposition = response.headers.get('Content-Disposition');
-      let filename = `musica-${songId}.mp3`;
+      let filename = `song-${songId}.mp3`;
       if (contentDisposition) {
         const filenameMatch = contentDisposition.match(/filename="?(.+?)"?$/);
         if (filenameMatch) {
@@ -321,8 +320,8 @@ export default function SongDownload() {
     return (
       <div className="min-h-[100dvh] flex flex-col items-center justify-center gap-4" style={{ minHeight: 'var(--dvh)' }}>
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="text-lg font-medium text-foreground">Iniciando download...</p>
-        <p className="text-sm text-muted-foreground">Aguarde um momento</p>
+        <p className="text-lg font-medium text-foreground">Starting download...</p>
+        <p className="text-sm text-muted-foreground">Please wait a moment</p>
       </div>
     );
   }
@@ -334,8 +333,8 @@ export default function SongDownload() {
         <div className="h-16 w-16 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
           <Download className="h-8 w-8 text-green-600 dark:text-green-400" />
         </div>
-        <p className="text-lg font-medium text-foreground">Download iniciado com sucesso!</p>
-        <p className="text-sm text-muted-foreground">Redirecionando...</p>
+        <p className="text-lg font-medium text-foreground">Download started successfully!</p>
+        <p className="text-sm text-muted-foreground">Redirecting...</p>
       </div>
     );
   }
@@ -405,7 +404,7 @@ export default function SongDownload() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
               <div className="text-white">
                 <h1 className="text-4xl md:text-5xl font-bold mb-2">{song.title}</h1>
-                <p className="text-lg opacity-90">Criada especialmente com carinho</p>
+                <p className="text-lg opacity-90">Created especially with care</p>
               </div>
             </div>
           </div>
@@ -440,7 +439,7 @@ export default function SongDownload() {
                   className="flex items-center gap-2"
                 >
                   <Share2 className="h-4 w-4" />
-                  <span className="hidden sm:inline">Compartilhar</span>
+                  <span className="hidden sm:inline">Share</span>
                 </Button>
               </div>
             ) : (
@@ -456,7 +455,7 @@ export default function SongDownload() {
                   ) : (
                     <Download className="h-4 w-4" />
                   )}
-                  Baixar MP3
+                  Download MP3
                 </Button>
                 <Button
                   variant="outline"
@@ -465,7 +464,7 @@ export default function SongDownload() {
                   className="flex items-center gap-2"
                 >
                   <Share2 className="h-4 w-4" />
-                  Compartilhar
+                  Share
                 </Button>
               </div>
             )}
@@ -477,20 +476,20 @@ export default function SongDownload() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Music className="h-5 w-5" />
-                Detalhes da Música
+                Song Details
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div>
-                <span className="font-semibold">Estilo:</span> {song.style}
+                <span className="font-semibold">Style:</span> {song.style}
               </div>
               {song.emotion && (
                 <div>
-                  <span className="font-semibold">Tom:</span> {song.emotion}
+                  <span className="font-semibold">Tone:</span> {song.emotion}
                 </div>
               )}
               <div>
-                <span className="font-semibold">Idioma:</span> {song.language}
+                <span className="font-semibold">Language:</span> {song.language}
               </div>
             </CardContent>
           </Card>
@@ -499,25 +498,25 @@ export default function SongDownload() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="h-5 w-5" />
-                Informações de Entrega
+                Delivery Information
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div>
-                <span className="font-semibold">Plano:</span> {song.orders?.plan === 'express' ? 'Express (48h)' : 'Standard (7 dias)'}
+                <span className="font-semibold">Plan:</span> {song.orders?.plan === 'express' ? 'Express (48h)' : 'Standard (7 days)'}
               </div>
               <div>
                 <span className="font-semibold">Status:</span>{' '}
                 {isReleased ? (
-                  <span className="text-green-600 font-semibold">✓ Disponível</span>
+                  <span className="text-green-600 font-semibold">✓ Available</span>
                 ) : (
-                  <span className="text-yellow-600">Aguardando liberação</span>
+                  <span className="text-yellow-600">Awaiting release</span>
                 )}
               </div>
               {!isReleased && (
                 <div>
-                  <span className="font-semibold">Disponível em:</span>{' '}
-                  {new Date(song.release_at).toLocaleDateString('pt-BR', {
+                  <span className="font-semibold">Available on:</span>{' '}
+                  {new Date(song.release_at).toLocaleDateString('en-US', {
                     day: '2-digit',
                     month: 'long',
                     year: 'numeric',
@@ -533,7 +532,7 @@ export default function SongDownload() {
         {song.lyrics && (
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>Letra Completa</CardTitle>
+              <CardTitle>Full Lyrics</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="whitespace-pre-wrap text-foreground/90 leading-relaxed">
@@ -546,10 +545,10 @@ export default function SongDownload() {
         {!isReleased && (
           <Card className="bg-yellow-50 dark:bg-yellow-950 border-yellow-200 dark:border-yellow-800">
             <CardContent className="pt-6 text-center">
-              <p className="text-lg font-semibold mb-2">Música Ainda Não Disponível</p>
+              <p className="text-lg font-semibold mb-2">Song Not Yet Available</p>
               <p className="text-muted-foreground">
-                Sua música será liberada em {new Date(song.release_at).toLocaleDateString('pt-BR')}. 
-                Você receberá um email quando estiver pronta!
+                Your song will be released on {new Date(song.release_at).toLocaleDateString('en-US')}. 
+                You'll receive an email when it's ready!
               </p>
             </CardContent>
           </Card>

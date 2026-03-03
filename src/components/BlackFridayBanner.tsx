@@ -466,7 +466,7 @@ const BlackFridayBanner: React.FC<BlackFridayBannerProps> = ({ onClose }) => {
 
               {/* Desconto por Tempo Limitado! */}
               <span className="text-yellow-400 font-semibold text-[10px] sm:text-base md:text-lg whitespace-nowrap">
-                Desconto por Tempo Limitado!
+                Limited Time Discount!
               </span>
 
               {/* Timer */}
@@ -484,7 +484,7 @@ const BlackFridayBanner: React.FC<BlackFridayBannerProps> = ({ onClose }) => {
             <button
               onClick={handleClose}
               className="absolute top-2 right-3 sm:right-4 p-1.5 hover:bg-white/10 rounded-lg transition-colors group"
-              aria-label="Fechar banner"
+              aria-label="Close banner"
             >
               <X className="h-4 w-4 sm:h-5 sm:w-5 text-white/80 group-hover:text-white transition-colors" />
             </button>

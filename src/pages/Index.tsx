@@ -115,10 +115,10 @@ const Index = memo(() => {
 
   // ✅ OTIMIZAÇÃO: Metadados dinâmicos para SEO leve
   useEffect(() => {
-    document.title = "Sua Música Fácil — Músicas Personalizadas Profissionais";
+    document.title = "The Song Surprise — Professional Personalized Songs";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Crie minha música personalizada agora. Transforme sentimentos em canções únicas com qualidade de estúdio e entrega rápida.");
+      metaDescription.setAttribute("content", "Create my personalized song now. Transform feelings into unique songs with studio quality and fast delivery.");
     }
   }, []);
 

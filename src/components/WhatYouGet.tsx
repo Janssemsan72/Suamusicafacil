@@ -7,18 +7,18 @@ import { useUtmParams } from "@/hooks/useUtmParams";
 const FEATURES = [
   {
     icon: Music,
-    title: "Música com qualidade de estúdio",
-    description: "Músicas personalizadas com qualidade de estúdio, perfeitas para compartilhar"
+    title: "Studio-quality music",
+    description: "Personalized songs with studio quality, perfect for sharing"
   },
   {
     icon: FileText,
-    title: "Letras personalizadas",
-    description: "Letras personalizadas inspiradas na sua história"
+    title: "Personalized lyrics",
+    description: "Custom lyrics inspired by your story"
   },
   {
     icon: Clock,
-    title: "Entrega em 7 dias",
-    description: "Receba sua música finalizada em apenas 7 dias"
+    title: "Delivered in 48 hours",
+    description: "Receive your finished song in just 48 hours"
   }
 ];
 
@@ -67,10 +67,10 @@ const WhatYouGet = React.memo(function WhatYouGet({ onOpenQuiz }: WhatYouGetProp
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-black text-gray-800 text-center mb-4 tracking-tight">
-          O que você <span className="text-purple-600">recebe</span>
+          What you <span className="text-purple-600">receive</span>
         </h2>
         <p className="text-gray-700 text-center text-base sm:text-lg mb-8 sm:mb-12 max-w-2xl mx-auto font-medium">
-          Assim que finalizarmos sua música, você receberá um e-mail com um link para reproduzir sua música personalizada, como a de baixo!
+          As soon as we finish your song, you'll receive an email with a link to play your personalized song, just like the one below!
         </p>
 
         {/* Vinyl Player */}
@@ -90,10 +90,10 @@ const WhatYouGet = React.memo(function WhatYouGet({ onOpenQuiz }: WhatYouGetProp
             onClick={handleQuizClick}
             className="bg-purple-600 hover:bg-purple-700 text-white text-lg sm:text-xl px-8 sm:px-12 py-5 sm:py-6 rounded-full shadow-md transition-all hover:scale-105 font-semibold"
           >
-            Crie minha música personalizada agora
+            Create my personalized song now
           </Button>
           <p className="text-gray-600 text-sm mt-4 font-medium">
-            Compra sem risco — Garantia de reembolso de 30 dias.
+            Risk-free purchase — 30-day money-back guarantee.
           </p>
         </div>
       </div>

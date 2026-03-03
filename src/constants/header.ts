@@ -9,25 +9,25 @@ export type NavItem = {
 };
 
 export const NAV_ITEMS: NavItem[] = [
-  { id: "testimonials", label: "Depoimentos", sectionId: "testimonials" },
+  { id: "testimonials", label: "Testimonials", sectionId: "testimonials" },
 ];
 
 export const MONTH_BANNER_COPY: Record<number, string> = {
-  0: "Promoção de Janeiro: comece o ano presenteando com uma música personalizada.",
-  1: "Promoção de Fevereiro: surpreenda com uma música romântica e inesquecível.",
-  2: "Promoção de Março: celebre cada conquista com uma canção especial.",
-  3: "Promoção de Abril: emocione quem você ama com uma música personalizada.",
-  4: "Promoção de Maio: homenageie quem cuidou de você com uma canção única.",
-  5: "Promoção de Junho: o mês dos namorados merece uma música feita para vocês.",
-  6: "Promoção de Julho: transforme memórias das férias em música.",
-  7: "Promoção de Agosto: agradeça com uma canção que toca o coração.",
-  8: "Promoção de Setembro: renove os sentimentos com uma música sob medida.",
-  9: "Promoção de Outubro: celebre histórias incríveis com uma canção exclusiva.",
-  10: "Promoção de Novembro: presenteie com emoção antes das festas.",
-  11: "Promoção de Dezembro: feche o ano com uma música inesquecível.",
+  0: "January Special: Start the year by gifting a personalized song.",
+  1: "February Special: Surprise someone with a romantic, unforgettable song.",
+  2: "March Special: Celebrate every achievement with a special song.",
+  3: "April Special: Move the ones you love with a personalized song.",
+  4: "May Special: Honor those who cared for you with a unique song.",
+  5: "June Special: Romance month deserves a song made just for you.",
+  6: "July Special: Transform your vacation memories into music.",
+  7: "August Special: Say thank you with a song that touches the heart.",
+  8: "September Special: Renew your feelings with a tailor-made song.",
+  9: "October Special: Celebrate incredible stories with an exclusive song.",
+  10: "November Special: Gift with emotion before the holidays.",
+  11: "December Special: Close the year with an unforgettable song.",
 };
 
-const DEFAULT_BANNER = "Transforme seus sentimentos em música.";
+const DEFAULT_BANNER = "Transform your feelings into music.";
 
 export function getMonthlyBannerCopy(): string {
   return MONTH_BANNER_COPY[new Date().getMonth()] ?? DEFAULT_BANNER;

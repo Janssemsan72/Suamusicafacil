@@ -1,396 +1,399 @@
 {
   "common": {
-    "loading": "Carregando...",
-    "error": "Erro",
-    "success": "Sucesso",
-    "cancel": "Cancelar",
-    "save": "Salvar",
-    "delete": "Excluir",
-    "edit": "Editar",
-    "view": "Ver",
-    "close": "Fechar",
-    "back": "Voltar",
-    "next": "Próximo",
-    "previous": "Anterior",
-    "search": "Buscar",
-    "filter": "Filtrar",
-    "refresh": "Atualizar",
-    "update": "Atualizar",
-    "create": "Criar",
-    "submit": "Enviar",
-    "confirm": "Confirmar",
-    "yes": "Sim",
-    "no": "Não"
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "refresh": "Refresh",
+    "update": "Update",
+    "create": "Create",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
   },
   "navigation": {
-    "home": "Início",
-    "about": "Sobre",
-    "contact": "Contato",
-    "pricing": "Preços",
-    "createMusic": "Criar Música",
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "pricing": "Pricing",
+    "createMusic": "Create Song",
     "admin": "Admin",
-    "dashboard": "Painel",
-    "orders": "Pedidos",
-    "songs": "Músicas",
-    "releases": "Lançamentos",
-    "lyrics": "Letras",
-    "media": "Mídia",
-    "settings": "Configurações",
+    "dashboard": "Dashboard",
+    "orders": "Orders",
+    "songs": "Songs",
+    "releases": "Releases",
+    "lyrics": "Lyrics",
+    "media": "Media",
+    "settings": "Settings",
     "logs": "Logs",
-    "listenExample": "Ouça Exemplo",
-    "howItWorks": "Como Funciona",
+    "listenExample": "Listen Example",
+    "howItWorks": "How It Works",
     "faq": "FAQ"
   },
   "hero": {
-    "platform": "A plataforma #1 de músicas personalizadas",
-    "title": "Músicas Personalizadas para Seus Momentos Especiais",
-    "subtitle": "Propostas, casamentos, tributos — feitos com amor. Crie música personalizada que conta sua história única.",
-    "cta": "Criar Sua Música",
-    "watchDemo": "Ver Demo",
-    "deliveredWithLove": "Entregue com amor",
-    "over500Songs": "Mais de 1000 músicas criadas",
-    "twoVersionsBenefit": "Pague 1, Leve 2 Versões"
+    "platform": "The #1 personalized music platform",
+    "title": "Custom Songs for Your Special Moments",
+    "subtitle": "Proposals, weddings, tributes — made with love. Create personalized music that tells your unique story.",
+    "cta": "Create Your Song",
+    "watchDemo": "Watch Demo",
+    "deliveredWithLove": "Delivered with love",
+    "over500Songs": "Over 1,000 songs created",
+    "twoVersionsBenefit": "Buy 1, Get 2 Versions"
   },
   "features": {
-    "badge": "Processo Simples",
-    "title": "Como Funciona",
-    "subtitle": "Criar sua música personalizada é simples e mágico",
+    "badge": "Simple Process",
+    "title": "How It Works",
+    "subtitle": "Creating your personalized song is simple and magical",
     "step1": {
-      "title": "Conte Sua História",
-      "description": "Responda algumas perguntas sobre seu momento especial, a pessoa e as emoções que deseja transmitir.",
-      "time": "2 minutos",
-      "highlight": "Fácil e rápido"
+      "title": "Tell Your Story",
+      "description": "Answer a few questions about your special moment, the person, and the emotions you want to convey.",
+      "time": "2 minutes",
+      "highlight": "Easy and quick"
     },
     "step2": {
-      "title": "Nossa Equipe Cria Sua Música",
-      "description": "Entregamos uma música única, criada com dedicação para transformar sua história em melodia e palavras.",
-      "time": "48 horas",
-      "highlight": "Profissionais experientes"
+      "title": "Our Team Creates Your Song",
+      "description": "We deliver a unique song, created with dedication to transform your story into melody and words.",
+      "time": "48 hours",
+      "highlight": "Experienced professionals"
     },
     "step3": {
-      "title": "Receba Sua Obra-Prima",
-      "description": "Receba sua música personalizada em alta qualidade, pronta para compartilhar com o mundo.",
-      "time": "Imediato",
-      "highlight": "Alta qualidade"
+      "title": "Receive Your Masterpiece",
+      "description": "Receive your personalized song in high quality, ready to share with the world.",
+      "time": "Instant",
+      "highlight": "High quality"
     },
     "cta": {
-      "title": "Pronto para criar sua música?",
-      "subtitle": "Junte-se a mais de 1000 pessoas que já criaram momentos inesquecíveis",
-      "button": "Criar Minha Música Agora"
+      "title": "Ready to create your song?",
+      "subtitle": "Join over 1,000 people who have already created unforgettable moments",
+      "button": "Create My Song Now"
     }
   },
   "pricing": {
-    "title": "Planos Transparentes",
-    "subtitle": "Sem taxas escondidas. Sem surpresas. Apenas música de qualidade profissional.",
-    "badge": "Planos Transparentes",
-    "mostPopular": "Mais Popular",
-    "deliveryIn": "Entrega em",
-    "createMyMusic": "Criar Minha Música",
-    "paymentQuestions": "Perguntas sobre Pagamento",
-    "regionLocked": "Preços para",
-    "regionInfo": "Os preços são bloqueados pela sua localização geográfica para garantir preços justos em cada região.",
-    "regionDetails": "Região detectada: {country} | Idioma: {language} | Sessão válida até: {expiresAt}",
-    "securePayment": "Pagamento 100% Seguro",
-    "guaranteeText": "Garantia de 30 dias",
-    "whyChoose": "Por que escolher o Sua Música Fácil?",
-    "twoVersionsBenefit": "Pague 1, Leve 2 Versões",
-    "freeVersionGift": "Ganhe uma versão grátis!",
+    "title": "Transparent Plans",
+    "subtitle": "No hidden fees. No surprises. Just professional quality music.",
+    "badge": "Transparent Plans",
+    "mostPopular": "Most Popular",
+    "deliveryIn": "Delivery in",
+    "createMyMusic": "Create My Song",
+    "paymentQuestions": "Payment Questions",
+    "regionLocked": "Prices for",
+    "regionInfo": "Prices are locked to your geographic location to ensure fair prices in each region.",
+    "regionDetails": "Detected region: {country} | Language: {language} | Session valid until: {expiresAt}",
+    "securePayment": "100% Secure Payment",
+    "guaranteeText": "30-day guarantee",
+    "whyChoose": "Why choose The Song Surprise?",
+    "twoVersionsBenefit": "Buy 1, Get 2 Versions",
+    "freeVersionGift": "Get a free version!",
     "paymentMethods": {
-      "title": "Formas de Pagamento",
-      "description": "Aceitamos cartões de crédito via Hotmart. Pagamento 100% seguro e criptografado."
+      "title": "Payment Methods",
+      "description": "We accept credit cards via Hotmart. 100% secure and encrypted payment."
     },
-    "deliveryTime": "Entrega em 48 horas",
+    "deliveryTime": "Delivery in 48 hours",
     "deliveryTimeDetails": {
-      "title": "Prazo de Entrega",
-      "description": "Sua música personalizada é entregue em até 48 horas após confirmação do pagamento."
+      "title": "Delivery Time",
+      "description": "Your personalized song is delivered within 48 hours after payment confirmation."
     },
     "whatsIncluded": {
-      "title": "O que está incluído?",
-      "description": "Arquivo MP3 de alta qualidade, capa personalizada em alta resolução e letra completa da música."
+      "title": "What's included?",
+      "description": "High-quality MP3 file, personalized cover in high resolution, and complete song lyrics."
     },
     "guarantee": {
-      "title": "Garantia",
-      "description": "Se não ficar satisfeito, faremos ajustes sem custo adicional. Sua felicidade é nossa prioridade."
+      "title": "Guarantee",
+      "description": "If you're not satisfied, we'll make adjustments at no additional cost. Your happiness is our priority."
     },
     "cta": {
-      "title": "Pronto para começar?",
-      "subtitle": "Crie sua primeira música personalizada hoje"
+      "title": "Ready to start?",
+      "subtitle": "Create your first personalized song today"
     },
     "features": {
-      "highQualityMP3": "MP3 alta qualidade",
-      "customCover": "Capa personalizada",
-      "fullLyrics": "Letra completa",
-      "unlimitedDownload": "Download ilimitado",
-      "delivery48h": "Entrega em 48h"
+      "highQualityMP3": "High-quality MP3",
+      "customCover": "Custom cover",
+      "fullLyrics": "Full lyrics",
+      "unlimitedDownload": "Unlimited download",
+      "delivery48h": "48h delivery"
     },
     "benefits": {
       "unlimitedDownload": {
-        "title": "Download Ilimitado",
-        "description": "Baixe quantas vezes quiser"
+        "title": "Unlimited Download",
+        "description": "Download as many times as you want"
       },
       "fastDelivery": {
-        "title": "Entrega Rápida",
-        "description": "Pronto em 48 horas"
+        "title": "Fast Delivery",
+        "description": "Ready in 48 hours"
       },
       "guarantee": {
-        "title": "Garantia Total",
-        "description": "30 dias de garantia"
+        "title": "Total Guarantee",
+        "description": "30-day guarantee"
       }
     }
   },
   "contact": {
-    "title": "Entre em Contato",
-    "description": "Entre em contato conosco. Estamos prontos para ajudar você a criar a música perfeita para seus momentos especiais!",
-    "subtitle": "Estamos aqui para ajudar você a criar a música perfeita para seus momentos especiais",
+    "title": "Contact Us",
+    "description": "Get in touch with us. We're ready to help you create the perfect song for your special moments!",
+    "subtitle": "We're here to help you create the perfect song for your special moments",
     "methods": {
       "email": {
-        "title": "E-mail",
-        "subtitle": "Resposta em até 48h"
+        "title": "Email",
+        "subtitle": "Response within 48h"
       },
       "whatsapp": {
         "title": "WhatsApp",
-        "subtitle": "Atendimento rápido"
+        "subtitle": "Fast support"
       },
       "hours": {
-        "title": "Horário de Atendimento",
-        "description": "Segunda a Sexta: 9h às 18h",
-        "subtitle": "Sábado: 9h às 12h"
+        "title": "Business Hours",
+        "description": "Monday to Friday: 9am to 6pm",
+        "subtitle": "Saturday: 9am to 12pm"
       }
     },
     "form": {
-      "title": "Envie sua Mensagem",
-      "description": "Conte-nos sobre sua música ideal e responderemos em breve",
+      "title": "Send Your Message",
+      "description": "Tell us about your ideal song and we'll respond soon",
       "fields": {
-        "name": "Nome",
-        "email": "E-mail",
-        "subject": "Assunto",
-        "message": "Mensagem"
+        "name": "Name",
+        "email": "Email",
+        "subject": "Subject",
+        "message": "Message"
       },
-      "sending": "Enviando...",
-      "sendButton": "Enviar Mensagem",
+      "sending": "Sending...",
+      "sendButton": "Send Message",
       "success": {
-        "title": "Mensagem Enviada!",
-        "message": "Recebemos sua mensagem e entraremos em contato em breve."
+        "title": "Message Sent!",
+        "message": "We received your message and will get back to you soon."
       }
     },
     "faq": {
-      "title": "Perguntas Frequentes",
-      "description": "Respostas rápidas para suas dúvidas",
+      "title": "Frequently Asked Questions",
+      "description": "Quick answers to your questions",
       "deliveryTime": {
-        "question": "Quanto tempo leva para criar minha música?",
-        "answer": "Nossa entrega padrão é de 48 horas. Para pedidos expressos, podemos entregar em até 12 horas."
+        "question": "How long does it take to create my song?",
+        "answer": "Our standard delivery is 48 hours. For express orders, we can deliver in up to 12 hours."
       },
       "adjustments": {
-        "question": "Posso pedir ajustes na música?",
-        "answer": "Sim! Oferecemos até 2 revisões gratuitas para garantir que você fique 100% satisfeito."
+        "question": "Can I request adjustments to the song?",
+        "answer": "Yes! We offer up to 2 free revisions to ensure you're 100% satisfied."
       },
       "musicians": {
-        "question": "Quem são os músicos?",
-        "answer": "Trabalhamos com músicos e compositores profissionais experientes, especializados em diferentes estilos musicais."
+        "question": "Who are the musicians?",
+        "answer": "We work with experienced professional musicians and composers, specialized in different musical styles."
       },
-      "viewAll": "Ver todas as perguntas"
+      "viewAll": "View all questions"
     },
     "whyChoose": {
-      "title": "Por que Escolher o Sua Música Fácil?",
+      "title": "Why Choose The Song Surprise?",
       "professionalTeam": {
-        "title": "Equipe Profissional",
-        "description": "Músicos e compositores experientes"
+        "title": "Professional Team",
+        "description": "Experienced musicians and composers"
       },
       "qualityGuaranteed": {
-        "title": "Qualidade Garantida",
-        "description": "Somos comprometidos com a excelência"
+        "title": "Quality Guaranteed",
+        "description": "We are committed to excellence"
       },
       "madeWithLove": {
-        "title": "Feito com amor para momentos especiais",
-        "description": "Cada música é criada com carinho e dedicação"
+        "title": "Made with love for special moments",
+        "description": "Each song is created with care and dedication"
       }
     }
   },
   "testimonials": {
-    "badge": "Depoimentos",
-    "title": "O Que Nossos Clientes Dizem",
-    "subtitle": "Histórias reais de pessoas reais que criaram momentos mágicos",
-    "deliveredWithLove": "Entregue com amor, cuidado e dedicação em 7 dias",
-    "moreThan500Songs": "Mais de 1000 músicas criadas"
+    "badge": "Testimonials",
+    "title": "What Our Customers Say",
+    "subtitle": "Real stories from real people who created magical moments",
+    "deliveredWithLove": "Delivered with love, care and dedication",
+    "moreThan500Songs": "Over 1,000 songs created",
+    "heading": "Why over 3,500 customers love",
+    "personalizedSong": "Personalized Song",
+    "verifiedCustomer": "Verified Customer"
   },
   "checkout": {
-    "whatYouWillReceive": "O Que Você Receberá",
-    "title": "Quase Lá! Complete Seu Pedido",
-    "subtitle": "Você está a um clique de criar uma linda música personalizada para",
-    "completeOrder": "Complete Seu Pedido",
-    "emailDescription": "Digite seu e-mail e seu WhatsApp para receber sua música",
-    "emailPlaceholder": "seu@email.com",
+    "whatYouWillReceive": "What You Will Receive",
+    "title": "Almost There! Complete Your Order",
+    "subtitle": "You're one click away from creating a beautiful personalized song for",
+    "completeOrder": "Complete Your Order",
+    "emailDescription": "Enter your email and WhatsApp to receive your song",
+    "emailPlaceholder": "your@email.com",
     "whatsappLabel": "WhatsApp",
-    "whatsappPlaceholder": "(11) 99999-9999",
+    "whatsappPlaceholder": "+1 (555) 000-0000",
     "whatsappError": {
-      "invalid": "WhatsApp inválido. Digite DDD + número (ex: (11) 99999-9999)",
-      "required": "WhatsApp é obrigatório"
+      "invalid": "Invalid WhatsApp. Enter country code + number (ex: +1 555 000-0000)",
+      "required": "WhatsApp is required"
     },
-    "createMyMusic": "Criar Minha Música",
-    "processing": "Processando...",
-    "trying": "Tentando...",
-    "guarantee30Days": "Garantia de 30 Dias",
-    "securePayment": "🔒 Pagamento 100% seguro via Hotmart",
-    "hotmartPayment": "Pagamento via Hotmart",
-    "processingPayment": "Processando pagamento...",
-    "waitingConfirmation": "Aguardando confirmação do pagamento",
-    "paymentPending": "Seu pagamento está sendo processado. Você receberá um email assim que for confirmado.",
-    "musicFor": "Música para:",
-    "style": "Estilo:",
-    "delivery": "Entrega:",
-    "delivery24h": "48 horas ⚡",
-    "delivery48h": "48 horas ⚡",
+    "createMyMusic": "Create My Song",
+    "processing": "Processing...",
+    "trying": "Trying...",
+    "guarantee30Days": "30-Day Guarantee",
+    "securePayment": "🔒 100% secure payment via Hotmart",
+    "hotmartPayment": "Payment via Hotmart",
+    "processingPayment": "Processing payment...",
+    "waitingConfirmation": "Waiting for payment confirmation",
+    "paymentPending": "Your payment is being processed. You'll receive an email once confirmed.",
+    "musicFor": "Song for:",
+    "style": "Style:",
+    "delivery": "Delivery:",
+    "delivery24h": "48 hours ⚡",
+    "delivery48h": "48 hours ⚡",
     "total": "Total:",
-    "customSongOrder": "Seu Pedido de Música Personalizada",
-    "deliveryIn48h": "Em 48 horas",
-    "deliveryIn7Days": "Em 7 dias",
-    "twoVersionsBenefit": "Pague 1, Leve 2 Versões",
-    "personalizedMusic": "Música Personalizada",
+    "customSongOrder": "Your Personalized Song Order",
+    "deliveryIn48h": "In 48 hours",
+    "deliveryIn7Days": "In 7 days",
+    "twoVersionsBenefit": "Buy 1, Get 2 Versions",
+    "personalizedMusic": "Personalized Song",
     "discount70": "70% OFF",
-    "reviewQuestionnaire": "Revisar ou Editar Questionário",
-    "expressPlan": "Plano Expresso",
-    "choosePlan": "Escolha Seu Plano",
-    "selected": "Selecionado",
-    "mostPopular": "Mais Popular",
-    "deliveryIn": "Entrega em",
-    "limitedTimeDiscount": "Desconto por Tempo Limitado",
-    "normalPrice": "Nossas músicas normalmente custam",
-    "butWeBelieve": "mas acreditamos que todos merecem ouvir uma música especial por apenas",
-    "forLimitedTime": "por tempo limitado",
-    "whyOnly": "Por que apenas",
-    "weArePassionate": "Somos apaixonados por criar momentos inesquecíveis",
-    "hearOtherSongs": "Ouça Outras Músicas Que Criamos",
-    "fillFieldsAbove": "Preencha os campos acima",
-    "fillEmail": "Preencha o email",
-    "fillWhatsApp": "Preencha o WhatsApp",
-    "payNow": "🚀 Pagar Agora",
-    "orderedBy": "Pedido por",
-    "moneyBackGuarantee": "Garantia de 100% do Dinheiro de Volta",
-    "notSatisfied": "Não satisfeito? Receba reembolso total",
-    "noQuestions": "Sem perguntas, sem complicação",
-    "guarantee30DaysFull": "Garantia de 30 dias",
-    "timeToDecide": "Tempo suficiente para ouvir e decidir",
-    "riskFreePurchase": "Compra sem risco",
-    "satisfactionPriority": "Sua satisfação é nossa prioridade",
-    "radioQuality": "Música com Qualidade de studio HD",
-    "radioQualitySubtitle": "Música profissional, pronta para compartilhar",
-    "personalizedLyrics": "Letra Personalizada",
-    "writtenFor": "Escrita especialmente para",
-    "delivery24hTitle": "Entrega em 48 Horas",
-    "delivery48hTitle": "Entrega em 48 Horas",
-    "delivery7DaysTitle": "Entrega em 7 Dias",
-    "perfectForLastMinute": "Perfeito para presentes de última hora",
-    "whyChooseClamorenmusica": "⭐ Por Que Escolher o Sua Música Fácil?",
+    "reviewQuestionnaire": "Review or Edit Questionnaire",
+    "expressPlan": "Express Plan",
+    "choosePlan": "Choose Your Plan",
+    "selected": "Selected",
+    "mostPopular": "Most Popular",
+    "deliveryIn": "Delivery in",
+    "limitedTimeDiscount": "Limited Time Discount",
+    "normalPrice": "Our songs normally cost",
+    "butWeBelieve": "but we believe everyone deserves to hear a special song for just",
+    "forLimitedTime": "for a limited time",
+    "whyOnly": "Why only",
+    "weArePassionate": "We are passionate about creating unforgettable moments",
+    "hearOtherSongs": "Listen to Other Songs We Created",
+    "fillFieldsAbove": "Please fill in the fields above",
+    "fillEmail": "Please fill in your email",
+    "fillWhatsApp": "Please fill in your WhatsApp",
+    "payNow": "🚀 Pay Now",
+    "orderedBy": "Ordered by",
+    "moneyBackGuarantee": "100% Money-Back Guarantee",
+    "notSatisfied": "Not satisfied? Get a full refund",
+    "noQuestions": "No questions, no hassle",
+    "guarantee30DaysFull": "30-day guarantee",
+    "timeToDecide": "Time to listen and decide",
+    "riskFreePurchase": "Risk-free purchase",
+    "satisfactionPriority": "Your satisfaction is our priority",
+    "radioQuality": "Studio HD Quality Music",
+    "radioQualitySubtitle": "Professional music, ready to share",
+    "personalizedLyrics": "Personalized Lyrics",
+    "writtenFor": "Written especially for",
+    "delivery24hTitle": "48-Hour Delivery",
+    "delivery48hTitle": "48-Hour Delivery",
+    "delivery7DaysTitle": "7-Day Delivery",
+    "perfectForLastMinute": "Perfect for last-minute gifts",
+    "whyChooseClamorenmusica": "⭐ Why Choose The Song Surprise?",
     "hotmartReturn": {
       "checking": {
-        "title": "Verificando Pagamento",
-        "description": "Aguarde enquanto verificamos o status do seu pagamento..."
+        "title": "Verifying Payment",
+        "description": "Please wait while we verify your payment status..."
       },
       "approved": {
-        "title": "Pagamento Aprovado!",
-        "description": "Seu pagamento foi processado com sucesso.",
-        "successMessage": "Redirecionando para a página de sucesso..."
+        "title": "Payment Approved!",
+        "description": "Your payment was processed successfully.",
+        "successMessage": "Redirecting to success page..."
       },
       "pending": {
-        "title": "Pagamento Pendente",
-        "description": "Seu pagamento está sendo processado. Isso pode levar alguns minutos.",
-        "progress": "Aguardando confirmação..."
+        "title": "Payment Pending",
+        "description": "Your payment is being processed. This may take a few minutes.",
+        "progress": "Waiting for confirmation..."
       },
       "failed": {
-        "title": "Pagamento Não Processado",
-        "description": "Houve um problema com seu pagamento.",
-        "errorMessage": "Tente novamente ou entre em contato conosco se o problema persistir.",
-        "redirecting": "Redirecionando em {countdown} segundos...",
-        "tryAgain": "Tentar Novamente"
+        "title": "Payment Not Processed",
+        "description": "There was a problem with your payment.",
+        "errorMessage": "Try again or contact us if the problem persists.",
+        "redirecting": "Redirecting in {countdown} seconds...",
+        "tryAgain": "Try Again"
       },
-      "goHome": "Voltar ao Início",
-      "orderId": "ID do Pedido: {orderId}"
+      "goHome": "Back to Home",
+      "orderId": "Order ID: {orderId}"
     },
-    "over1000Clients": "Mais de 1.000 clientes satisfeitos",
-    "satisfactionGuarantee": "Garantia de 100% de satisfação",
-    "securePaymentProcessing": "Processamento de pagamento seguro",
-    "deliveredIn7Days": "Entregue no prazo determinado, sem atraso!",
+    "over1000Clients": "Over 1,000 satisfied customers",
+    "satisfactionGuarantee": "100% satisfaction guarantee",
+    "securePaymentProcessing": "Secure payment processing",
+    "deliveredIn7Days": "Delivered on time, without delays!",
     "features": {
-      "highQualityMP3": "MP3 alta qualidade",
-      "customCover": "Capa personalizada",
-      "fullLyrics": "Letra completa",
-      "unlimitedDownload": "Download ilimitado",
-      "professionalProduction": "Produção profissional",
-      "delivery24h": "Entrega em 48h ⚡",
-      "delivery48h": "Entrega em 48h ⚡"
+      "highQualityMP3": "High-quality MP3",
+      "customCover": "Custom cover",
+      "fullLyrics": "Full lyrics",
+      "unlimitedDownload": "Unlimited download",
+      "professionalProduction": "Professional production",
+      "delivery24h": "48h delivery ⚡",
+      "delivery48h": "48h delivery ⚡"
     },
     "errors": {
-      "invalidEmail": "Email inválido",
-      "emailTooLong": "Email muito longo",
-      "wait5Seconds": "Aguarde 5 segundos entre tentativas",
-      "enterValidEmail": "Por favor, insira um email válido",
-      "errorProcessing": "Erro ao processar pedido. Tente novamente.",
-      "quizNotFound": "Quiz não encontrado. Por favor, preencha o quiz primeiro.",
-      "errorLoadingQuiz": "Erro ao carregar dados do quiz",
-      "orderRecovered": "Pedido anterior recuperado. Continue de onde parou!",
-      "planNotFound": "Plano não encontrado",
-      "quizDataInvalid": "Dados do questionário inválidos",
-      "orderDataInvalid": "Dados do pedido inválidos",
-      "timeoutExceeded": "Tempo limite excedido. Tente novamente.",
-      "connectionError": "Erro ao conectar com servidor de pagamento. Verifique sua internet.",
-      "tooManyAttempts": "⏰ Muitas tentativas de pagamento. Por favor, aguarde 1 hora ou use outro email.",
-      "rateLimitExceeded": "Rate limit excedido",
-      "errorCreatingPayment": "Erro ao criar pagamento:",
-      "stripeResponseIncomplete": "Resposta do Stripe incompleta. Tente novamente.",
-      "invalidPaymentUrl": "URL de pagamento inválida. Tente novamente.",
-      "serverResponseIncomplete": "Resposta do servidor incompleta. Por favor, tente novamente.",
-      "paymentSystemNotConfigured": "Sistema de pagamento não configurado. Contate o suporte.",
-      "timeout": "Tempo limite excedido. Verifique sua conexão e tente novamente.",
-      "orderAlreadyPaid": "Este pedido já foi pago.",
-      "emailNotMatchOrder": "Email não corresponde ao pedido.",
-      "orderNotFound": "Pedido não encontrado. Por favor, tente novamente.",
-      "tooManyAttemptsShort": "Muitas tentativas. Por favor, aguarde alguns minutos e tente novamente.",
-      "priceError": "Erro ao processar pagamento. Por favor, tente novamente ou entre em contato com o suporte.",
-      "stripeError": "Erro ao processar pagamento. Por favor, tente novamente ou entre em contato com o suporte.",
-      "urlMatchError": "Erro ao processar URL de pagamento. Por favor, tente novamente.",
-      "invalidUrl": "URL de pagamento inválida. Por favor, tente novamente.",
-      "undefined": "Resposta do servidor incompleta. Por favor, tente novamente.",
-      "tryAgain": "Tentar Novamente",
-      "errorProcessingPayment": "Erro ao processar pagamento. Tente novamente."
+      "invalidEmail": "Invalid email",
+      "emailTooLong": "Email too long",
+      "wait5Seconds": "Wait 5 seconds between attempts",
+      "enterValidEmail": "Please enter a valid email",
+      "errorProcessing": "Error processing order. Try again.",
+      "quizNotFound": "Quiz not found. Please fill out the quiz first.",
+      "errorLoadingQuiz": "Error loading quiz data",
+      "orderRecovered": "Previous order recovered. Continue from where you left off!",
+      "planNotFound": "Plan not found",
+      "quizDataInvalid": "Invalid questionnaire data",
+      "orderDataInvalid": "Invalid order data",
+      "timeoutExceeded": "Timeout exceeded. Try again.",
+      "connectionError": "Error connecting to payment server. Check your internet.",
+      "tooManyAttempts": "⏰ Too many payment attempts. Please wait 1 hour or use another email.",
+      "rateLimitExceeded": "Rate limit exceeded",
+      "errorCreatingPayment": "Error creating payment:",
+      "stripeResponseIncomplete": "Incomplete Stripe response. Try again.",
+      "invalidPaymentUrl": "Invalid payment URL. Try again.",
+      "serverResponseIncomplete": "Incomplete server response. Please try again.",
+      "paymentSystemNotConfigured": "Payment system not configured. Contact support.",
+      "timeout": "Timeout exceeded. Check your connection and try again.",
+      "orderAlreadyPaid": "This order has already been paid.",
+      "emailNotMatchOrder": "Email does not match the order.",
+      "orderNotFound": "Order not found. Please try again.",
+      "tooManyAttemptsShort": "Too many attempts. Please wait a few minutes and try again.",
+      "priceError": "Error processing payment. Please try again or contact support.",
+      "stripeError": "Error processing payment. Please try again or contact support.",
+      "urlMatchError": "Error processing payment URL. Please try again.",
+      "invalidUrl": "Invalid payment URL. Please try again.",
+      "undefined": "Incomplete server response. Please try again.",
+      "tryAgain": "Try Again",
+      "errorProcessingPayment": "Error processing payment. Try again."
     }
   },
   "checkoutProcessing": {
-    "title": "Processando Seu Pedido",
-    "errorTitle": "Erro no Processamento",
-    "timeoutTitle": "Tempo Esgotado",
+    "title": "Processing Your Order",
+    "errorTitle": "Processing Error",
+    "timeoutTitle": "Timed Out",
     "steps": {
-      "quiz": "Salvando dados do questionário...",
-      "order": "Criando pedido...",
-      "payment": "Gerando link de pagamento..."
+      "quiz": "Saving questionnaire data...",
+      "order": "Creating order...",
+      "payment": "Generating payment link..."
     },
-    "progress": "concluído",
-    "error": "Tempo limite excedido. Por favor, tente novamente.",
-    "incompleteData": "Dados incompletos. Redirecionando...",
-    "tryAgain": "Tentar Novamente",
-    "back": "Voltar",
-    "cancel": "Cancelar"
+    "progress": "complete",
+    "error": "Timeout exceeded. Please try again.",
+    "incompleteData": "Incomplete data. Redirecting...",
+    "tryAgain": "Try Again",
+    "back": "Back",
+    "cancel": "Cancel"
   },
   "paymentSuccess": {
-    "title": "Pagamento Confirmado!",
-    "description": "Sua música personalizada está sendo criada com carinho pela nossa equipe.",
-    "paymentProcessed": "Pagamento processado com segurança. Você receberá um email de confirmação em breve.",
+    "title": "Payment Confirmed!",
+    "description": "Your personalized song is being lovingly created by our team.",
+    "paymentProcessed": "Payment processed securely. You'll receive a confirmation email shortly.",
     "emailTracking": {
-      "title": "Acompanhe seu pedido",
-      "description": "Enviaremos atualizações por email conforme o progresso da sua música."
+      "title": "Track your order",
+      "description": "We'll send email updates as your song progresses."
     },
     "deliveryTime": {
-      "title": "Tempo de Entrega",
-      "mainMessage": "Sua música estará pronta em 48 horas!",
-      "description": "São 48 horas para entregar seu pedido. Nossa equipe trabalhará com dedicação para criar sua música personalizada e entregá-la no prazo prometido."
+      "title": "Delivery Time",
+      "mainMessage": "Your song will be ready in 48 hours!",
+      "description": "It takes 48 hours to deliver your order. Our team will work with dedication to create your personalized song and deliver it on time."
     },
     "socialMedia": {
-      "title": "Siga-nos nas redes sociais",
-      "instagram": "Seguir no Instagram",
-      "tiktok": "Seguir no TikTok"
+      "title": "Follow us on social media",
+      "instagram": "Follow on Instagram",
+      "tiktok": "Follow on TikTok"
     },
-    "backToHome": "Voltar ao Início",
-    "viewPlans": "Ver Planos",
-    "redirecting": "Redirecionando em {countdown} segundos..."
+    "backToHome": "Back to Home",
+    "viewPlans": "View Plans",
+    "redirecting": "Redirecting in {countdown} seconds..."
   },
   "admin": {
     "mediaManagement": "Gestão de Mídia",
@@ -493,268 +496,268 @@
     }
   },
   "faq": {
-    "title": "Perguntas Frequentes",
-    "subtitle": "Tudo que você precisa saber sobre criar sua música personalizada",
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about creating your personalized song",
     "questions": {
       "musicStyles": {
-        "question": "Quais estilos musicais vocês produzem?",
-        "answer": "Produzimos músicas nos estilos: Romântico, Gospel, Forró, Sertanejo, Pagode, Sertanejo Universitário, Funk, Reggae, Pop, Rock, Piseiro, MPB e Trap. Nossos músicos são especialistas em cada gênero."
+        "question": "What musical styles do you produce?",
+        "answer": "We produce music in the following styles: Romantic, Gospel, Forró, Sertanejo, Pagode, Funk, Reggae, Pop, Rock, MPB and Trap. Our musicians are specialists in each genre."
       },
       "deliveryTimes": {
-        "question": "Como funcionam os prazos?",
-        "answer": "No plano Padrão, sua música fica pronta em até 7 dias. No plano Expresso, entregamos em até 48 horas. Você recebe uma prévia antes da liberação final."
+        "question": "How does the delivery time work?",
+        "answer": "With the Standard plan, your song is ready in up to 7 days. With the Express plan, we deliver in up to 48 hours. You receive a preview before the final release."
       },
       "whatYouGet": {
-        "question": "O que recebo ao final?",
-        "answer": "Você recebe um arquivo MP3 de alta qualidade, capa personalizada em alta resolução e a letra completa da música. Pode baixar e usar quantas vezes quiser."
+        "question": "What do I receive at the end?",
+        "answer": "You receive a high-quality MP3 file, a personalized cover in high resolution, and the complete song lyrics. You can download and use it as many times as you want."
       },
       "commercialUse": {
-        "question": "Posso usar a música comercialmente?",
-        "answer": "Sim! Você tem direitos totais sobre a música criada. Pode usar em eventos, redes sociais, campanhas de marca ou qualquer outro propósito."
+        "question": "Can I use the song commercially?",
+        "answer": "Yes! You have full rights to the song created. You can use it at events, on social media, brand campaigns, or any other purpose."
       }
     }
   },
   "footer": {
-    "description": "Criamos músicas personalizadas. Cada composição é única, criada especialmente para emocionar quem você ama.",
-    "navigation": "Navegação",
-    "support": "Suporte",
+    "description": "We create personalized songs. Each composition is unique, created especially to move those you love.",
+    "navigation": "Navigation",
+    "support": "Support",
     "legal": "Legal",
-    "contact": "Contato",
-    "email": "contato@suamusicafacil.com",
-    "quickLinks": "Links Rápidos",
-    "home": "Início",
-    "listenExample": "Ouça Exemplo",
+    "contact": "Contact",
+    "email": "contact@youreasymusic.com",
+    "quickLinks": "Quick Links",
+    "home": "Home",
+    "listenExample": "Listen Example",
     "faq": "FAQ",
-    "pricing": "Preços",
-    "terms": "Termos",
-    "privacy": "Privacidade",
+    "pricing": "Pricing",
+    "terms": "Terms",
+    "privacy": "Privacy",
     "links": {
-      "about": "Sobre Nós",
-      "privacy": "Política de Privacidade",
-      "terms": "Termos de Serviço"
+      "about": "About Us",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
     },
-    "copyright": "Todos os direitos reservados."
+    "copyright": "All rights reserved."
   },
   "vinyl": {
-    "title": "Ouça um Exemplo",
-    "subtitle": "Cada faixa é produzida com instrumentos reais e vocais profissionais"
+    "title": "Listen to an Example",
+    "subtitle": "Each track is produced with real instruments and professional vocals"
   },
   "vinylPlayer": {
-    "defaultTitle": "Música de Exemplo",
-    "defaultArtist": "Sua Música Fácil",
-    "changingMusic": "Mudando música...",
+    "defaultTitle": "Sample Song",
+    "defaultArtist": "The Song Surprise",
+    "changingMusic": "Changing song...",
     "tracks": {
       "pt": {
-        "title": "La na Escola",
-        "artist": "Sua Música Fácil",
-        "audioUrl": "/audio/la_na_escola-2.mp3"
+        "title": "Sample Song",
+        "artist": "The Song Surprise",
+        "audioUrl": "/audio/pop_feliz.mp3"
       }
     }
   },
   "quiz": {
-    "title": "Conte-nos Sobre Seu Momento Especial",
-    "subtitle": "Ajude-nos a criar a música perfeita para você",
+    "title": "Tell Us About Your Special Moment",
+    "subtitle": "Help us create the perfect song for you",
     "stepTitles": {
-      "step1": "Vamos começar com o básico",
-      "step2": "Escolha um estilo musical",
-      "step3": "O que torna essa pessoa especial?",
-      "step4": "Compartilhe suas memórias favoritas",
-      "step5": "Uma mensagem do coração"
+      "step1": "Let's start with the basics",
+      "step2": "Choose a musical style",
+      "step3": "What makes this person special?",
+      "step4": "Share your favorite memories",
+      "step5": "A message from the heart"
     },
     "questions": {
-      "occasion": "Qual é a ocasião?",
-      "person": "Para quem é esta música?",
-      "relationship": "Qual é seu relacionamento?",
-      "emotions": "Que emoções você quer transmitir?",
-      "style": "Que estilo musical você prefere?",
-      "message": "Alguma mensagem ou história especial?",
-      "forWho": "Para quem é essa música?",
-      "name": "Qual é o nome da pessoa homenageada?",
-      "namePlaceholder": "Digite o primeiro nome...",
-      "nameHint": "Adicione pronúncia para clareza (ex: Alícia, ah-lee-sha)",
-      "enterRelationship": "Digite o relacionamento...",
-      "styleQuestion": "Qual estilo combina mais?",
-      "styleDescription": "Selecione o estilo musical para sua canção personalizada",
-      "vocalPreference": "Preferência de Voz",
-      "vocalDescription": "Recomendamos escolher o gênero que melhor se encaixa na personalidade da música",
-      "qualities": "Qualidades que você mais ama",
-      "qualitiesDescription": "Descreva o caráter e qualidades que você valoriza",
-      "qualitiesPlaceholder": "Eles são pacientes, sábios, engraçados, protetores, encorajadores? O que os torna a pessoa incrível que são?",
-      "memories": "Momentos especiais juntos",
-      "memoriesDescription": "Que momentos com eles você mais valoriza?",
-      "memoriesPlaceholder": "Compartilhe como se conheceram, anos especiais, piadas internas, ou momentos que tornaram seu relacionamento único...",
-      "heartMessage": "Uma mensagem do coração",
-      "heartMessageDescription": "Escreva qualquer coisa que você sinta que seria relevante para incluir na música, e faremos o nosso melhor para incluí-la!",
-      "heartMessagePlaceholder": "O que você quer que eles saibam, sintam ou lembrem?"
+      "occasion": "What is the occasion?",
+      "person": "Who is this song for?",
+      "relationship": "What is your relationship?",
+      "emotions": "What emotions do you want to convey?",
+      "style": "What musical style do you prefer?",
+      "message": "Any special message or story?",
+      "forWho": "Who is this song for?",
+      "name": "What is the name of the person being honored?",
+      "namePlaceholder": "Enter first name...",
+      "nameHint": "Add pronunciation for clarity (e.g., Alicia, ah-lee-sha)",
+      "enterRelationship": "Enter the relationship...",
+      "styleQuestion": "Which style fits best?",
+      "styleDescription": "Select the musical style for your personalized song",
+      "vocalPreference": "Vocal Preference",
+      "vocalDescription": "We recommend choosing the gender that best fits the personality of the song",
+      "qualities": "Qualities you love most",
+      "qualitiesDescription": "Describe the character and qualities you value",
+      "qualitiesPlaceholder": "Are they patient, wise, funny, protective, encouraging? What makes them the amazing person they are?",
+      "memories": "Special moments together",
+      "memoriesDescription": "What moments with them do you treasure most?",
+      "memoriesPlaceholder": "Share how you met, special years, inside jokes, or moments that made your relationship unique...",
+      "heartMessage": "A message from the heart",
+      "heartMessageDescription": "Write anything you feel would be relevant to include in the song, and we'll do our best to include it!",
+      "heartMessagePlaceholder": "What do you want them to know, feel, or remember?"
     },
     "relationships": {
-      "spouse": "Esposo(a)",
-      "child": "Filho(a)",
-      "father": "Pai",
-      "mother": "Mãe",
-      "sibling": "Irmão(ã)",
-      "friend": "Amigo(a)",
-      "myself": "Eu mesmo(a)",
-      "other": "Outro"
+      "spouse": "Spouse",
+      "child": "Child",
+      "father": "Father",
+      "mother": "Mother",
+      "sibling": "Sibling",
+      "friend": "Friend",
+      "myself": "Myself",
+      "other": "Other"
     },
     "styles": {
-      "pop": "Romântico",
+      "pop": "Romantic",
       "rock": "Rock",
       "mpb": "MPB",
       "sertanejo": "Sertanejo",
       "forro": "Forró",
       "jazz": "Jazz",
       "gospel": "Gospel",
-      "louvor": "Louvor",
+      "louvor": "Praise",
       "reggae": "Reggae",
-      "electronic": "Eletrônico",
+      "electronic": "Electronic",
       "rap": "Rap/Hip-Hop"
     },
     "vocalOptions": {
-      "noPreference": "Sem Preferência",
-      "female": "Voz Feminina",
-      "male": "Voz Masculina"
+      "noPreference": "No Preference",
+      "female": "Female Voice",
+      "male": "Male Voice"
     },
     "buttons": {
-      "back": "Voltar",
-      "next": "Próximo",
-      "continueToPayment": "Continuar para Pagamento"
+      "back": "Back",
+      "next": "Next",
+      "continueToPayment": "Continue to Payment"
     },
     "progress": {
-      "step": "Passo",
-      "of": "de",
-      "complete": "Completo"
+      "step": "Step",
+      "of": "of",
+      "complete": "Complete"
     },
     "validation": {
-      "selectRelationship": "Selecione um relacionamento",
-      "enterRelationship": "Digite o relacionamento",
-      "enterName": "Digite o nome",
-      "nameTooLong": "Nome muito longo (máximo 100 caracteres)",
-      "selectStyle": "Selecione um estilo musical",
-      "describeQualities": "Descreva as qualidades",
-      "maxCharacters": "Máximo 500 caracteres",
-      "shareMemories": "Compartilhe suas memórias",
-      "maxMemories": "Máximo 800 caracteres",
-      "maxMessage": "Máximo 500 caracteres"
+      "selectRelationship": "Select a relationship",
+      "enterRelationship": "Enter the relationship",
+      "enterName": "Enter the name",
+      "nameTooLong": "Name too long (maximum 100 characters)",
+      "selectStyle": "Select a musical style",
+      "describeQualities": "Describe the qualities",
+      "maxCharacters": "Maximum 500 characters",
+      "shareMemories": "Share your memories",
+      "maxMemories": "Maximum 800 characters",
+      "maxMessage": "Maximum 500 characters"
     },
     "messages": {
-      "dataLoaded": "Dados carregados! Você pode revisar e editar suas respostas.",
-      "quizComplete": "Quiz completo! Redirecionando para pagamento...",
-      "errorSaving": "Erro ao salvar formulário. Tente novamente."
+      "dataLoaded": "Data loaded! You can review and edit your answers.",
+      "quizComplete": "Quiz complete! Redirecting to payment...",
+      "errorSaving": "Error saving form. Try again."
     },
     "characterCount": {
-      "characters": "caracteres",
-      "optional": "opcional",
-      "maxExceeded": "máximo excedido"
+      "characters": "characters",
+      "optional": "optional",
+      "maxExceeded": "maximum exceeded"
     },
     "answers": {
       "occasion": {
-        "proposal": "Proposta",
-        "wedding": "Casamento",
-        "anniversary": "Aniversário",
-        "birthday": "Aniversário",
-        "tribute": "Tributo",
-        "other": "Outro"
+        "proposal": "Proposal",
+        "wedding": "Wedding",
+        "anniversary": "Anniversary",
+        "birthday": "Birthday",
+        "tribute": "Tribute",
+        "other": "Other"
       },
       "relationship": {
-        "partner": "Parceiro",
-        "spouse": "Cônjuge",
-        "family": "Família",
-        "friend": "Amigo",
-        "parent": "Pai/Mãe",
-        "other": "Outro"
+        "partner": "Partner",
+        "spouse": "Spouse",
+        "family": "Family",
+        "friend": "Friend",
+        "parent": "Parent",
+        "other": "Other"
       },
       "style": {
         "pop": "Pop",
         "rock": "Rock",
-        "ballad": "Balada",
+        "ballad": "Ballad",
         "country": "Country",
         "jazz": "Jazz",
-        "classical": "Clássico"
+        "classical": "Classical"
       }
     }
   },
   "terms": {
-    "title": "Termos de Serviço",
-    "lastUpdated": "Última atualização",
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated",
     "sections": {
       "acceptance": {
-        "title": "1. Aceitação dos Termos",
-        "content": "Ao acessar e usar o Sua Música Fácil, você concorda em estar vinculado a estes Termos de Serviço e a todas as leis e regulamentos aplicáveis."
+        "title": "1. Acceptance of Terms",
+        "content": "By accessing and using The Song Surprise, you agree to be bound by these Terms of Service and all applicable laws and regulations."
       },
       "services": {
-        "title": "2. Serviços Oferecidos",
-        "content": "O Sua Música Fácil oferece serviços de criação de músicas personalizadas. Nos comprometemos a entregar produtos de alta qualidade dentro dos prazos estabelecidos (7 dias para Plano Padrão, 48 horas para Plano Expresso)."
+        "title": "2. Services Offered",
+        "content": "The Song Surprise offers personalized song creation services. We are committed to delivering high-quality products within the established timeframes (7 days for the Standard Plan, 48 hours for the Express Plan)."
       },
       "copyright": {
-        "title": "3. Direitos Autorais e Propriedade",
-        "content": "Ao adquirir uma música personalizada, você recebe os direitos de uso pessoal e comercial da música criada. O Sua Música Fácil retém os direitos autorais sobre a composição musical, mas concede a você uma licença perpétua e irrevogável para usar a música conforme desejar."
+        "title": "3. Copyright and Ownership",
+        "content": "By purchasing a personalized song, you receive personal and commercial usage rights for the song created. The Song Surprise retains copyright over the musical composition but grants you a perpetual and irrevocable license to use the song as you wish."
       },
       "payments": {
-        "title": "4. Pagamentos e Reembolsos",
-        "content": "Todos os pagamentos são processados de forma segura através do Stripe e Hotmart. Em caso de insatisfação, oferecemos revisões gratuitas. Reembolsos são avaliados caso a caso."
+        "title": "4. Payments and Refunds",
+        "content": "All payments are processed securely through Stripe and Hotmart. In case of dissatisfaction, we offer free revisions. Refunds are evaluated on a case-by-case basis."
       },
       "acceptableUse": {
-        "title": "5. Uso Aceitável",
-        "content": "Você concorda em usar nossos serviços apenas para fins legais e de acordo com estes Termos. Não é permitido usar o serviço para criar conteúdo ilegal, difamatório ou que viole direitos de terceiros."
+        "title": "5. Acceptable Use",
+        "content": "You agree to use our services only for lawful purposes and in accordance with these Terms. It is not permitted to use the service to create illegal, defamatory content or content that violates third-party rights."
       },
       "liability": {
-        "title": "6. Limitação de Responsabilidade",
-        "content": "O Sua Música Fácil não se responsabiliza por danos indiretos, incidentais ou consequenciais decorrentes do uso ou incapacidade de usar nossos serviços."
+        "title": "6. Limitation of Liability",
+        "content": "The Song Surprise is not responsible for indirect, incidental, or consequential damages arising from the use or inability to use our services."
       },
       "modifications": {
-        "title": "7. Modificações dos Termos",
-        "content": "Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entrarão em vigor imediatamente após a publicação no site."
+        "title": "7. Modifications to Terms",
+        "content": "We reserve the right to modify these terms at any time. Changes will take effect immediately after publication on the website."
       },
       "contact": {
-        "title": "8. Contato",
-        "content": "Para questões sobre estes Termos de Serviço, entre em contato através de nossa página de contato."
+        "title": "8. Contact",
+        "content": "For questions about these Terms of Service, please contact us through our contact page."
       }
     }
   },
   "privacy": {
-    "title": "Política de Privacidade",
-    "lastUpdated": "Última atualização",
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated",
     "notice": {
-      "title": "Importante",
-      "content": "Esta Política de Privacidade descreve como coletamos, usamos e protegemos suas informações pessoais. Ao usar nossos serviços, você concorda com as práticas descritas nesta política."
+      "title": "Important",
+      "content": "This Privacy Policy describes how we collect, use, and protect your personal information. By using our services, you agree to the practices described in this policy."
     },
     "sections": {
       "information": {
-        "title": "1. Informações que Coletamos",
-        "content": "Coletamos informações que você nos fornece diretamente, como nome, e-mail, informações de pagamento e detalhes sobre a música que deseja criar."
+        "title": "1. Information We Collect",
+        "content": "We collect information you provide directly to us, such as your name, email, payment information, and details about the song you want to create."
       },
       "usage": {
-        "title": "2. Como Usamos suas Informações",
-        "content": "Usamos suas informações para: criar e entregar sua música personalizada, processar pagamentos, enviar atualizações sobre seu pedido e melhorar nossos serviços."
+        "title": "2. How We Use Your Information",
+        "content": "We use your information to: create and deliver your personalized song, process payments, send updates about your order, and improve our services."
       },
       "sharing": {
-        "title": "3. Compartilhamento de Informações",
-        "content": "Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros, exceto quando necessário para processar pagamentos (Stripe e Hotmart) ou quando exigido por lei."
+        "title": "3. Information Sharing",
+        "content": "We do not sell, rent, or share your personal information with third parties, except when necessary to process payments (Stripe and Hotmart) or when required by law."
       },
       "security": {
-        "title": "4. Segurança dos Dados",
-        "content": "Implementamos medidas de segurança técnicas e organizacionais para proteger suas informações pessoais contra acesso não autorizado, alteração, divulgação ou destruição."
+        "title": "4. Data Security",
+        "content": "We implement technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction."
       },
       "cookies": {
         "title": "5. Cookies",
-        "content": "Usamos cookies para melhorar sua experiência no site, manter você conectado e analisar o tráfego do site. Você pode configurar seu navegador para recusar cookies."
+        "content": "We use cookies to improve your website experience, keep you logged in, and analyze website traffic. You can configure your browser to refuse cookies."
       },
       "rights": {
-        "title": "6. Seus Direitos",
-        "content": "Você tem o direito de acessar, corrigir ou excluir suas informações pessoais a qualquer momento. Entre em contato conosco para exercer esses direitos."
+        "title": "6. Your Rights",
+        "content": "You have the right to access, correct, or delete your personal information at any time. Contact us to exercise these rights."
       },
       "retention": {
-        "title": "7. Retenção de Dados",
-        "content": "Mantemos suas informações pelo tempo necessário para fornecer nossos serviços e cumprir obrigações legais. Músicas criadas são armazenadas por tempo indeterminado em sua conta."
+        "title": "7. Data Retention",
+        "content": "We retain your information for as long as necessary to provide our services and comply with legal obligations. Created songs are stored indefinitely in your account."
       },
       "changes": {
-        "title": "8. Alterações nesta Política",
-        "content": "Podemos atualizar esta Política de Privacidade periodicamente. Notificaremos você sobre mudanças significativas através de e-mail ou aviso em nosso site."
+        "title": "8. Changes to This Policy",
+        "content": "We may update this Privacy Policy periodically. We will notify you of significant changes via email or notice on our website."
       },
       "contact": {
-        "title": "9. Contato",
-        "content": "Para questões sobre esta Política de Privacidade ou sobre como tratamos seus dados, entre em contato através de nossa página de contato."
+        "title": "9. Contact",
+        "content": "For questions about this Privacy Policy or how we handle your data, please contact us through our contact page."
       }
     }
   }

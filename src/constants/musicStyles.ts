@@ -1,5 +1,5 @@
 export const STYLE_OPTIONS = [
-  { value: "romantico", label: "Romântico" },
+  { value: "romantico", label: "Romantic" },
   { value: "gospel", label: "Gospel" },
   { value: "forro", label: "Forró" },
   { value: "sertanejo", label: "Sertanejo" },

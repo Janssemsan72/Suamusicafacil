@@ -384,7 +384,7 @@ export default function VinylPlayer() {
         className="bg-card rounded-3xl p-4 md:p-6 shadow-md border border-border/50 h-full min-h-[400px] flex items-center justify-center"
       >
         <div className="text-center">
-          <p className="text-red-500 mb-2">❌ Erro no áudio</p>
+          <p className="text-red-500 mb-2">❌ Audio error</p>
           <p className="text-xs text-muted-foreground mb-3">{audioError}</p>
           <div className="flex gap-2 justify-center">
             <button 
@@ -400,13 +400,13 @@ export default function VinylPlayer() {
               }} 
               className="px-3 py-1 bg-primary text-white rounded text-xs hover:bg-primary/80"
             >
-              Tentar Novamente
+              Try Again
             </button>
             <button 
               onClick={() => safeReload({ reason: 'VinylPlayer' })} 
               className="px-3 py-1 bg-muted text-foreground rounded text-xs hover:bg-muted/80"
             >
-              Recarregar Página
+              Reload Page
             </button>
           </div>
         </div>
@@ -422,10 +422,10 @@ export default function VinylPlayer() {
     >
       <div className="w-full mx-auto">
         <h2 id="radiola-title" tabIndex={-1} className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-foreground text-center mb-1 outline-none">
-          Ouça nossas músicas
+          Listen to our songs
         </h2>
         <p className="text-muted-foreground mb-2 sm:mb-4 text-center text-xs px-2">
-          Clique em play para ouvir uma amostra
+          Click play to hear a sample
         </p>
 
         {/* Vinyl Record */}

@@ -11,8 +11,8 @@ function getWhatsAppUrl() {
   const params = new URLSearchParams(window.location.search);
   const orderId = params.get('order_id');
   const text = orderId
-    ? `Olá, quero acompanhar meu pedido ${orderId}!`
-    : 'Olá, quero acompanhar meu pedido!';
+    ? `Hello, I'd like to track my order ${orderId}!`
+    : "Hello, I'd like to track my order!";
   return `https://wa.me/558592005977?text=${encodeURIComponent(text)}`;
 }
 
@@ -39,9 +39,9 @@ export default function PaymentSuccess() {
   }, []);
 
   useEffect(() => {
-    document.title = 'Pagamento Confirmado | Sua Música Fácil';
+    document.title = 'Payment Confirmed | The Song Surprise';
     return () => {
-      document.title = 'Sua Música Fácil — Músicas Personalizadas Profissionais';
+      document.title = 'The Song Surprise — Professional Personalized Songs';
     };
   }, []);
 
@@ -137,11 +137,11 @@ export default function PaymentSuccess() {
 
           {/* Título */}
           <h1 className="text-xl sm:text-2xl font-bold text-center" style={{ color: BRAND.purple }}>
-            Pagamento Confirmado!
+            Payment Confirmed!
           </h1>
 
           <p className="text-sm text-center text-gray-600">
-            Sua música personalizada está sendo preparada com carinho.
+            Your personalized song is being prepared with care.
           </p>
 
           {/* E-mail */}
@@ -155,10 +155,10 @@ export default function PaymentSuccess() {
               </div>
               <div>
                 <p className="text-xs font-semibold" style={{ color: '#5b21b6' }}>
-                  Você receberá tudo por e-mail
+                  You will receive everything by email
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  suport@suamusicafacil.com.br
+                  support@thesongsurprise.com
                 </p>
               </div>
             </div>
@@ -175,10 +175,10 @@ export default function PaymentSuccess() {
               </div>
               <div>
                 <p className="text-xs font-bold" style={{ color: '#166534' }}>
-                  Pelo WhatsApp você recebe sua música mais rápido!
+                  Via WhatsApp you receive your song faster!
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  Acompanhe seu pedido e tire dúvidas em tempo real.
+                  Track your order and get answers in real time.
                 </p>
               </div>
             </div>
@@ -199,7 +199,7 @@ export default function PaymentSuccess() {
               onClick={() => { hasRedirected.current = true; }}
             >
               <MessageCircle className="w-5 h-5 mr-2" />
-              Ir para o WhatsApp agora
+              Go to WhatsApp now
             </a>
           </Button>
 
@@ -216,8 +216,8 @@ export default function PaymentSuccess() {
             </div>
             <p className="text-xs text-center text-gray-400">
               {countdown > 0
-                ? `Redirecionando para o WhatsApp em ${countdown}s...`
-                : 'Redirecionando...'}
+                ? `Redirecting to WhatsApp in ${countdown}s...`
+                : 'Redirecting...'}
             </p>
           </div>
         </CardContent>

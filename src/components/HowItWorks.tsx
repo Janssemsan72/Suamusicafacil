@@ -6,28 +6,28 @@ import { useUtmParams } from "@/hooks/useUtmParams";
 const STEPS = [
     { 
       number: "1", 
-      title: "Conte-nos sobre a pessoa e a ocasião",
-      description: "Compartilhe detalhes sobre quem é a música e o que torna seu relacionamento especial."
+      title: "Tell us about the person and the occasion",
+      description: "Share details about who the song is for and what makes your relationship special."
     },
     { 
       number: "2", 
-      title: "Escolha um estilo musical e clima",
-      description: "Criamos em mais de 30 tipos de generos musicais, escolha o desejado no formulario."
+      title: "Choose a musical style and mood",
+      description: "We create in over 30 musical genres — choose the one you want in the form."
     },
     { 
       number: "3", 
-      title: "Nós escrevemos letras e melodia personalizadas",
-      description: "Nós criamos sua letras que contam sua história única."
+      title: "We write personalized lyrics and melody",
+      description: "We craft lyrics that tell your unique story."
     },
     { 
       number: "4", 
-      title: "Gravamos profissionalmente",
-      description: "Após ter a letra aprovado por você, músicos e vocalistas talentosos dão vida à sua música em nosso estúdio."
+      title: "We record professionally",
+      description: "After you approve the lyrics, talented musicians and vocalists bring your song to life in our studio."
     },
     { 
       number: "5", 
-      title: "Você recebe sua música única e se aprovado",
-      description: "Receba sua gravação em alta qualidade no seu email e no whatsapp pronta para surpreender alguém especial."
+      title: "You receive your unique song",
+      description: "Receive your high-quality recording by email and WhatsApp, ready to surprise someone special."
     },
 ];
 
@@ -74,7 +74,7 @@ const HowItWorks = React.memo(function HowItWorks({ onOpenQuiz }: HowItWorksProp
       <div className="container mx-auto px-4">
         {/* Title - Centered */}
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
-          Como Sua <span className="text-purple-500">Música Personalizada</span> é Criada
+          How Your <span className="text-purple-500">Personalized Song</span> Is Created
         </h2>
 
         {/* Steps Container - componente puro sem hooks */}
@@ -88,7 +88,7 @@ const HowItWorks = React.memo(function HowItWorks({ onOpenQuiz }: HowItWorksProp
             className="bg-purple-600 hover:bg-purple-700 text-white text-base sm:text-lg px-8 sm:px-10 py-4 sm:py-5 rounded-full shadow-md transition-all hover:scale-105 font-semibold"
           >
             <Gift className="w-5 h-5 mr-2" />
-            Crie minha música personalizada agora
+            Create my personalized song now
           </Button>
         </div>
       </div>
